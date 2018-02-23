@@ -79,27 +79,20 @@
 
 
 
-<meta name="description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
+<meta name="description" content="概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf  AlertScriptsPath=/etc/zabbix/alertscripts   二、 报警类型（这里主要">
 <meta name="keywords" content="zabbix">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zabbix_agent主动模式">
-<meta property="og:url" content="http://yoursite.com/2018/02/23/zabbix_agent主动模式/index.html">
+<meta property="og:title" content="zabbix报警">
+<meta property="og:url" content="http://yoursite.com/2018/02/23/zabbix报警/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
+<meta property="og:description" content="概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf  AlertScriptsPath=/etc/zabbix/alertscripts   二、 报警类型（这里主要">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png">
-<meta property="og:image" content="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png">
-<meta property="og:updated_time" content="2018-02-23T12:33:41.853Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%9F%AD%E4%BF%A1%E9%85%8D%E7%BD%AE.png">
+<meta property="og:updated_time" content="2018-02-23T12:41:15.692Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zabbix_agent主动模式">
-<meta name="twitter:description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png">
+<meta name="twitter:title" content="zabbix报警">
+<meta name="twitter:description" content="概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf  AlertScriptsPath=/etc/zabbix/alertscripts   二、 报警类型（这里主要">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%9F%AD%E4%BF%A1%E9%85%8D%E7%BD%AE.png">
 
 
 
@@ -129,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/23/zabbix报警/"/>
 
 
 
 
 
-  <title>zabbix_agent主动模式 | sundshinerj</title>
+  <title>zabbix报警 | sundshinerj</title>
   
 
 
@@ -272,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix报警/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -289,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">zabbix_agent主动模式</h1>
+          <h1 class="post-title" itemprop="name headline">zabbix报警</h1>
         
 
         <div class="post-meta">
@@ -361,71 +354,147 @@
       
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:</p>
-<ol>
-<li>当监控端到一个量级的时候，web操作界面很卡，容易出现502；</li>
-<li>图层断裂；</li>
-<li>开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。</li>
-</ol>
-<p>所以主要往2个优化方面考虑：</p>
-<ol>
-<li>添加proxy节点或者node模式做分布式监控；</li>
-<li>调整agentd为主动模式。</li>
-</ol>
-<p>由于第一个方案需要物理节点，所以尝试第二个方案。</p>
-<p><strong>主动模式：</strong></p>
-<p>主动模式一定要记得设置ServerActive=ServerIP</p>
-<ol>
-<li>Agent向Server建立一个TCP连接</li>
-<li>Agent请求需要检测的数据列表</li>
-<li>Server响应Agent，发送一个Items列表</li>
-<li>Agent允许响应</li>
-<li>TCP连接完成本次会话关闭</li>
-<li>Agent开始周期性地收集数据</li>
-</ol>
-<h3 id="一、-被监控端zabbix-agentd-conf的配置调整"><a href="#一、-被监控端zabbix-agentd-conf的配置调整" class="headerlink" title="一、 被监控端zabbix_agentd.conf的配置调整"></a>一、 被监控端zabbix_agentd.conf的配置调整</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_agentd.conf</span><br></pre></td></tr></table></figure>
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了<strong>报警升级</strong>，可根据自身情况进行设置。</p>
+<p>##配置</p>
+<h5 id="一、-zabbix-server脚本指定位置"><a href="#一、-zabbix-server脚本指定位置" class="headerlink" title="一、 zabbix-server脚本指定位置"></a>一、 zabbix-server脚本指定位置</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim zabbix_server.conf</span><br></pre></td></tr></table></figure>
 <pre>
-StartAgents=0                #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程
-#Server=172.16.100.84        #如果设置纯被动模式，应该注释掉这行
-ServerActive=172.16.100.84   #主动模式的serverip地址
-Hostname=172.16.100.47       #客户端的hostname，不配置则使用主机名
-RefreshActiveChecks=120      #被监控端到服务器获取监控项的周期，默认120S
-BufferSize=200               #被监控端存储监控信息的空间大小
-Timeout=3                    #超时时间
+AlertScriptsPath=/etc/zabbix/alertscripts
 </pre>
 
-<blockquote>
-<p>纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项</p>
-</blockquote>
-<h3 id="二、-调整监控模版"><a href="#二、-调整监控模版" class="headerlink" title="二、 调整监控模版"></a>二、 调整监控模版</h3><ol>
-<li>克隆一个temple os linux模版来修改</li>
-<li><p>全选</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png" alt=""></p>
+<h5 id="二、-报警类型（这里主要讲邮件和短信，后期会补上微信）"><a href="#二、-报警类型（这里主要讲邮件和短信，后期会补上微信）" class="headerlink" title="二、 报警类型（这里主要讲邮件和短信，后期会补上微信）"></a>二、 报警类型（这里主要讲邮件和短信，后期会补上微信）</h5><ul>
+<li><p>邮件</p>
+<p>  邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见<a href="https://www.cnblogs.com/rysinal/p/5834421.html" target="_blank" rel="noopener">安装sendemail</a></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/zabbix/alertscripts/sendEmail.sh</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>找到最下方的批量更新</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png" alt=""></p>
-</li>
-<li><p>类型打勾，选择主动式，然后更新</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png" alt=""></p>
-</li>
-<li><p>主机修改</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png" alt=""></p>
-</li>
-<li><p>这时候就有相关数据，如果硬盘或网卡监控没有数据</p>
-<p> <strong>模板</strong>&gt;&gt;<strong>主动监控模板名称</strong>&gt;&gt;<strong>自动发现规则</strong></p>
-<p> <img src="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true" alt=""></p>
-</li>
-<li><p>选择<strong>监控项原型</strong>-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png" alt=""></p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>过会，网卡和硬盘的监控情况就出来了。</p>
-</li>
-</ol>
+</ul>
+<pre><code>&lt;pre&gt;
+#!/bin/bash
+to=$1
+subject=$2
+body=$3
+/usr/local/bin/sendEmail -f ex@uu.com -t &quot;$to&quot; -u &quot;$subject&quot; -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m &quot;$body&quot;
 
+############
+/usr/local/bin/sendEmail        命令主程序
+-f from@163.com                 发件人邮箱
+-t to@163.com                   收件人邮箱
+-s smtp.163.com                 发件人邮箱的smtp服务器
+-u &quot;我是邮件主题&quot;                邮件的标题
+-o message-content-type=html    邮件内容的格式,html表示它是html格式
+-o message-charset=utf8         邮件内容编码
+-xu from@163.com                发件人邮箱的用户名
+-xp 123456                      发件人邮箱密码
+-m &quot;我是邮件内容&quot;                邮件的具体内容
+-l  /var/log/sendMyEmail.log    非必输项，邮件发送日志记录到日志文件
+&lt;/pre&gt;
+
+- web配置
+
+    1. **管理** &gt;&gt; **报警媒介类型** &gt;&gt; **创建媒体类型**
+
+        名称： 自定义
+
+        类型： 脚本
+
+        脚本参数：
+
+            {ALERT.SENDTO}
+            {ALERT.SUBJECT}
+            {ALERT.MESSAGE}
+
+        ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E9%85%8D%E7%BD%AE.png)
+
+    2. **管理** &gt;&gt; **用户** &gt;&gt; **报警媒介**
+
+        ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE.png)
+
+    3. **配置** &gt;&gt; **动作** &gt;&gt; **触发器类型下新建动作**
+
+        ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E5%90%8D%E7%A7%B0.png)
+
+        &lt;pre&gt;
+        名称：Zabbix-Server告警邮件
+        默认接收人：主机： {HOSTNAME1}  状态：{TRIGGER.STATUS}
+        默认信息：
+        告警主机:&amp;nbsp;{HOSTNAME1}&lt;br/&gt;
+        告警时间:&amp;nbsp;{EVENT.DATE}{EVENT.TIME}&lt;br/&gt;
+        告警等级:&amp;nbsp;{TRIGGER.SEVERITY}&lt;br/&gt;
+        告警信息:&amp;nbsp;{TRIGGER.NAME}&lt;br/&gt;
+        告警项目:&amp;nbsp;{TRIGGER.KEY1}&lt;br/&gt;
+        问题详情:&amp;nbsp;{ITEM.NAME}:&amp;nbsp;{ITEM.VALUE}&lt;br/&gt;
+        当前状态:&amp;nbsp;{TRIGGER.STATUS}:&amp;nbsp;{ITEM.VALUE1}&lt;br/&gt;
+        事件ID:&amp;nbsp;{EVENT.ID}&lt;br/&gt;
+        恢复主题：主机： {HOSTNAME1}  状态：{TRIGGER.STATUS}！！
+        恢复信息：同上
+        &lt;/pre&gt;
+
+
+        - 条件
+
+            ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png)
+
+        - 操作
+
+            ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png)
+
+             步骤：可以指定报警升级
+
+至此，邮件报警配置完成！
+</code></pre><ul>
+<li><p>短信</p>
+<p>  短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容）</p>
+<p>  名称： 自定义</p>
+<pre><code>类型： 脚本
+
+脚本参数：
+
+    {ALERT.SENDTO}
+    {ALERT.MESSAGE}
+</code></pre><p>  <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%9F%AD%E4%BF%A1%E9%85%8D%E7%BD%AE.png" alt=""></p>
+<p>  代码</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat sendSms.py</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code>&lt;pre&gt;
+#! /usr/bin/python
+#encoding:utf-8
+import requests
+import json
+import urllib
+import hashlib
+import os
+import sys
+import subprocess
+import datetime
+reload(sys)
+#设置字符集，否则再输出重定向时出编码错误
+sys.setdefaultencoding(&apos;utf-8&apos;)
+
+#请求主题参数
+def phonelist(plist):
+    phonelist=plist.split(&quot;,&quot;)
+    return phonelist
+def requestinterface(strp):
+    url=&quot;http://test.com?sname=接口用户名&amp;spwd=接口密码&quot;
+#定义一个字典，值为请求的参数   
+    param={}
+    param[&apos;sdst&apos;]=strp
+    param[&apos;smsg&apos;]=sys.argv[2]
+    str3=url+&apos;sdst=&apos;+param[&apos;sdst&apos;]+&apos;&amp;smsg=&apos;+urllib.quote(param[&apos;smsg&apos;]+&apos;【标题】&apos;)
+    r = requests.get(str3,verify=False)
+if __name__ == &apos;__main__&apos;:
+    #now=datetime.datetime.now().strftime(&apos;%Y-%m-%d-%H&apos;)
+    #os.system(&quot;touch sendsms.`date +\&apos;%F-%H\&apos;`&quot;)
+    #print fname
+    #f = open(&apos;sendsms.&apos;+str(now),&apos;a&apos;)
+    #f.write(sys.argv[1]+&apos; -- &apos;+sys.argv[2]+&apos;  &apos;+str(now)+&apos;\n&apos;)
+    plist=phonelist(sys.argv[1])
+    for i,value in enumerate(plist):
+    sms=requestinterface(value)
+&lt;/pre&gt;
+
+至此，短信报警配置完成。
+</code></pre>
       
     </div>
     
@@ -455,8 +524,8 @@ Timeout=3                    #超时时间
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/zabbix_monito/" rel="next" title="监控网络设备">
-                <i class="fa fa-chevron-left"></i> 监控网络设备
+              <a href="/2018/02/23/zabbix问题汇总/" rel="next" title="zabbix问题汇总">
+                <i class="fa fa-chevron-left"></i> zabbix问题汇总
               </a>
             
           </div>
@@ -465,8 +534,8 @@ Timeout=3                    #超时时间
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/23/no2/" rel="prev" title="grafana">
-                grafana <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/23/zabbix_proxy/" rel="prev" title="zabbix_proxy">
+                zabbix_proxy <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -603,7 +672,7 @@ Timeout=3                    #超时时间
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-被监控端zabbix-agentd-conf的配置调整"><span class="nav-number">1.1.</span> <span class="nav-text">一、 被监控端zabbix_agentd.conf的配置调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-调整监控模版"><span class="nav-number">1.2.</span> <span class="nav-text">二、 调整监控模版</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、-zabbix-server脚本指定位置"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">一、 zabbix-server脚本指定位置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、-报警类型（这里主要讲邮件和短信，后期会补上微信）"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">二、 报警类型（这里主要讲邮件和短信，后期会补上微信）</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
