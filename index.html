@@ -1510,6 +1510,200 @@ if __name__ == &apos;__main__&apos;:
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/字段和方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="段瑞君">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/apple-touch-icon-next.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sundshinerj">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/23/字段和方法/" itemprop="url">字段和方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
+                2018-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="首先，要知道Python类中两个概念：字段和方法"><a href="#首先，要知道Python类中两个概念：字段和方法" class="headerlink" title="首先，要知道Python类中两个概念：字段和方法"></a>首先，要知道Python类中两个概念：字段和方法</h2><p>“字段”和“方法”都有“动态”和“静态”之分，即：</p>
+<ul>
+<li><p>字段</p>
+<ul>
+<li>静态字段</li>
+<li>动态字段</li>
+</ul>
+</li>
+<li><p>方法</p>
+<ul>
+<li>静态方法</li>
+<li>动态方法</li>
+</ul>
+</li>
+</ul>
+<p>以下事例标明了：“静态字段”，“动态字段”以及“动态方法”是什么样子的，因为显而易见，就不用语言进行过多描述：</p>
+<pre>
+#coding:utf-8 
+
+class Car: 
+    # 下面是静态字段 
+    memo = u'车辆具有出厂合格证' 
+
+    def __init__(self, brand, model, speed, price, engine): 
+        # 下面是动态字段 
+        self.Brand = brand 
+        self.Model = model 
+        self.Speed = speed 
+        self.Price = price 
+        self.__EngineType = engine 
+
+    # 下面是动态方法 
+    def Turnleft(self): 
+        print self.Brand + u'开始向右转向。'
+</pre>
+
+<p>上述事例中，并没有展现“静态方法”，那么“静态方法”长什么样子？如何生成？<br>其实“静态方法”只需要执行两步操作，就可以转换成“静态方法”</p>
+<ol>
+<li>在方法前加上 @staticmethod</li>
+<li>把“动态方法”括号中的“self”去掉</li>
+</ol>
+<p>如：</p>
+<pre>
+@staticmethod 
+def Forward(): 
+    print u'开始向前进'
+</pre>
+
+<p>那么关于这四种类型，有什么特点？以下进行总结：</p>
+<ol>
+<li>四种类型，均可以被“对象”进行调用，但不建议使用“对象”调用“静态方法”和“静态字段”，而建议使用“类”对其进行调用</li>
+<li>“动态方法”和“动态字段”只能由“对象”进行调用，而无法使用“类”进行调用</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1560,7 +1754,7 @@ if __name__ == &apos;__main__&apos;:
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1571,7 +1765,7 @@ if __name__ == &apos;__main__&apos;:
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1582,7 +1776,7 @@ if __name__ == &apos;__main__&apos;:
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
