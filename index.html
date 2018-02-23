@@ -259,6 +259,171 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_monito/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="段瑞君">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/apple-touch-icon-next.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sundshinerj">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/23/zabbix_monito/" itemprop="url">监控网络设备</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
+                2018-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/监控/" itemprop="url" rel="index">
+                    <span itemprop="name">监控</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="一、zabbix-server端安装snmp工具"><a href="#一、zabbix-server端安装snmp工具" class="headerlink" title="一、zabbix-server端安装snmp工具"></a>一、zabbix-server端安装snmp工具</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-snmp-utils snmp-libs snmp-devel snmp</span><br></pre></td></tr></table></figure>
+<h4 id="二、检测与路由器的连通性"><a href="#二、检测与路由器的连通性" class="headerlink" title="二、检测与路由器的连通性"></a>二、检测与路由器的连通性</h4><p>测试之前工作</p>
+<ol>
+<li>路由上要开启snmp功能</li>
+<li>本地snmp服务器的snmp的密码和路由上的密码一致</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/snmp/snmpd.conf</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmpd.conf.png" alt=""></p>
+<ol>
+<li>测试连通性</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">snmpwalk -v 2c -c 19e#! 10.18.221.4</span><br></pre></td></tr></table></figure>
+<pre><code>- 2c：协议版本
+- 19e#!：密码与路由一致，
+- 10.18.221.4：路由IP
+</code></pre><ul>
+<li>注意selinux、iptables<br><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmp.test.png" alt=""></li>
+<li>如果出现上面信息说明成功</li>
+</ul>
+<h4 id="三、zabbix-server添加路由监控"><a href="#三、zabbix-server添加路由监控" class="headerlink" title="三、zabbix-server添加路由监控"></a>三、zabbix-server添加路由监控</h4><p>主机 –&gt; 创建主机</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_addhost.png" alt=""></p>
+<p>由于添加了密钥认证，须在zabbix-server中添加密钥<br>管理–&gt;一般–&gt;选择宏，进行设置</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snme_keyvalue.png" alt=""></p>
+<p>过几分钟就能出相关监控项了！</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -416,171 +581,6 @@ Timeout=3                    #超时时间
 <li><p>过会，网卡和硬盘的监控情况就出来了。</p>
 </li>
 </ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_monito/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="段瑞君">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/apple-touch-icon-next.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="sundshinerj">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/23/zabbix_monito/" itemprop="url">监控网络设备</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
-                2018-02-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/监控/" itemprop="url" rel="index">
-                    <span itemprop="name">监控</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="一、zabbix-server端安装snmp工具"><a href="#一、zabbix-server端安装snmp工具" class="headerlink" title="一、zabbix-server端安装snmp工具"></a>一、zabbix-server端安装snmp工具</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-snmp-utils snmp-libs snmp-devel snmp</span><br></pre></td></tr></table></figure>
-<h4 id="二、检测与路由器的连通性"><a href="#二、检测与路由器的连通性" class="headerlink" title="二、检测与路由器的连通性"></a>二、检测与路由器的连通性</h4><p>测试之前工作</p>
-<ol>
-<li>路由上要开启snmp功能</li>
-<li>本地snmp服务器的snmp的密码和路由上的密码一致</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/snmp/snmpd.conf</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmpd.conf.png" alt=""></p>
-<ol>
-<li>测试连通性</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">snmpwalk -v 2c -c 19e#! 10.18.221.4</span><br></pre></td></tr></table></figure>
-<pre><code>- 2c：协议版本
-- 19e#!：密码与路由一致，
-- 10.18.221.4：路由IP
-</code></pre><ul>
-<li>注意selinux、iptables<br><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmp.test.png" alt=""></li>
-<li>如果出现上面信息说明成功</li>
-</ul>
-<h4 id="三、zabbix-server添加路由监控"><a href="#三、zabbix-server添加路由监控" class="headerlink" title="三、zabbix-server添加路由监控"></a>三、zabbix-server添加路由监控</h4><p>主机 –&gt; 创建主机</p>
-<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_addhost.png" alt=""></p>
-<p>由于添加了密钥认证，须在zabbix-server中添加密钥<br>管理–&gt;一般–&gt;选择宏，进行设置</p>
-<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snme_keyvalue.png" alt=""></p>
-<p>过几分钟就能出相关监控项了！</p>
 
           
         
@@ -1420,6 +1420,236 @@ def Forward():
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/jenkins/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="段瑞君">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/apple-touch-icon-next.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sundshinerj">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/23/jenkins/" itemprop="url">jenkins基本使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
+                2018-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="jenkins基本使用"><a href="#jenkins基本使用" class="headerlink" title="jenkins基本使用"></a>jenkins基本使用</h1><h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><p>这个很简单，直接在官网下载安装即可。</p>
+<h2 id="jenkins前期使用思路"><a href="#jenkins前期使用思路" class="headerlink" title="jenkins前期使用思路"></a>jenkins前期使用思路</h2><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_%E5%9F%BA%E6%9C%AC%E9%80%BB%E8%BE%91.png" alt=""></p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%852.png" alt=""></p>
+<p>如果需要git或者gitlab插件，可按上图添加。</p>
+<p>##服务器说明</p>
+<pre><code>- gitlab:            192.168.62.206
+- jenkins:            192.168.62.210:8080
+- deploy_server:     192.168.63.116
+</code></pre><h3 id="添加SSH-Key"><a href="#添加SSH-Key" class="headerlink" title="添加SSH_Key"></a>添加SSH_Key</h3><p>系统管理&gt;&gt;系统设置&gt;&gt;SSH server</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_SSH%E9%85%8D%E7%BD%AE.png" alt=""></p>
+<p>选择<strong>高级</strong>key栏填写deploy_server的私钥</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_SSH%E9%85%8D%E7%BD%AE_%E7%A7%81%E9%92%A5.png" alt=""></p>
+<h3 id="构建工程"><a href="#构建工程" class="headerlink" title="构建工程"></a>构建工程</h3><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new.png" alt=""></p>
+<h3 id="选择刚构建的工程，我这里为ams运维平台"><a href="#选择刚构建的工程，我这里为ams运维平台" class="headerlink" title="选择刚构建的工程，我这里为ams运维平台"></a>选择刚构建的工程，我这里为ams运维平台</h3><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new1.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new2.png" alt=""></p>
+<blockquote>
+<p>Exec command  可以使写命令，也可以使用脚本。</p>
+</blockquote>
+<h3 id="代码更新"><a href="#代码更新" class="headerlink" title="代码更新"></a>代码更新</h3><p>立即构建相当于UPdate</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new3.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new4.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new5.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new6.png" alt=""></p>
+<blockquote>
+<p>上述是基本的流程</p>
+</blockquote>
+<h2 id="持续集成-amp-安装部署jenkins从git获取代码"><a href="#持续集成-amp-安装部署jenkins从git获取代码" class="headerlink" title="持续集成&amp;安装部署jenkins从git获取代码"></a>持续集成&amp;安装部署jenkins从git获取代码</h2><p>如果项目更新的比较频繁，就可以用到CI了，持续集成&amp;安装部署jenkins从git获取代码。</p>
+<h3 id="一、-持续集成的概念："><a href="#一、-持续集成的概念：" class="headerlink" title="一、 持续集成的概念："></a>一、 持续集成的概念：</h3><p>1.1 总体的概括</p>
+<pre><code>持续集成Continuous Integration
+持续交付Continuous Delivery
+持续部署Continuous Deployment
+</code></pre><p>1.2 什么是持续集成</p>
+<p>续集成是指开发者在代码的开发过程中，可以频繁的将代码部署集成到主干，并进程自动化测试。</p>
+<p>1.3 什么是持续交付</p>
+<p>持续交付指的是在持续集成的环境基础之上，将代码部署到预生产环境</p>
+<p>1.4 持续部署</p>
+<p>在持续交付的基础上，把部署到生产环境的过程自动化，持续部署和持续交付的区别就是最终部署到生产环境是自动化的。</p>
+<p>#####以 新工程local_ams为例</p>
+<p>新建工程略。。。</p>
+<p><strong>jenkins服务器和deploy_server要生成ssh公钥和密钥</strong></p>
+<p>gitlab上配置local_ams项目设置private deploy key</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new12.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new13.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new14.png" alt=""></p>
+<p>在jenkins服务器192.168.3.199上测试下是否能够正常获取代码</p>
+<pre>
+[root@linux-node2 tmp]# git clone git@192.168.62.206:OPS/AMS.git
+Initialized empty Git repository in /tmp/AMS/.git/
+remote: Counting objects: 1587, done.
+remote: Compressing objects: 100% (1132/1132), done.
+remote: Total 1587 (delta 420), reused 1533 (delta 368)
+Receiving objects: 100% (1587/1587), 6.81 MiB | 11.07 MiB/s, done.
+Resolving deltas: 100% (420/420), done.
+</pre>
+
+<p>配置git项目地址，我们先进行其他配置，等会再继续配置git相关的选项</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new7.png" alt=""></p>
+<p>在填写git地址时，会报权限问题，暂忽略，一会回来配置</p>
+<p>系统管理 –&gt; Global Tool Configuration</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new8.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new9.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new10.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new11.png" alt=""></p>
+<p>复制jenkins拉取git代码服务器root的私钥(jenkins服务端私钥)</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new15.png" alt=""></p>
+<p>继续编辑配置</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new16.png" alt=""></p>
+<p>配置定时任务</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new17.png" alt=""></p>
+<p><strong>如果每2分钟执行建议使用</strong></p>
+<p>H/2 <em> </em> <em> </em></p>
+<p><strong>而不是</strong></p>
+<p><em>/2 </em> <em> </em> *</p>
+<p>现在我们当前如果执行的节点是</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new18.png" alt=""></p>
+<p>deploy_server端的deploy.php文件内容是这样</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new19.png" alt=""></p>
+<p>修改本地内容</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new20.png" alt=""></p>
+<p>提交代码</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new21.png" alt=""></p>
+<p>gitlab上已生成</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new22.png" alt=""></p>
+<p>等待2分钟后，查看结果</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new23.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new24.png" alt=""></p>
+<p>deploy_server端也成功更新</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new25.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1470,7 +1700,7 @@ def Forward():
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1481,7 +1711,7 @@ def Forward():
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1492,7 +1722,7 @@ def Forward():
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
