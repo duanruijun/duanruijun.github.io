@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_creatitem.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_trider.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_printlld.png">
-<meta property="og:updated_time" content="2018-02-24T04:34:21.737Z">
+<meta property="og:updated_time" content="2018-02-24T04:36:47.372Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="zabbix低级发现">
 <meta name="twitter:description" content="一、(low level discover)概述 什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从官方文档上翻译过来的话。  二、创建模版 由于创建模板不是本篇的重点，就不提创建模板的过程了 。这">
@@ -399,29 +399,29 @@
 <p>cat check_app.py</p>
 <pre>
 #!/usr/bin/env python
- #-*- coding:utf-8 -*-
- #@author: sundsinerj
- #@date: 2017/9/28
- import os
- import json
- import getopt
- import sys
+#-*- coding:utf-8 -*-
+#@author: sundsinerj
+#@date: 2017/9/28
+import os
+import json
+import getopt
+import sys
 
 #list app name
- app_list = os.listdir(os.path.expanduser("/app"))
- if 'lost+found' in app_list:
-     del app_list[app_list.index('lost+found')]
- elif 'zabbix' in app_list:
-     del app_list[app_list.index('lost+found')]
- elif 'tomcat-6.0.48_wp' in app_list:
-     del app_list[app_list.index('lost+found')]
- opts, arge = getopt.getopt(sys.argv[1:],[])
- #print appname for json
- pool_list = []
- for appname in app_list:
-     #def json data
-     pool_list += [｛'｛#DISCOVER｝': appname｝]
- print json.dumps({'data': pool_list},sort_keys=True,indent=4,separators=(',',':'))
+app_list = os.listdir(os.path.expanduser("/app"))
+if 'lost+found' in app_list:
+    del app_list[app_list.index('lost+found')]
+elif 'zabbix' in app_list:
+    del app_list[app_list.index('lost+found')]
+elif 'tomcat-6.0.48_wp' in app_list:
+    del app_list[app_list.index('lost+found')]
+opts, arge = getopt.getopt(sys.argv[1:],[])
+#print appname for json
+pool_list = []
+for appname in app_list:
+    #def json data
+    pool_list += [｛'｛#DISCOVER｝': appname｝]
+print json.dumps({'data': pool_list},sort_keys=True,indent=4,separators=(',',':'))
 
 </pre>
 
@@ -509,8 +509,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/jenkins/" rel="next" title="jenkins基本使用">
-                <i class="fa fa-chevron-left"></i> jenkins基本使用
+              <a href="/2018/02/23/zabbix_agent主动模式/" rel="next" title="zabbix_agent主动模式">
+                <i class="fa fa-chevron-left"></i> zabbix_agent主动模式
               </a>
             
           </div>
