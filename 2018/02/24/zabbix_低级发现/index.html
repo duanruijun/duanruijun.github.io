@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_creatitem.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_trider.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_printlld.png">
-<meta property="og:updated_time" content="2018-02-24T03:43:11.887Z">
+<meta property="og:updated_time" content="2018-02-24T03:56:11.011Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="zabbix低级发现">
 <meta name="twitter:description" content="一、(low level discover)概述 什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从官方文档上翻译过来的话。  二、创建模版 由于创建模板不是本篇的重点，就不提创建模板的过程了 。这">
@@ -414,6 +414,11 @@
 <h3 id="四、自定义key"><a href="#四、自定义key" class="headerlink" title="四、自定义key"></a>四、自定义key</h3><blockquote>
 <p>cat userparameter_app.conf</p>
 </blockquote>
+ <pre> 
+ UserParameter=app.status[*],/bin/bash /etc/zabbix/zabbix_agentd.d/libexec/check_app.sh -n $1
+ UserParameter=app.discover,python /etc/zabbix/zabbix_agentd.d/libexec/check_app.py
+ </pre>
+
 <h3 id="五、验证"><a href="#五、验证" class="headerlink" title="五、验证"></a>五、验证</h3><p>在被发现的主机上关联<strong>app discover</strong> 模版就可以了。过会，就能看到相关的低级发现项目。</p>
 
       

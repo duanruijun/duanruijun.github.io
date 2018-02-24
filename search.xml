@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[zabbix低级发现]]></title>
     <url>%2F2018%2F02%2F24%2Fzabbix_%E4%BD%8E%E7%BA%A7%E5%8F%91%E7%8E%B0%2F</url>
-    <content type="text"><![CDATA[一、(low level discover)概述 什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从官方文档上翻译过来的话。 二、创建模版 由于创建模板不是本篇的重点，就不提创建模板的过程了 。这里重点提下如何在模板中创建自动发现规则。 1. 创建自动发现规则 步骤为：配置 –&gt; 模版 –&gt; 选中之前创建好的模版(这里我用 app discover) –&gt; 自动发现规则 –&gt; 创建发现规则 2. 选择监控项原型并创建监控项 名称：｛#DISCOVER} 自定义的宏变量（后续脚本会提到)； 类型：根据自身主动/被动模式选择； 键值：后续监控的自定义Key会提到。 3. 触发器类型 可根据自身情况做定义 三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd） 配置发现规则 这里发现规则是找的/app目录下的所有目录名（公司的所有项目都创建在/app目录下） cat check_app.py 配置监控项规则 cat check_app.sh 发现规则必需是json格式的 就是zabbix创建的模版的宏变量 check_app.sh脚本就是定义的监控项 四、自定义key cat userparameter_app.conf 五、验证在被发现的主机上关联app discover 模版就可以了。过会，就能看到相关的低级发现项目。]]></content>
+    <content type="text"><![CDATA[一、(low level discover)概述 什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从官方文档上翻译过来的话。 二、创建模版 由于创建模板不是本篇的重点，就不提创建模板的过程了 。这里重点提下如何在模板中创建自动发现规则。 1. 创建自动发现规则 步骤为：配置 –&gt; 模版 –&gt; 选中之前创建好的模版(这里我用 app discover) –&gt; 自动发现规则 –&gt; 创建发现规则 2. 选择监控项原型并创建监控项 名称：｛#DISCOVER} 自定义的宏变量（后续脚本会提到)； 类型：根据自身主动/被动模式选择； 键值：后续监控的自定义Key会提到。 3. 触发器类型 可根据自身情况做定义 三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd） 配置发现规则 这里发现规则是找的/app目录下的所有目录名（公司的所有项目都创建在/app目录下） cat check_app.py 配置监控项规则 cat check_app.sh 发现规则必需是json格式的 就是zabbix创建的模版的宏变量 check_app.sh脚本就是定义的监控项 四、自定义key cat userparameter_app.conf UserParameter=app.status[*],/bin/bash /etc/zabbix/zabbix_agentd.d/libexec/check_app.sh -n $1 UserParameter=app.discover,python /etc/zabbix/zabbix_agentd.d/libexec/check_app.py 五、验证在被发现的主机上关联app discover 模版就可以了。过会，就能看到相关的低级发现项目。]]></content>
       <categories>
         <category>监控</category>
       </categories>
@@ -23,9 +23,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix_agent主动模式]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
       <categories>
         <category>监控</category>
       </categories>
@@ -34,9 +34,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+    <title><![CDATA[zabbix_agent主动模式]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
       <categories>
         <category>监控</category>
       </categories>
