@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程   c:\Python36\Scripts\django-admin.exe startproject mysite   - mysite 既django工">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T07:36:04.996Z">
+<meta property="og:updated_time" content="2018-02-27T08:03:32.951Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程   c:\Python36\Scripts\django-admin.exe startproject mysite   - mysite 既django工">
@@ -524,7 +524,53 @@ urlpatterns = [
 </pre>
 
 <p>运行启动命令</p>
-<p><pre><br>python manage.py runserver 8090<br></pre><br>浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。</p>
+<pre>
+python manage.py runserver 8090
+</pre>
+浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。
+
+## 添加静态文件
+
+之前在**settings.py**配置文件中指定了静态文件的路径，所以，django会在**templates**目录下获取静态文件，在mysite工程下新建一个**templates**目录，最后整个工程目录机构为：
+
+mysite
+
+- +mysite
+- +blog
+- +templates
+
+在templates目录下新键一个cur_time.html的静态文件并进行编辑，最后代码为
+
+> cat views.py
+
+<pre>
+from django.shortcuts import render, HttpResponse
+
+# Create your views here.
+import datetime
+
+def cur_time(request):
+    times = datetime.datetime.now()
+    return render(request, 'cur_time.html', {'abc': times})
+</pre>
+
+<blockquote>
+<p>cat cur_time.html</p>
+</blockquote>
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;body&gt;
+当前时间：
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>解释</p>
+<ul>
+<li>render： 模版渲染,第一个是请求参数&lt;request&gt;,第二个参数是跳转的url名称，第三个是传递变量<strong>abc</strong></li>
+<li>cur_time.html中的｛｛｝｝是jinja2的模版语言，<strong>abc</strong>则是render传过来的变量名，<strong>注意两边的有空格</strong></li>
+</ul>
 
       
     </div>

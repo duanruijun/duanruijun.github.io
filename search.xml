@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[django笔记]]></title>
     <url>%2F2018%2F02%2F27%2Fdjango%E7%AC%94%E8%AE%B0%2F</url>
-    <content type="text"><![CDATA[概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7 安装Django 根据自己环境安装pip pip install Django 新建django工程 创建Django工程 c:\Python36\Scripts\django-admin.exe startproject mysite - mysite 既django工程名称 cd mysite目录下 python manage.py startapp blog - blog 既应用名称 启动 python manage.py runserver 8090 目录结构mysite目录 manage.py #入口文件 mysite init.py #初始化文件 settings.py #项目主配置文件 urls.py #路由分配配置文件 wsgi.py #Django web server(封装socket,解析APP) blog目录 init.py admin.py apps.py models.py #数据库相关配置(orm) tests.py #检测、测试 views.py #视图函数 settings.py文件配置定义templates位置修改TEMPLATES中的DIRS: 'DIRS': [os.path.join(BASE_DIR, 'templates')], 创建APP后要在INSTALLED_APPS添加相应名称比如，我这里创建的是blog应用 INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'blog', ] 添加mysql数据库连接DATABASES中修改 DATABASES = { 'default': { # 'ENGINE': 'django.db.backends.sqlite3', # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 'ENGINE': 'django.db.backends.mysql', 'NAME': 'DBNAME', 'USER': 'username', 'PASSWORD': 'password', 'HOST': 'db_host', 'PORT': 'port', } } 注释掉错误警告 MIDDLEWARE = [ 'django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.common.CommonMiddleware', # 'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware', 'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware', ] 开启配置之旅第一个页面 blog APP下views.py文件添加一个展示数据的函数 from django.shortcuts import render, HttpResponse # Create your views here. def cur_time(request): return HttpResponse('hello world!') request： 请求，参数可以自定义，但必须有 HttpResponse： 返回（当请求成功后要返回的信息） mysite下的urls.py添加相关路由信息 from blog import views #导入blog下的views模块 urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^cur_time', views.cur_time), ] 运行启动命令 python manage.py runserver 8090浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。]]></content>
+    <content type="text"><![CDATA[概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7 安装Django 根据自己环境安装pip pip install Django 新建django工程 创建Django工程 c:\Python36\Scripts\django-admin.exe startproject mysite - mysite 既django工程名称 cd mysite目录下 python manage.py startapp blog - blog 既应用名称 启动 python manage.py runserver 8090 目录结构mysite目录 manage.py #入口文件 mysite init.py #初始化文件 settings.py #项目主配置文件 urls.py #路由分配配置文件 wsgi.py #Django web server(封装socket,解析APP) blog目录 init.py admin.py apps.py models.py #数据库相关配置(orm) tests.py #检测、测试 views.py #视图函数 settings.py文件配置定义templates位置修改TEMPLATES中的DIRS: 'DIRS': [os.path.join(BASE_DIR, 'templates')], 创建APP后要在INSTALLED_APPS添加相应名称比如，我这里创建的是blog应用 INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'blog', ] 添加mysql数据库连接DATABASES中修改 DATABASES = { 'default': { # 'ENGINE': 'django.db.backends.sqlite3', # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 'ENGINE': 'django.db.backends.mysql', 'NAME': 'DBNAME', 'USER': 'username', 'PASSWORD': 'password', 'HOST': 'db_host', 'PORT': 'port', } } 注释掉错误警告 MIDDLEWARE = [ 'django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.common.CommonMiddleware', # 'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware', 'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware', ] 开启配置之旅第一个页面 blog APP下views.py文件添加一个展示数据的函数 from django.shortcuts import render, HttpResponse # Create your views here. def cur_time(request): return HttpResponse('hello world!') request： 请求，参数可以自定义，但必须有 HttpResponse： 返回（当请求成功后要返回的信息） mysite下的urls.py添加相关路由信息 from blog import views #导入blog下的views模块 urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^cur_time', views.cur_time), ] 运行启动命令 python manage.py runserver 8090 浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。 ## 添加静态文件 之前在**settings.py**配置文件中指定了静态文件的路径，所以，django会在**templates**目录下获取静态文件，在mysite工程下新建一个**templates**目录，最后整个工程目录机构为： mysite - +mysite - +blog - +templates 在templates目录下新键一个cur_time.html的静态文件并进行编辑，最后代码为 > cat views.py from django.shortcuts import render, HttpResponse # Create your views here. import datetime def cur_time(request): times = datetime.datetime.now() return render(request, 'cur_time.html', {'abc': times}) cat cur_time.html &lt;!DOCTYPE html&gt; &lt;html lang="en"&gt; &lt;body&gt; 当前时间： &lt;/body&gt; &lt;/html&gt; 解释 render： 模版渲染,第一个是请求参数&lt;request&gt;,第二个参数是跳转的url名称，第三个是传递变量abc cur_time.html中的｛｛｝｝是jinja2的模版语言，abc则是render传过来的变量名，注意两边的有空格]]></content>
       <categories>
         <category>编程</category>
       </categories>
@@ -23,6 +23,17 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[zabbix_agent主动模式]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[jenkins基本使用]]></title>
     <url>%2F2018%2F02%2F23%2Fjenkins%2F</url>
     <content type="text"><![CDATA[jenkins基本使用Install这个很简单，直接在官网下载安装即可。 jenkins前期使用思路 安装插件 如果需要git或者gitlab插件，可按上图添加。 ##服务器说明 - gitlab: 192.168.62.206 - jenkins: 192.168.62.210:8080 - deploy_server: 192.168.63.116 添加SSH_Key系统管理&gt;&gt;系统设置&gt;&gt;SSH server 选择高级key栏填写deploy_server的私钥 构建工程 选择刚构建的工程，我这里为ams运维平台 Exec command 可以使写命令，也可以使用脚本。 代码更新立即构建相当于UPdate 上述是基本的流程 持续集成&amp;安装部署jenkins从git获取代码如果项目更新的比较频繁，就可以用到CI了，持续集成&amp;安装部署jenkins从git获取代码。 一、 持续集成的概念：1.1 总体的概括 持续集成Continuous Integration 持续交付Continuous Delivery 持续部署Continuous Deployment 1.2 什么是持续集成 续集成是指开发者在代码的开发过程中，可以频繁的将代码部署集成到主干，并进程自动化测试。 1.3 什么是持续交付 持续交付指的是在持续集成的环境基础之上，将代码部署到预生产环境 1.4 持续部署 在持续交付的基础上，把部署到生产环境的过程自动化，持续部署和持续交付的区别就是最终部署到生产环境是自动化的。 #####以 新工程local_ams为例 新建工程略。。。 jenkins服务器和deploy_server要生成ssh公钥和密钥 gitlab上配置local_ams项目设置private deploy key 在jenkins服务器192.168.3.199上测试下是否能够正常获取代码 [root@linux-node2 tmp]# git clone git@192.168.62.206:OPS/AMS.git Initialized empty Git repository in /tmp/AMS/.git/ remote: Counting objects: 1587, done. remote: Compressing objects: 100% (1132/1132), done. remote: Total 1587 (delta 420), reused 1533 (delta 368) Receiving objects: 100% (1587/1587), 6.81 MiB | 11.07 MiB/s, done. Resolving deltas: 100% (420/420), done. 配置git项目地址，我们先进行其他配置，等会再继续配置git相关的选项 在填写git地址时，会报权限问题，暂忽略，一会回来配置 系统管理 –&gt; Global Tool Configuration 复制jenkins拉取git代码服务器root的私钥(jenkins服务端私钥) 继续编辑配置 配置定时任务 如果每2分钟执行建议使用 H/2 而不是 /2 * 现在我们当前如果执行的节点是 deploy_server端的deploy.php文件内容是这样 修改本地内容 提交代码 gitlab上已生成 等待2分钟后，查看结果 deploy_server端也成功更新]]></content>
@@ -31,17 +42,6 @@
       </categories>
       <tags>
         <tag>jenkins</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix问题汇总]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
-    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
       </tags>
   </entry>
   <entry>
@@ -78,9 +78,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+    <title><![CDATA[zabbix问题汇总]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
       <categories>
         <category>Server</category>
       </categories>
@@ -89,9 +89,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix_agent主动模式]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
       <categories>
         <category>Server</category>
       </categories>
@@ -111,17 +111,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[http请求方法介绍]]></title>
-    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
-    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[记录linux用户操作]]></title>
     <url>%2F2017%2F08%2F23%2Flinux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%2F</url>
     <content type="text"><![CDATA[记录用户操作追加在 /etc/profilePS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/null]]></content>
@@ -130,6 +119,17 @@
       </categories>
       <tags>
         <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[http请求方法介绍]]></title>
+    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
+    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
       </tags>
   </entry>
   <entry>
