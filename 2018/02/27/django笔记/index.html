@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程   c:\Python36\Scripts\django-admin.exe startproject mysite   - mysite 既django工">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T05:55:46.994Z">
+<meta property="og:updated_time" content="2018-02-27T06:13:54.507Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程   c:\Python36\Scripts\django-admin.exe startproject mysite   - mysite 既django工">
@@ -427,7 +427,52 @@ python manage.py startapp blog
 </pre>
 
 <pre><code>- blog 既应用名称
-</code></pre>
+</code></pre><h2 id="settings-py文件配置"><a href="#settings-py文件配置" class="headerlink" title="settings.py文件配置"></a>settings.py文件配置</h2><h3 id="定义templates位置"><a href="#定义templates位置" class="headerlink" title="定义templates位置"></a>定义templates位置</h3><p>修改<strong>TEMPLATES</strong>中的<strong>DIRS:</strong></p>
+<pre>
+'DIRS': [os.path.join(BASE_DIR, 'templates')],
+</pre>
+
+<h3 id="创建APP后要在INSTALLED-APPS添加相应名称"><a href="#创建APP后要在INSTALLED-APPS添加相应名称" class="headerlink" title="创建APP后要在INSTALLED_APPS添加相应名称"></a>创建APP后要在<strong>INSTALLED_APPS</strong>添加相应名称</h3><p>比如，我这里创建的是blog应用</p>
+<pre>
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'blog',
+]
+</pre>
+
+<h3 id="添加mysql数据库连接"><a href="#添加mysql数据库连接" class="headerlink" title="添加mysql数据库连接"></a>添加mysql数据库连接</h3><p><strong>DATABASES</strong>中修改</p>
+<pre>
+DATABASES = {
+    'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'DBNAME',
+        'USER': 'username',
+        'PASSWORD': 'password',
+        'HOST': 'db_host',
+        'PORT': 'port',
+    }
+}
+</pre>
+
+<h3 id="注释掉错误警告"><a href="#注释掉错误警告" class="headerlink" title="注释掉错误警告"></a>注释掉错误警告</h3><pre>
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+</pre>
       
     </div>
     
@@ -601,7 +646,7 @@ python manage.py startapp blog
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">5.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">5.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在INSTALLED-APPS添加相应名称"><span class="nav-number">5.2.</span> <span class="nav-text">创建APP后要在INSTALLED_APPS添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">5.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">5.4.</span> <span class="nav-text">注释掉错误警告</span></a></li></ol></li></ol></div>
             
 
           </div>
