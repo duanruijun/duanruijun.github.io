@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.exe startproject mysite   mysit">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T11:07:37.800Z">
+<meta property="og:updated_time" content="2018-02-27T11:10:39.266Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.exe startproject mysite   mysit">
@@ -527,22 +527,19 @@ urlpatterns = [
 <pre>
 python manage.py runserver 8090
 </pre>
-浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。
 
-### 添加静态文件
-
-之前在**settings.py**配置文件中指定了静态文件的路径，所以，django会在**templates**目录下获取静态文件，在mysite工程下新建一个**templates**目录，最后整个工程目录机构为：
-
-mysite
-
-- +mysite
-- +blog
-- +templates
-
-在templates目录下新键一个cur_time.html的静态文件并进行编辑，最后代码为
-
-> cat views.py
-
+<p>浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。</p>
+<h3 id="添加静态文件"><a href="#添加静态文件" class="headerlink" title="添加静态文件"></a>添加静态文件</h3><p>之前在<strong>settings.py</strong>配置文件中指定了静态文件的路径，所以，django会在<strong>templates</strong>目录下获取静态文件，在mysite工程下新建一个<strong>templates</strong>目录，最后整个工程目录机构为：</p>
+<p>mysite</p>
+<ul>
+<li>+mysite</li>
+<li>+blog</li>
+<li>+templates</li>
+</ul>
+<p>在templates目录下新键一个cur_time.html的静态文件并进行编辑，最后代码为</p>
+<blockquote>
+<p>cat views.py</p>
+</blockquote>
 <pre>
 from django.shortcuts import render, HttpResponse
 
@@ -860,7 +857,7 @@ def userInfo(req):
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在INSTALLED-APPS添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在INSTALLED_APPS添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpResponse与render的区别"><span class="nav-number">9.</span> <span class="nav-text">HttpResponse与render的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接"><span class="nav-number">10.</span> <span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如前面settings-py中的配置文件指定的数据库"><span class="nav-number">10.1.</span> <span class="nav-text">如前面settings.py中的配置文件指定的数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#切记"><span class="nav-number">10.1.1.</span> <span class="nav-text">切记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加路由指向"><span class="nav-number">10.2.</span> <span class="nav-text">mysite下的urls.py添加路由指向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py更新后的内容为："><span class="nav-number">10.3.</span> <span class="nav-text">views.py更新后的内容为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html文件内容"><span class="nav-number">10.4.</span> <span class="nav-text">index.html文件内容</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在INSTALLED-APPS添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在INSTALLED_APPS添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加静态文件"><span class="nav-number">8.3.</span> <span class="nav-text">添加静态文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpResponse与render的区别"><span class="nav-number">9.</span> <span class="nav-text">HttpResponse与render的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接"><span class="nav-number">10.</span> <span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如前面settings-py中的配置文件指定的数据库"><span class="nav-number">10.1.</span> <span class="nav-text">如前面settings.py中的配置文件指定的数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#切记"><span class="nav-number">10.1.1.</span> <span class="nav-text">切记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加路由指向"><span class="nav-number">10.2.</span> <span class="nav-text">mysite下的urls.py添加路由指向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py更新后的内容为："><span class="nav-number">10.3.</span> <span class="nav-text">views.py更新后的内容为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html文件内容"><span class="nav-number">10.4.</span> <span class="nav-text">index.html文件内容</span></a></li></ol></li></ol></div>
             
 
           </div>
