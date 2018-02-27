@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程   c:\Python36\Scripts\django-admin.exe startproject mysite   - mysite 既django工">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T06:13:54.507Z">
+<meta property="og:updated_time" content="2018-02-27T07:36:04.996Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程   c:\Python36\Scripts\django-admin.exe startproject mysite   - mysite 既django工">
@@ -427,7 +427,31 @@ python manage.py startapp blog
 </pre>
 
 <pre><code>- blog 既应用名称
-</code></pre><h2 id="settings-py文件配置"><a href="#settings-py文件配置" class="headerlink" title="settings.py文件配置"></a>settings.py文件配置</h2><h3 id="定义templates位置"><a href="#定义templates位置" class="headerlink" title="定义templates位置"></a>定义templates位置</h3><p>修改<strong>TEMPLATES</strong>中的<strong>DIRS:</strong></p>
+</code></pre><h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><pre>
+python manage.py runserver 8090
+</pre>
+
+<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p>mysite目录</p>
+<ul>
+<li>manage.py     #入口文件</li>
+<li>mysite<ul>
+<li><strong>init</strong>.py    #初始化文件</li>
+<li>settings.py    #项目主配置文件</li>
+<li>urls.py        #路由分配配置文件</li>
+<li>wsgi.py        #Django web server(封装socket,解析APP)</li>
+</ul>
+</li>
+</ul>
+<p>blog目录</p>
+<ul>
+<li><strong>init</strong>.py</li>
+<li>admin.py    </li>
+<li>apps.py</li>
+<li>models.py #数据库相关配置(orm)</li>
+<li>tests.py    #检测、测试</li>
+<li>views.py  #视图函数</li>
+</ul>
+<h2 id="settings-py文件配置"><a href="#settings-py文件配置" class="headerlink" title="settings.py文件配置"></a>settings.py文件配置</h2><h3 id="定义templates位置"><a href="#定义templates位置" class="headerlink" title="定义templates位置"></a>定义templates位置</h3><p>修改<strong>TEMPLATES</strong>中的<strong>DIRS:</strong></p>
 <pre>
 'DIRS': [os.path.join(BASE_DIR, 'templates')],
 </pre>
@@ -473,6 +497,35 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 </pre>
+
+<h2 id="开启配置之旅"><a href="#开启配置之旅" class="headerlink" title="开启配置之旅"></a>开启配置之旅</h2><p>第一个页面</p>
+<h3 id="blog-APP下views-py文件添加一个展示数据的函数"><a href="#blog-APP下views-py文件添加一个展示数据的函数" class="headerlink" title="blog APP下views.py文件添加一个展示数据的函数"></a>blog APP下views.py文件添加一个展示数据的函数</h3><pre>
+from django.shortcuts import render, HttpResponse
+
+# Create your views here.
+
+
+def cur_time(request):
+    return HttpResponse('hello world!')
+</pre>
+
+<ul>
+<li>request： 请求，参数可以自定义，但必须有</li>
+<li>HttpResponse： 返回（当请求成功后要返回的信息）</li>
+</ul>
+<h3 id="mysite下的urls-py添加相关路由信息"><a href="#mysite下的urls-py添加相关路由信息" class="headerlink" title="mysite下的urls.py添加相关路由信息"></a>mysite下的urls.py添加相关路由信息</h3><pre>
+from blog import views    #导入blog下的views模块
+
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^cur_time', views.cur_time),
+]
+</pre>
+
+<p>运行启动命令</p>
+<p><pre><br>python manage.py runserver 8090<br></pre><br>浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。</p>
+
       
     </div>
     
@@ -646,7 +699,7 @@ MIDDLEWARE = [
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">5.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">5.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在INSTALLED-APPS添加相应名称"><span class="nav-number">5.2.</span> <span class="nav-text">创建APP后要在INSTALLED_APPS添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">5.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">5.4.</span> <span class="nav-text">注释掉错误警告</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在INSTALLED-APPS添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在INSTALLED_APPS添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li></ol></li></ol></div>
             
 
           </div>
