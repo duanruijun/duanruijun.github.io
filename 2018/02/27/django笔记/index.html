@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.exe startproject mysite   mysit">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T11:10:39.266Z">
+<meta property="og:updated_time" content="2018-02-27T11:16:17.924Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.exe startproject mysite   mysit">
@@ -566,7 +566,7 @@ def cur_time(request):
 <p>解释</p>
 <ul>
 <li>render： 模版渲染,第一个是请求参数&lt;request&gt;,第二个参数是跳转的url名称，第三个是传递变量<strong>abc</strong></li>
-<li>cur_time.html中的｛｛｝｝是jinja2的模版语言，<strong>abc</strong>则是render传过来的变量名，<strong>注意两边的有空格</strong></li>
+<li>cur_time.html中的｛｛｝｝是jinja2的模版语言，<strong>abc</strong>则是render传过来的变量名，<strong>注意两边有空格</strong></li>
 </ul>
 <p>再次访问浏览器，应该就能看到当前时间了。</p>
 <h2 id="HttpResponse与render的区别"><a href="#HttpResponse与render的区别" class="headerlink" title="HttpResponse与render的区别"></a>HttpResponse与render的区别</h2><ul>
@@ -671,18 +671,7 @@ def userInfo(req):
     return render(req, "index.html", {"user_list": user_list})
 </pre>
 
-<h3 id="index-html文件内容"><a href="#index-html文件内容" class="headerlink" title="index.html文件内容"></a>index.html文件内容</h3><p><pre><br>&lt;!DOCTYPE html&gt;<br>&lt;html lang=”en”&gt;<br>&lt;body&gt;</pre></p>
-<p>&lt;form action=”/userInfo/“ method=”post”&gt;<br>    &lt;p&gt;姓名&lt;input type=”text” name=”username”&gt;&lt;/p&gt;<br>    &lt;p&gt;性别&lt;input type=”text” name=”sex”&gt;&lt;/p&gt;<br>    &lt;p&gt;邮箱&lt;input type=”text” name=”email”&gt;&lt;/p&gt;<br>    &lt;p&gt;&lt;input type=”submit” value=”submit”&gt;&lt;/p&gt;<br>&lt;/form&gt;</p>
-<p>&lt;table border=”1px”&gt;<br>    &lt;tr&gt;<br>        &lt;td&gt;姓名&lt;/td&gt;<br>        &lt;td&gt;性别&lt;/td&gt;<br>        &lt;td&gt;邮箱&lt;/td&gt;<br>    &lt;/tr&gt;</p>
-<pre><code>{% for i in user_list %}
-        &lt;tr&gt;
-            &lt;td>{{ i.username }}&lt;/td&gt;
-            &lt;td>{{ i.sex }}&lt;/td&gt;
-            &lt;td>{{ i.email }}&lt;/td&gt;
-        &lt;/tr&gt;
-    {% endfor %}
-</code></pre><p>&lt;/table&gt;</p>
-<p>&lt;/body&gt;<br>&lt;/html&gt;<br><br>表单以<strong>post</strong>提交后跳转到<strong>userInfo</strong>页面。</p>
+<h3 id="index-html文件内容"><a href="#index-html文件内容" class="headerlink" title="index.html文件内容"></a>index.html文件内容</h3><p><pre><br>&lt;!DOCTYPE html&gt;<br>&lt;html lang=”en”&gt;<br>&lt;body&gt;<br>    &lt;form action=”/userInfo/“ method=”post”&gt;<br>        &lt;p&gt;姓名&lt;input type=”text” name=”username”&gt;&lt;/p&gt;<br>        &lt;p&gt;性别&lt;input type=”text” name=”sex”&gt;&lt;/p&gt;<br>        &lt;p&gt;邮箱&lt;input type=”text” name=”email”&gt;&lt;/p&gt;<br>        &lt;p&gt;&lt;input type=”submit” value=”submit”&gt;&lt;/p&gt;<br>    &lt;/form&gt;<br>    &lt;table border=”1px”&gt;<br>        &lt;tr&gt;<br>            &lt;td&gt;姓名&lt;/td&gt;<br>            &lt;td&gt;性别&lt;/td&gt;<br>            &lt;td&gt;邮箱&lt;/td&gt;<br>        &lt;/tr&gt;<br>        <br>    &lt;/table&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br></pre><br>表单以<strong>post</strong>提交后跳转到<strong>userInfo</strong>页面。</p>
 
       
     </div>
