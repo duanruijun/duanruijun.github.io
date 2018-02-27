@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.exe startproject mysite   mysit">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T11:16:17.924Z">
+<meta property="og:updated_time" content="2018-02-27T11:29:15.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.exe startproject mysite   mysit">
@@ -662,7 +662,7 @@ def userInfo(req):
 
         # user={'username':username,"sex": sex, "email": email}
 
-        models.UserInfo.objects.create(
+        models.UserInfo.objects.create(  #插入数据
             username=u,
             sex=s,
             email=e
