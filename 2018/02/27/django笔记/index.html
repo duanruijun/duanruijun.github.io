@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-28T03:19:42.518Z">
+<meta property="og:updated_time" content="2018-02-28T03:32:23.529Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.">
@@ -844,7 +844,108 @@ urlpatterns = [
 ]
 </pre>
 
+<h2 id="Django-Views-视图函数"><a href="#Django-Views-视图函数" class="headerlink" title="Django Views(视图函数)"></a>Django Views(视图函数)</h2><p>浏览器 –(Rquest)–&gt; WebServer</p>
+<p>浏览器 &lt;–(Response)– WebServer</p>
+<p>http请求中产生两个核心对象：</p>
+<pre><code>- http请求： HttpRequest对象
+- http响应： HttpResponse对象
+</code></pre><ol>
+<li><p>HttpRequest对象的属性和方法：</p>
+ <pre>
+ # path：       请求页面的全路径，不包括域名
+ #
+ # method：     请求中使用的HTTP方法的字符串表示。全大写表示。例如
+ #
+ #                    if  req.method=="GET":
+ #
+ #                              do_something()
+ #
+ #                    elseif req.method=="POST":
+ #
+ #                              do_something_else()
+ #
+ # GET:         包含所有HTTP GET参数的类字典对象
+ #
+ # POST：       包含所有HTTP POST参数的类字典对象
+ #
+ #              服务器收到空的POST请求的情况也是可能发生的，也就是说，表单form通过
+ #              HTTP POST方法提交请求，但是表单中可能没有数据，因此不能使用
+ #              if req.POST来判断是否使用了HTTP POST 方法；应该使用  if req.method=="POST"
+ #
+ #
+ #
+ # COOKIES:     包含所有cookies的标准Python字典对象；keys和values都是字符串。
+ #
+ # FILES：      包含所有上传文件的类字典对象；FILES中的每一个Key都是<input type="file" name="">标签中                     name属性的值，FILES中的每一个value同时也是一个标准的python字典对象，包含下面三个Keys：
+ #
+ #             filename：      上传文件名，用字符串表示
+ #             content_type:   上传文件的Content Type
+ #             content：       上传文件的原始内容
+ #
+ #
+ # user：       是一个django.contrib.auth.models.User对象，代表当前登陆的用户。如果访问用户当前
+ #              没有登陆，user将被初始化为django.contrib.auth.models.AnonymousUser的实例。你
+ #              可以通过user的is_authenticated()方法来辨别用户是否登陆：
+ #              if req.user.is_authenticated();只有激活Django中的AuthenticationMiddleware
+ #              时该属性才可用
+ #
+ # session：    唯一可读写的属性，代表当前会话的字典对象；自己有激活Django中的session支持时该属性才可用。
 
+ #方法
+ get_full_path(),   比如：http://127.0.0.1:8000/index33/?name=123 ,req.get_full_path()得到的结果就是/index33/?name=123
+ req.path:/index33
+ </pre>
+
+<p> 注意一个常用方法：<strong>request.POST.getlist(‘’)</strong></p>
+</li>
+<li><p>HttpResponse对象：</p>
+<p> 对于HttpRequest对象来说，是由django自动创建的，但是，HttpResponse对象就必须我们自己创建。每个view请求处理方法必须返回一个HttpResponse对象。</p>
+<p> HttpResponse类在django.http.HttpResponse</p>
+<p> 在HttpResponse对象上扩展的常用方法：</p>
+ <pre>
+ 页面渲染：         render()（推荐）<br>                  render_to_response(),
+ 页面跳转：         redirect("路径")
+ locals()：    可以直接将函数中所有的变量传给模板
+ </pre>
+
+<p> <pre><br> ———————————–url.py</pre></p>
+<p>  url(r”login”,   views.login),<br>  url(r”yuan_back”,   views.yuan_back),</p>
+<p> ———————————–views.py<br> def login(req):</p>
+<pre><code>if req.method==&quot;POST&quot;:
+    if 1:
+        # return redirect(&quot;/yuan_back/&quot;)
+        name=&quot;yuanhao&quot;
+
+        return render(req,&quot;my backend.html&quot;,locals())
+
+return render(req,&quot;login.html&quot;,locals())
+</code></pre></li>
+</ol>
+<pre><code>def yuan_back(req):
+
+    name=&quot;duanruijun&quot;
+
+    return render(req,&quot;my backend.html&quot;,locals())
+
+-----------------------------------login.html
+
+&amp;lt;form action=&quot;/login/&quot; method=&quot;post&quot;&amp;gt;
+    &amp;lt;p&amp;gt;姓名&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;/p&amp;gt;
+    &amp;lt;p&amp;gt;性别&amp;lt;input type=&quot;text&quot; name=&quot;sex&quot;&amp;gt;&amp;lt;/p&amp;gt;
+    &amp;lt;p&amp;gt;邮箱&amp;lt;input type=&quot;text&quot; name=&quot;email&quot;&amp;gt;&amp;lt;/p&amp;gt;
+    &amp;lt;p&amp;gt;&amp;lt;input type=&quot;submit&quot; value=&quot;submit&quot;&amp;gt;&amp;lt;/p&amp;gt;
+&amp;lt;/form&amp;gt;
+-----------------------------------my backend.html
+&amp;lt;h1&amp;gt;用户{{ name }}你好&amp;lt;/h1&amp;gt;
+
+#总结: render和redirect的区别:
+#   1 if render的页面需要模板语言渲染,需要的将数据库的数据加载到html,那么所有的这一部分
+#     除了写在yuan_back的视图函数中,必须还要写在login中,代码重复,没有解耦.
+
+#   2 the most important: url没有跳转到/yuan_back/,而是还在/login/,所以当刷新后
+#     又得重新登录.
+&lt;/pre&gt;
+</code></pre>
       
     </div>
     
@@ -1018,7 +1119,7 @@ urlpatterns = [
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在-INSTALLED-APPS-添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在 INSTALLED_APPS 添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定静态文件位置（如：js、css、jpg等）"><span class="nav-number">7.5.</span> <span class="nav-text">指定静态文件位置（如：js、css、jpg等）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加html文件"><span class="nav-number">8.3.</span> <span class="nav-text">添加html文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpResponse与render的区别"><span class="nav-number">9.</span> <span class="nav-text">HttpResponse与render的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接"><span class="nav-number">10.</span> <span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如前面settings-py中的配置文件指定的数据库"><span class="nav-number">10.1.</span> <span class="nav-text">如前面settings.py中的配置文件指定的数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#切记"><span class="nav-number">10.1.1.</span> <span class="nav-text">切记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加路由指向"><span class="nav-number">10.2.</span> <span class="nav-text">mysite下的urls.py添加路由指向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py更新后的内容为："><span class="nav-number">10.3.</span> <span class="nav-text">views.py更新后的内容为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html文件内容"><span class="nav-number">10.4.</span> <span class="nav-text">index.html文件内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-URL-路由系统"><span class="nav-number">11.</span> <span class="nav-text">Django URL(路由系统)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则分组（Named-groups）"><span class="nav-number">11.1.</span> <span class="nav-text">正则分组（Named groups）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数名称（name-param）"><span class="nav-number">11.2.</span> <span class="nav-text">参数名称（name param）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入其他URLconfs"><span class="nav-number">11.3.</span> <span class="nav-text">导入其他URLconfs</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在-INSTALLED-APPS-添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在 INSTALLED_APPS 添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定静态文件位置（如：js、css、jpg等）"><span class="nav-number">7.5.</span> <span class="nav-text">指定静态文件位置（如：js、css、jpg等）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加html文件"><span class="nav-number">8.3.</span> <span class="nav-text">添加html文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpResponse与render的区别"><span class="nav-number">9.</span> <span class="nav-text">HttpResponse与render的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接"><span class="nav-number">10.</span> <span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如前面settings-py中的配置文件指定的数据库"><span class="nav-number">10.1.</span> <span class="nav-text">如前面settings.py中的配置文件指定的数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#切记"><span class="nav-number">10.1.1.</span> <span class="nav-text">切记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加路由指向"><span class="nav-number">10.2.</span> <span class="nav-text">mysite下的urls.py添加路由指向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py更新后的内容为："><span class="nav-number">10.3.</span> <span class="nav-text">views.py更新后的内容为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html文件内容"><span class="nav-number">10.4.</span> <span class="nav-text">index.html文件内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-URL-路由系统"><span class="nav-number">11.</span> <span class="nav-text">Django URL(路由系统)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则分组（Named-groups）"><span class="nav-number">11.1.</span> <span class="nav-text">正则分组（Named groups）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数名称（name-param）"><span class="nav-number">11.2.</span> <span class="nav-text">参数名称（name param）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入其他URLconfs"><span class="nav-number">11.3.</span> <span class="nav-text">导入其他URLconfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-Views-视图函数"><span class="nav-number">12.</span> <span class="nav-text">Django Views(视图函数)</span></a></li></ol></div>
             
 
           </div>
