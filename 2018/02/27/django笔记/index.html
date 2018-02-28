@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-28T06:14:35.425Z">
+<meta property="og:updated_time" content="2018-02-28T08:12:28.113Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.">
@@ -955,7 +955,44 @@ urlpatterns = [
 </li>
 </ol>
 <h2 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h2><h3 id="什么是模版语言"><a href="#什么是模版语言" class="headerlink" title="什么是模版语言"></a>什么是模版语言</h3><p>简单说就是html+逻辑控制语句。</p>
-<h3 id="模版常用用例"><a href="#模版常用用例" class="headerlink" title="模版常用用例"></a>模版常用用例</h3>
+<h3 id="模版常用用例"><a href="#模版常用用例" class="headerlink" title="模版常用用例"></a>模版常用用例</h3><p>urls.py</p>
+<pre>
+from django.conf.urls import url
+from django.contrib import admin
+
+from app01 import views
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^index/', views.index),
+</pre>
+
+<p>views.py</p>
+<pre>
+from django.shortcuts import render
+
+# Create your views here.
+
+
+def index(req):
+    s1 = [1,22,333]
+    s2 = {'username': 'duanrj', 'email': '123@qq.com'}
+    return render(req, 'index.html', {'value1': s1, 'value2': s2})
+</pre>
+
+<p>index.html</p>
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;body&gt;
+
+｛｛ value1.2 ｝｝
+｛｛ value2.username ｝｝
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
       
     </div>
     
