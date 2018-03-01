@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-28T09:29:30.747Z">
+<meta property="og:updated_time" content="2018-03-01T02:11:45.481Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django笔记">
 <meta name="twitter:description" content="概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7  安装Django 根据自己环境安装pip pip install Django  新建django工程 创建Django工程（根据自己环境配置修改）   c:\Python36\Scripts\django-admin.">
@@ -974,11 +974,28 @@ import datetime
 
 # Create your views here.
 def index(req):
+    class profile(object):
+        def __init__(self, name, age):
+            self.name = name
+            self.age = age
     s1 = [1,22,333]
     s2 = {'username': 'duanrj', 'email': '123@qq.com'}
     s3 = datetime.datetime.now()
     s4 = profile("Bob", "20")
-    return render(req, 'index.html', {'value1': s1, 'value2': s2, 'value3': s3,'value4': s4})
+    s5 = 'hello'
+    s6 = 6
+    s7 = []
+    s8 = "<a href="#">跳转</a>"
+    return render(req, 'index.html', {
+        'value1': s1,
+        'value2': s2,
+        'value3': s3,
+        'value4': s4,
+        'value5': s5,
+        'value6': s6,
+        'value7': s7,
+        'value8': s8,
+    })
 </pre>
 
 <p>index.html</p>
@@ -987,16 +1004,54 @@ def index(req):
 &lt;html lang="en"&gt;
 &lt;body&gt;
 
-｛｛ value1.2 ｝｝
-｛｛ value2.username ｝｝
-｛｛ value3.year ｝｝
-｛｛ value4 ｝｝
-｛｛ value4.name ｝｝
-｛｛ value4.age ｝｝
+====打印列表第n个值====<br>
+｛｛ value1.2 ｝｝<br>
+
+====打印dict的username值====<br>
+｛｛ value2.username ｝｝<br>
+
+打印对象的属性<br>
+｛｛ value3.year ｝｝<br>
+
+====打印对象的属性2====<br>
+｛｛ value4 ｝｝<br>
+｛｛ value4.name ｝｝<br>
+｛｛ value4.age ｝｝<br>
+
+
+====模版语言中的遍历====
+｛% for i in obj %｝
+    <p>｛｛ forloop.counter ｝｝:｛｛ i ｝｝</p><br> //索引从1开始
+    <p>｛｛ forloop.counter0 ｝｝:｛｛ i ｝｝</p><br> //索引从0开始
+｛% endfor %｝
+
+
+====filter:小写转为大写====<br>
+｛｛ value5 | upper ｝｝<br>
+｛｛ value5 | lower ｝｝<br>
+｛｛ value5 | capfirst ｝｝<br>
+｛｛ value5 | first ｝｝<br>
+
+====算数运算====<br>
+｛｛ value6 | add:5 ｝｝<br>
+
+====为空时提示信息====<br>
+｛｛ value7 | default:'空的' ｝｝<br>
+
+====当成普通字符串处理====<br>
+｛｛ value8 ｝｝<br>
+如果想把类似于html 标签的都渲染出来可以这样<br>
+｛% autoescape off %}
+    ｛｛ value8 ｝｝
+｛% endautoescape %}
+也可以用safe
+｛｛ obj|safe ｝｝
+
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
 
+<h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><p>作用于简单操作，简化前后端开发重复性工作</p>
 
       
     </div>
@@ -1171,7 +1226,7 @@ def index(req):
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在-INSTALLED-APPS-添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在 INSTALLED_APPS 添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定静态文件位置（如：js、css、jpg等）"><span class="nav-number">7.5.</span> <span class="nav-text">指定静态文件位置（如：js、css、jpg等）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加html文件"><span class="nav-number">8.3.</span> <span class="nav-text">添加html文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpResponse与render的区别"><span class="nav-number">9.</span> <span class="nav-text">HttpResponse与render的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接"><span class="nav-number">10.</span> <span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如前面settings-py中的配置文件指定的数据库"><span class="nav-number">10.1.</span> <span class="nav-text">如前面settings.py中的配置文件指定的数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#切记"><span class="nav-number">10.1.1.</span> <span class="nav-text">切记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加路由指向"><span class="nav-number">10.2.</span> <span class="nav-text">mysite下的urls.py添加路由指向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py更新后的内容为："><span class="nav-number">10.3.</span> <span class="nav-text">views.py更新后的内容为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html文件内容"><span class="nav-number">10.4.</span> <span class="nav-text">index.html文件内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-URL-路由系统"><span class="nav-number">11.</span> <span class="nav-text">Django URL(路由系统)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则分组（Named-groups）"><span class="nav-number">11.1.</span> <span class="nav-text">正则分组（Named groups）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数名称（name-param）"><span class="nav-number">11.2.</span> <span class="nav-text">参数名称（name param）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入其他URLconfs"><span class="nav-number">11.3.</span> <span class="nav-text">导入其他URLconfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-Views-视图函数"><span class="nav-number">12.</span> <span class="nav-text">Django Views(视图函数)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模版"><span class="nav-number">13.</span> <span class="nav-text">模版</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是模版语言"><span class="nav-number">13.1.</span> <span class="nav-text">什么是模版语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模版常用用例-–-万能的句号点（-）"><span class="nav-number">13.2.</span> <span class="nav-text">模版常用用例 – 万能的句号点（.）</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建django工程"><span class="nav-number">4.</span> <span class="nav-text">新建django工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">5.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录结构"><span class="nav-number">6.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings-py文件配置"><span class="nav-number">7.</span> <span class="nav-text">settings.py文件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义templates位置"><span class="nav-number">7.1.</span> <span class="nav-text">定义templates位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建APP后要在-INSTALLED-APPS-添加相应名称"><span class="nav-number">7.2.</span> <span class="nav-text">创建APP后要在 INSTALLED_APPS 添加相应名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加mysql数据库连接"><span class="nav-number">7.3.</span> <span class="nav-text">添加mysql数据库连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释掉错误警告"><span class="nav-number">7.4.</span> <span class="nav-text">注释掉错误警告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定静态文件位置（如：js、css、jpg等）"><span class="nav-number">7.5.</span> <span class="nav-text">指定静态文件位置（如：js、css、jpg等）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启配置之旅"><span class="nav-number">8.</span> <span class="nav-text">开启配置之旅</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-APP下views-py文件添加一个展示数据的函数"><span class="nav-number">8.1.</span> <span class="nav-text">blog APP下views.py文件添加一个展示数据的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加相关路由信息"><span class="nav-number">8.2.</span> <span class="nav-text">mysite下的urls.py添加相关路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加html文件"><span class="nav-number">8.3.</span> <span class="nav-text">添加html文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpResponse与render的区别"><span class="nav-number">9.</span> <span class="nav-text">HttpResponse与render的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接"><span class="nav-number">10.</span> <span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如前面settings-py中的配置文件指定的数据库"><span class="nav-number">10.1.</span> <span class="nav-text">如前面settings.py中的配置文件指定的数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#切记"><span class="nav-number">10.1.1.</span> <span class="nav-text">切记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysite下的urls-py添加路由指向"><span class="nav-number">10.2.</span> <span class="nav-text">mysite下的urls.py添加路由指向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py更新后的内容为："><span class="nav-number">10.3.</span> <span class="nav-text">views.py更新后的内容为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html文件内容"><span class="nav-number">10.4.</span> <span class="nav-text">index.html文件内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-URL-路由系统"><span class="nav-number">11.</span> <span class="nav-text">Django URL(路由系统)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则分组（Named-groups）"><span class="nav-number">11.1.</span> <span class="nav-text">正则分组（Named groups）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数名称（name-param）"><span class="nav-number">11.2.</span> <span class="nav-text">参数名称（name param）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入其他URLconfs"><span class="nav-number">11.3.</span> <span class="nav-text">导入其他URLconfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-Views-视图函数"><span class="nav-number">12.</span> <span class="nav-text">Django Views(视图函数)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模版"><span class="nav-number">13.</span> <span class="nav-text">模版</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是模版语言"><span class="nav-number">13.1.</span> <span class="nav-text">什么是模版语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模版常用用例-–-万能的句号点（-）"><span class="nav-number">13.2.</span> <span class="nav-text">模版常用用例 – 万能的句号点（.）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter"><span class="nav-number">13.3.</span> <span class="nav-text">filter</span></a></li></ol></li></ol></div>
             
 
           </div>
