@@ -118,7 +118,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new23.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new24.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new25.png">
-<meta property="og:updated_time" content="2018-02-24T09:18:56.233Z">
+<meta property="og:updated_time" content="2018-03-07T02:22:12.317Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins基本使用">
 <meta name="twitter:description" content="jenkins基本使用Install这个很简单，直接在官网下载安装即可。 jenkins前期使用思路 安装插件  如果需要git或者gitlab插件，可按上图添加。 ##服务器说明 - gitlab:            192.168.62.206 - jenkins:            192.168.62.210:8080 - deploy_server:     192.168.63">
@@ -522,6 +522,13 @@ Resolving deltas: 100% (420/420), done.
 <p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new24.png" alt=""></p>
 <p>deploy_server端也成功更新</p>
 <p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new25.png" alt=""></p>
+<p>gitlab全局deploy Keys添加后，在需要部署项目上一定要启动该key,否则clone时会报错：</p>
+<pre>
+[root@192v168v62v210 tmp]# git clone git@192.168.62.206:Mall/eureka.git
+Initialized empty Git repository in /tmp/eureka/.git/
+GitLab: The project you were looking for could not be found.
+fatal: The remote end hung up unexpectedly
+</pre>
 
       
     </div>
@@ -552,8 +559,8 @@ Resolving deltas: 100% (420/420), done.
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/字段和方法/" rel="next" title="字段和方法">
-                <i class="fa fa-chevron-left"></i> 字段和方法
+              <a href="/2018/02/23/zabbix_monito/" rel="next" title="监控网络设备">
+                <i class="fa fa-chevron-left"></i> 监控网络设备
               </a>
             
           </div>
@@ -562,8 +569,8 @@ Resolving deltas: 100% (420/420), done.
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/23/zabbix问题汇总/" rel="prev" title="zabbix问题汇总">
-                zabbix问题汇总 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/23/zabbix_proxy/" rel="prev" title="zabbix_proxy">
+                zabbix_proxy <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -645,7 +652,7 @@ Resolving deltas: 100% (420/420), done.
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

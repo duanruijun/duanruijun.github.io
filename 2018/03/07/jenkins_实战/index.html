@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="zabbix," />
+  <meta name="keywords" content="jenkins," />
 
 
 
@@ -79,27 +79,30 @@
 
 
 
-<meta name="description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
-<meta name="keywords" content="zabbix">
+<meta name="description" content="环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116  实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagou">
+<meta name="keywords" content="jenkins">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zabbix_agent主动模式">
-<meta property="og:url" content="http://yoursite.com/2018/02/23/zabbix_agent主动模式/index.html">
+<meta property="og:title" content="jenkins maven项目实战1">
+<meta property="og:url" content="http://yoursite.com/2018/03/07/jenkins_实战/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
+<meta property="og:description" content="环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116  实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagou">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png">
-<meta property="og:image" content="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png">
-<meta property="og:updated_time" content="2018-02-24T09:19:50.570Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new26.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new27.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new28.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new29.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new30.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new31.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new32.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new33.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new34.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new35.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new36.png">
+<meta property="og:updated_time" content="2018-03-07T09:41:00.727Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zabbix_agent主动模式">
-<meta name="twitter:description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png">
+<meta name="twitter:title" content="jenkins maven项目实战1">
+<meta name="twitter:description" content="环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116  实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagou">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new26.png">
 
 
 
@@ -129,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/07/jenkins_实战/"/>
 
 
 
 
 
-  <title>zabbix_agent主动模式 | sundshinerj</title>
+  <title>jenkins maven项目实战1 | sundshinerj</title>
   
 
 
@@ -310,7 +313,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/jenkins_实战/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -327,7 +330,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">zabbix_agent主动模式</h1>
+          <h1 class="post-title" itemprop="name headline">jenkins maven项目实战1</h1>
         
 
         <div class="post-meta">
@@ -339,8 +342,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
-                2018-02-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T00:00:00+08:00">
+                2018-03-07
               </time>
             
 
@@ -379,7 +382,7 @@
 
           
           
-             <span id="/2018/02/23/zabbix_agent主动模式/" class="leancloud_visitors" data-flag-title="zabbix_agent主动模式">
+             <span id="/2018/03/07/jenkins_实战/" class="leancloud_visitors" data-flag-title="jenkins maven项目实战1">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -410,68 +413,111 @@
       
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:</p>
-<ol>
-<li>当监控端到一个量级的时候，web操作界面很卡，容易出现502；</li>
-<li>图层断裂；</li>
-<li>开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。</li>
+        <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>gitlab: <a href="http://192.168.62.206" target="_blank" rel="noopener">http://192.168.62.206</a></li>
+<li>jenkins: <a href="http://192.168.62.210:8080" target="_blank" rel="noopener">http://192.168.62.210:8080</a></li>
+<li>depserver: 192.168.63.116</li>
+</ul>
+<h2 id="实例说明"><a href="#实例说明" class="headerlink" title="实例说明"></a>实例说明</h2><ul>
+<li>gitlab工程地址：<a href="mailto:git@192.168.62.206" target="_blank" rel="noopener">git@192.168.62.206</a>:Mall/eureka.git</li>
+<li>jenkins构建完成后本地存放位置：/target</li>
+<li>depserver工程目录：/home/jiagouzu/tingyun/target/</li>
+</ul>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
+<li>jenkins通过gitlab pull工程代码</li>
+<li>jenkins通过本地maven工具构建、打包工程代码</li>
+<li>jenkins把完成的.jar推送到服务器<depserver>相应目录下</depserver></li>
 </ol>
-<p>所以主要往2个优化方面考虑：</p>
-<ol>
-<li>添加proxy节点或者node模式做分布式监控；</li>
-<li>调整agentd为主动模式。</li>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><p>jenkins pull代码时，gitlab要确保有jenkins的Deploy key</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new26.png" alt=""></p>
+<p>key信息</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new27.png" alt=""></p>
+</li>
+<li><p>gitlab的项目“Mall/eureka”启用deploy key(settings–&gt; Repository–&gt;Deploy Keys)：</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new28.png" alt=""></p>
+</li>
 </ol>
-<p>由于第一个方案需要物理节点，所以尝试第二个方案。</p>
-<p><strong>主动模式：</strong></p>
-<p>主动模式一定要记得设置ServerActive=ServerIP</p>
-<ol>
-<li>Agent向Server建立一个TCP连接</li>
-<li>Agent请求需要检测的数据列表</li>
-<li>Server响应Agent，发送一个Items列表</li>
-<li>Agent允许响应</li>
-<li>TCP连接完成本次会话关闭</li>
-<li>Agent开始周期性地收集数据</li>
+<h2 id="jenkins配置说明"><a href="#jenkins配置说明" class="headerlink" title="jenkins配置说明"></a>jenkins配置说明</h2><h3 id="jenkins配置depServer节点"><a href="#jenkins配置depServer节点" class="headerlink" title="jenkins配置depServer节点"></a>jenkins配置depServer节点</h3><ol>
+<li>添加depserver服务器节点（系统管理–&gt;系统设置–&gt;SSH Servers）</li>
+<li><p>新建一个Server,完成后选择高级配置相关信息：</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new29.png" alt=""></p>
+<blockquote>
+<p>其他保持默认，最后选择<strong>Test Configuration</strong>可测试下</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new30.png" alt=""></p>
+</li>
 </ol>
-<h3 id="一、-被监控端zabbix-agentd-conf的配置调整"><a href="#一、-被监控端zabbix-agentd-conf的配置调整" class="headerlink" title="一、 被监控端zabbix_agentd.conf的配置调整"></a>一、 被监控端zabbix_agentd.conf的配置调整</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_agentd.conf</span><br></pre></td></tr></table></figure>
+<h3 id="配置拉取gitlab地址私钥信息"><a href="#配置拉取gitlab地址私钥信息" class="headerlink" title="配置拉取gitlab地址私钥信息"></a>配置拉取gitlab地址私钥信息</h3><p>这里就不多讲了，具体步骤可见<a href="https://duanruijun.github.io/2018/02/23/jenkins/" target="_blank" rel="noopener">jenkins基本使用</a></p>
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><ol>
+<li>新建一个项目，类型为自由风格的（maven类型有很多限制），这里我的名称为“商城”</li>
+<li><p>配置“商城”，在General标签里配置相关信息，注意点开“高级”选择“使用自定义的工作空间”</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new31.png" alt=""></p>
+</li>
+<li><p>源码管理</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new32.png" alt=""></p>
+</li>
+<li><p>构建触发器</p>
+<p>手动还是自动构建，这里也可以看之前的文章<a href="https://duanruijun.github.io/2018/02/23/jenkins/" target="_blank" rel="noopener">jenkins基本使用</a></p>
+</li>
+<li><p>构建环境</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new33.png" alt=""></p>
+</li>
+<li><p>构建（mvn命令执行构建）</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new34.png" alt=""></p>
+<p>这里注意mvn命令的位置，jenkins默认安装选择在</p>
 <pre>
-StartAgents=0                #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程
-#Server=172.16.100.84        #如果设置纯被动模式，应该注释掉这行
-ServerActive=172.16.100.84   #主动模式的serverip地址
-Hostname=172.16.100.47       #客户端的hostname，不配置则使用主机名
-RefreshActiveChecks=120      #被监控端到服务器获取监控项的周期，默认120S
-BufferSize=200               #被监控端存储监控信息的空间大小
-Timeout=3                    #超时时间
+/home/apache-maven-3.5.2/bin/mvn
 </pre>
 
-<blockquote>
-<p>纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项</p>
-</blockquote>
-<h3 id="二、-调整监控模版"><a href="#二、-调整监控模版" class="headerlink" title="二、 调整监控模版"></a>二、 调整监控模版</h3><ol>
-<li>克隆一个temple os linux模版来修改</li>
-<li><p>全选</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png" alt=""></p>
+<p>可通过（系统管理–&gt;全局工具配置）进行相应的更改，但要给予jenkins执行的权限，这里我把命令ln到/usr/local/bin目录下，chmod +x mvn</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new35.png" alt=""></p>
+<p>如果没有设置会报类似错误：</p>
+<pre>
+[/target] $ /bin/sh -xe /tmp/jenkins6497126245319590786.sh
+
++ mvn clean package
+
+/tmp/jenkins6497126245319590786.sh: line 2: mvn: command not found
+
+Build step 'Execute shell' marked build as failure
+
+SSH: Current build result is [FAILURE], not going to run.
+
+</pre>
 </li>
-<li><p>找到最下方的批量更新</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png" alt=""></p>
+<li><p>构建后操作（完成构建后的部署工作）</p>
+<p>选择“Send build artifacts over SSH”,注意要安装 over ssh插件</p>
+<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new36.png" alt=""></p>
+<p>注意： 这里的<strong>Remote directory</strong>指的就是前面配置depserver的工程目录地址“/home/jiagouzu/tingyun”</p>
 </li>
-<li><p>类型打勾，选择主动式，然后更新</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png" alt=""></p>
+<li><p>点击完成后就可以测试了，默认maven构建的配置文件直接找的官方地址，在构建日志当中会出现如下信息</p>
+<pre>
+https://repo.maven.apache.org/maven2/org/hibernate/hibernate-validator/5.3.6.Final/hibernate-validator-5.3.6.Final.jar (727 kB at 2.4 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-actuator/1.5.9.RELEASE/spring-boot-starter-actuator-1.5.9.RELEASE.jar
+</pre>
+
+<p>这里需要注意：</p>
+<p>第一次构建时，maven需要下载部署工程所需要的jar包；</p>
+<p>改善办法之一是同开发要一份maven构建工具的settings.xml 配置文件替换你的maven工具里的settings.xml（一般开发会有自己的内部仓库），在这里是我的jenkins服务器中的“/home/apache-maven-3.5.2/conf/settings.xml”，注意修改里面的“<localrepository>/MavenRepository</localrepository>”这是指你存放maven工具所需jar包的目录，别忘了给jenkins能执行的权限。</p>
 </li>
-<li><p>主机修改</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png" alt=""></p>
-</li>
-<li><p>这时候就有相关数据，如果硬盘或网卡监控没有数据</p>
-<p> <strong>模板</strong>&gt;&gt;<strong>主动监控模板名称</strong>&gt;&gt;<strong>自动发现规则</strong></p>
-<p> <img src="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true" alt=""></p>
-</li>
-<li><p>选择<strong>监控项原型</strong>-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png" alt=""></p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>过会，网卡和硬盘的监控情况就出来了。</p>
+<li><p>最后测试输出类似信息证明配置成功：</p>
+<pre>
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4.246 s
+[INFO] Finished at: 2018-03-07T14:54:53+08:00
+[INFO] Final Memory: 36M/203M
+[INFO] ------------------------------------------------------------------------
+SSH: Failed to get hostname [192v168v62v210: 192v168v62v210: 未知的名称或服务]
+SSH: Connecting with configuration [192.168.63.116] ...
+SSH: EXEC: STDOUT/STDERR from command [/bin/bash /home/mall_start.sh start] ...
+SSH: EXEC: completed after 200 ms
+SSH: Disconnecting configuration [192.168.63.116] ...
+SSH: Transferred 1 file(s)
+Finished: SUCCESS
+</pre>
 </li>
 </ol>
 
@@ -491,7 +537,7 @@ Timeout=3                    #超时时间
       
         <div class="post-tags">
           
-            <a href="/tags/zabbix/" rel="tag"># zabbix</a>
+            <a href="/tags/jenkins/" rel="tag"># jenkins</a>
           
         </div>
       
@@ -504,8 +550,8 @@ Timeout=3                    #超时时间
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/zabbix报警/" rel="next" title="zabbix报警">
-                <i class="fa fa-chevron-left"></i> zabbix报警
+              <a href="/2018/03/05/devops书籍/" rel="next" title="devops书籍">
+                <i class="fa fa-chevron-left"></i> devops书籍
               </a>
             
           </div>
@@ -513,10 +559,6 @@ Timeout=3                    #超时时间
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/24/zabbix_低级发现/" rel="prev" title="zabbix低级发现">
-                zabbix低级发现 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -652,7 +694,7 @@ Timeout=3                    #超时时间
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-被监控端zabbix-agentd-conf的配置调整"><span class="nav-number">1.1.</span> <span class="nav-text">一、 被监控端zabbix_agentd.conf的配置调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-调整监控模版"><span class="nav-number">1.2.</span> <span class="nav-text">二、 调整监控模版</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例说明"><span class="nav-number">2.</span> <span class="nav-text">实例说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">3.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">4.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jenkins配置说明"><span class="nav-number">5.</span> <span class="nav-text">jenkins配置说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jenkins配置depServer节点"><span class="nav-number">5.1.</span> <span class="nav-text">jenkins配置depServer节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置拉取gitlab地址私钥信息"><span class="nav-number">5.2.</span> <span class="nav-text">配置拉取gitlab地址私钥信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建项目"><span class="nav-number">5.3.</span> <span class="nav-text">创建项目</span></a></li></ol></li></ol></div>
             
 
           </div>
