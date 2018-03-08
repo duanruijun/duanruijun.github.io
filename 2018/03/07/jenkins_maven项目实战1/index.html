@@ -83,7 +83,7 @@
 <meta name="keywords" content="jenkins">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jenkins maven项目实战1">
-<meta property="og:url" content="http://yoursite.com/2018/03/07/jenkins_实战/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/03/07/jenkins_maven项目实战1/index.html">
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116  实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagou">
 <meta property="og:locale" content="zh-Hans">
@@ -98,7 +98,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new34.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new35.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new36.png">
-<meta property="og:updated_time" content="2018-03-07T09:41:00.727Z">
+<meta property="og:updated_time" content="2018-03-07T09:54:21.795Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins maven项目实战1">
 <meta name="twitter:description" content="环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116  实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagou">
@@ -132,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/03/07/jenkins_实战/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/07/jenkins_maven项目实战1/"/>
 
 
 
@@ -313,7 +313,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/jenkins_实战/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/jenkins_maven项目实战1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -382,7 +382,7 @@
 
           
           
-             <span id="/2018/03/07/jenkins_实战/" class="leancloud_visitors" data-flag-title="jenkins maven项目实战1">
+             <span id="/2018/03/07/jenkins_maven项目实战1/" class="leancloud_visitors" data-flag-title="jenkins maven项目实战1">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -475,15 +475,10 @@
 <p>如果没有设置会报类似错误：</p>
 <pre>
 [/target] $ /bin/sh -xe /tmp/jenkins6497126245319590786.sh
-
 + mvn clean package
-
 /tmp/jenkins6497126245319590786.sh: line 2: mvn: command not found
-
 Build step 'Execute shell' marked build as failure
-
 SSH: Current build result is [FAILURE], not going to run.
-
 </pre>
 </li>
 <li><p>构建后操作（完成构建后的部署工作）</p>
