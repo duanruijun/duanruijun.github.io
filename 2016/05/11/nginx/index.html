@@ -79,18 +79,20 @@
 
 
 
-<meta name="description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。">
+<meta name="description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta name="keywords" content="nginx笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="nginx笔记">
 <meta property="og:url" content="http://yoursite.com/2016/05/11/nginx/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。">
+<meta property="og:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-21T07:03:28.577Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png">
+<meta property="og:updated_time" content="2018-04-21T07:14:36.917Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx笔记">
-<meta name="twitter:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。">
+<meta name="twitter:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png">
 
 
 
@@ -407,6 +409,8 @@
 <li>向各worker进程发送信号；</li>
 <li>监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。</li>
 </ol>
+<p>worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。<strong>一个请求</strong>只可能在<strong>一个worker进程</strong>中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示：</p>
+<p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png" alt=""></p>
 
       
     </div>
