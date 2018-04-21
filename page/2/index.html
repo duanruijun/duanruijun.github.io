@@ -1561,8 +1561,13 @@ re.search: 整个
       
         
           
-          
-          
+          初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：
+
+接收来自外界的信号；
+向各worker进程发送信号；
+监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。
+
+          ...
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/05/11/nginx/#more" rel="contents">
