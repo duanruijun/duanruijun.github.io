@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="zabbix," />
+  <meta name="keywords" content="shell随笔," />
 
 
 
@@ -79,23 +79,18 @@
 
 
 
-<meta name="description" content="一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作  路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致  1vim /etc/snmp/snmpd.conf   测试连通性  1snmpwalk -v 2c -c 19e#">
-<meta name="keywords" content="zabbix">
+<meta name="description" content="#!/bin/bash #----判断给定的文件是否存在----  if [ -d $1 ] &amp;&amp; [ -d $2 ];then   echo -e &quot;俩个文件夹都存在,开始对俩个文件夹进行比对.&quot; else   if [ -d $1 ];then     echo &quot;不存在文件夹:$2&quot;     exit   else     echo &quot;不存在文件夹:$1&quot;     exit   fi fi">
+<meta name="keywords" content="shell随笔">
 <meta property="og:type" content="article">
-<meta property="og:title" content="监控网络设备">
-<meta property="og:url" content="http://yoursite.com/2018/02/23/zabbix_monito/index.html">
+<meta property="og:title" content="shell文件对比">
+<meta property="og:url" content="http://yoursite.com/2017/10/10/shell文件对比/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作  路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致  1vim /etc/snmp/snmpd.conf   测试连通性  1snmpwalk -v 2c -c 19e#">
+<meta property="og:description" content="#!/bin/bash #----判断给定的文件是否存在----  if [ -d $1 ] &amp;&amp; [ -d $2 ];then   echo -e &quot;俩个文件夹都存在,开始对俩个文件夹进行比对.&quot; else   if [ -d $1 ];then     echo &quot;不存在文件夹:$2&quot;     exit   else     echo &quot;不存在文件夹:$1&quot;     exit   fi fi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmpd.conf.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmp.test.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_addhost.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snme_keyvalue.png">
-<meta property="og:updated_time" content="2018-02-24T09:20:11.065Z">
+<meta property="og:updated_time" content="2018-05-05T03:01:04.610Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="监控网络设备">
-<meta name="twitter:description" content="一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作  路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致  1vim /etc/snmp/snmpd.conf   测试连通性  1snmpwalk -v 2c -c 19e#">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmpd.conf.png">
+<meta name="twitter:title" content="shell文件对比">
+<meta name="twitter:description" content="#!/bin/bash #----判断给定的文件是否存在----  if [ -d $1 ] &amp;&amp; [ -d $2 ];then   echo -e &quot;俩个文件夹都存在,开始对俩个文件夹进行比对.&quot; else   if [ -d $1 ];then     echo &quot;不存在文件夹:$2&quot;     exit   else     echo &quot;不存在文件夹:$1&quot;     exit   fi fi">
 
 
 
@@ -125,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/23/zabbix_monito/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/10/shell文件对比/"/>
 
 
 
 
 
-  <title>监控网络设备 | sundshinerj</title>
+  <title>shell文件对比 | sundshinerj</title>
   
 
 
@@ -306,7 +301,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_monito/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/10/shell文件对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -323,7 +318,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">监控网络设备</h1>
+          <h1 class="post-title" itemprop="name headline">shell文件对比</h1>
         
 
         <div class="post-meta">
@@ -335,8 +330,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
-                2018-02-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-10T11:27:49+08:00">
+                2017-10-10
               </time>
             
 
@@ -358,8 +353,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Server/" itemprop="url" rel="index">
-                    <span itemprop="name">Server</span>
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
                   </a>
                 </span>
 
@@ -375,7 +370,7 @@
 
           
           
-             <span id="/2018/02/23/zabbix_monito/" class="leancloud_visitors" data-flag-title="监控网络设备">
+             <span id="/2017/10/10/shell文件对比/" class="leancloud_visitors" data-flag-title="shell文件对比">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -406,31 +401,75 @@
       
 
       
-        <h4 id="一、zabbix-server端安装snmp工具"><a href="#一、zabbix-server端安装snmp工具" class="headerlink" title="一、zabbix-server端安装snmp工具"></a>一、zabbix-server端安装snmp工具</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-snmp-utils snmp-libs snmp-devel snmp</span><br></pre></td></tr></table></figure>
-<h4 id="二、检测与路由器的连通性"><a href="#二、检测与路由器的连通性" class="headerlink" title="二、检测与路由器的连通性"></a>二、检测与路由器的连通性</h4><p>测试之前工作</p>
-<ol>
-<li>路由上要开启snmp功能</li>
-<li>本地snmp服务器的snmp的密码和路由上的密码一致</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/snmp/snmpd.conf</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmpd.conf.png" alt=""></p>
-<ol>
-<li>测试连通性</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">snmpwalk -v 2c -c 19e#! 10.18.221.4</span><br></pre></td></tr></table></figure>
-<pre><code>- 2c：协议版本
-- 19e#!：密码与路由一致，
-- 10.18.221.4：路由IP
-</code></pre><ul>
-<li>注意selinux、iptables<br><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmp.test.png" alt=""></li>
-<li>如果出现上面信息说明成功</li>
-</ul>
-<h4 id="三、zabbix-server添加路由监控"><a href="#三、zabbix-server添加路由监控" class="headerlink" title="三、zabbix-server添加路由监控"></a>三、zabbix-server添加路由监控</h4><p>主机 –&gt; 创建主机</p>
-<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_addhost.png" alt=""></p>
-<p>由于添加了密钥认证，须在zabbix-server中添加密钥<br>管理–&gt;一般–&gt;选择宏，进行设置</p>
-<p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snme_keyvalue.png" alt=""></p>
-<p>过几分钟就能出相关监控项了！</p>
+        <pre>
+#!/bin/bash
+#----判断给定的文件是否存在----
 
+if [ -d $1 ] && [ -d $2 ];then
+  echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对."
+else
+  if [ -d $1 ];then
+    echo "不存在文件夹:$2"
+    exit
+  else
+    echo "不存在文件夹:$1"
+    exit
+  fi
+fi
+
+
+#----判断俩个文件中改动过的文件有哪些----
+
+#判断俩个文件的文件和文件夹的个数
+echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m"
+fnum1=`ls -Rl $1|grep -e "^-"|wc -l`
+fnum2=`ls -Rl $2|grep -e "^-"|wc -l`
+dnum1=`ls -Rl $1|grep -e "^d"|wc -l`
+dnum2=`ls -Rl $2|grep -e "^d"|wc -l`
+
+echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件."
+echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件."
+
+#判断$2中新增或者减少的文件夹和文件有哪些
+echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m"
+
+only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"`
+only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"`
+echo -e "$only1"
+echo -e "\e[1;31m$only2\e[0m"
+
+#判断$2中改变的文件有哪些
+echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m"
+change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"`
+change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"`
+echo -e "$change1"
+echo -e "\e[1;31m$change2\e[0m"
+
+#查看版本号是否已经更改
+
+echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m"
+cd $1
+if [ -f version.html ];then
+  version1=`cat version.html`
+else
+  echo -e "\e[1;31m$1没有版本号信息.\e[0m"
+  exit
+fi
+
+cd $2
+if [ -f version.html ];then
+  version2=`cat version.html`
+else
+  echo -e "\e[1;31m$2没有版本号信息.\e[0m"
+  exit
+fi
+
+if [ $version1 == $version2 ];then
+  echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m"
+else
+  echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m."
+fi
+</pre>
       
     </div>
     
@@ -447,7 +486,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/zabbix/" rel="tag"># zabbix</a>
+            <a href="/tags/shell随笔/" rel="tag"># shell随笔</a>
           
         </div>
       
@@ -460,8 +499,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/zabbix_agent主动模式/" rel="next" title="zabbix_agent主动模式">
-                <i class="fa fa-chevron-left"></i> zabbix_agent主动模式
+              <a href="/2017/10/10/python_ping包检测/" rel="next" title="ping包检测">
+                <i class="fa fa-chevron-left"></i> ping包检测
               </a>
             
           </div>
@@ -470,8 +509,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/23/zabbix问题汇总/" rel="prev" title="zabbix问题汇总">
-                zabbix问题汇总 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/23/zabbix_agent主动模式/" rel="prev" title="zabbix_agent主动模式">
+                zabbix_agent主动模式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -524,17 +563,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -598,22 +628,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、zabbix-server端安装snmp工具"><span class="nav-number">1.</span> <span class="nav-text">一、zabbix-server端安装snmp工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、检测与路由器的连通性"><span class="nav-number">2.</span> <span class="nav-text">二、检测与路由器的连通性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、zabbix-server添加路由监控"><span class="nav-number">3.</span> <span class="nav-text">三、zabbix-server添加路由监控</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
