@@ -1282,7 +1282,7 @@ pip install Django
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_proxy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -1301,7 +1301,7 @@ pip install Django
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/zabbix_agent主动模式/" itemprop="url">zabbix_agent主动模式</a></h1>
+                <a class="post-title-link" href="/2018/02/23/zabbix_proxy/" itemprop="url">zabbix_proxy</a></h1>
         
 
         <div class="post-meta">
@@ -1353,7 +1353,7 @@ pip install Django
 
           
           
-             <span id="/2018/02/23/zabbix_agent主动模式/" class="leancloud_visitors" data-flag-title="zabbix_agent主动模式">
+             <span id="/2018/02/23/zabbix_proxy/" class="leancloud_visitors" data-flag-title="zabbix_proxy">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1386,17 +1386,14 @@ pip install Django
       
         
           
-          概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:
-
-当监控端到一个量级的时候，web操作界面很卡，容易出现502；
-图层断裂；
-开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。
-
-所以主要往2个优化方面考虑
+          概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。
+样例
+服务列表
+  | 名称 | IP |  |——–|:——–:|  | zabbix serv
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/23/zabbix_agent主动模式/#more" rel="contents">
+            <a class="btn" href="/2018/02/23/zabbix_proxy/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1773,7 +1770,7 @@ jenkins前期使用思路
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_proxy/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/字段和方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -1792,7 +1789,7 @@ jenkins前期使用思路
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/zabbix_proxy/" itemprop="url">zabbix_proxy</a></h1>
+                <a class="post-title-link" href="/2018/02/23/字段和方法/" itemprop="url">字段和方法</a></h1>
         
 
         <div class="post-meta">
@@ -1827,8 +1824,8 @@ jenkins前期使用思路
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Server/" itemprop="url" rel="index">
-                    <span itemprop="name">Server</span>
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
                   </a>
                 </span>
 
@@ -1844,7 +1841,7 @@ jenkins前期使用思路
 
           
           
-             <span id="/2018/02/23/zabbix_proxy/" class="leancloud_visitors" data-flag-title="zabbix_proxy">
+             <span id="/2018/02/23/字段和方法/" class="leancloud_visitors" data-flag-title="字段和方法">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1877,14 +1874,28 @@ jenkins前期使用思路
       
         
           
-          概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。
-样例
-服务列表
-  | 名称 | IP |  |——–|:——–:|  | zabbix serv
+          首先，要知道Python类中两个概念：字段和方法“字段”和“方法”都有“动态”和“静态”之分，即：
+
+字段
+
+静态字段
+动态字段
+
+
+方法
+
+静态方法
+动态方法
+
+
+
+以下事例标明了：“静态字段”，“动态字段”以及“动态方法”是什么样子的，因为显而易见，就不用语言进行过多描述：
+
+#coding:u
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/23/zabbix_proxy/#more" rel="contents">
+            <a class="btn" href="/2018/02/23/字段和方法/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
