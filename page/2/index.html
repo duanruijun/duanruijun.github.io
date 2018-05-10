@@ -297,7 +297,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix问题汇总/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/字段和方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -316,7 +316,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/zabbix问题汇总/" itemprop="url">zabbix问题汇总</a></h1>
+                <a class="post-title-link" href="/2018/02/23/字段和方法/" itemprop="url">字段和方法</a></h1>
         
 
         <div class="post-meta">
@@ -351,8 +351,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Server/" itemprop="url" rel="index">
-                    <span itemprop="name">Server</span>
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
                   </a>
                 </span>
 
@@ -368,7 +368,7 @@
 
           
           
-             <span id="/2018/02/23/zabbix问题汇总/" class="leancloud_visitors" data-flag-title="zabbix问题汇总">
+             <span id="/2018/02/23/字段和方法/" class="leancloud_visitors" data-flag-title="字段和方法">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -401,12 +401,28 @@
       
         
           
-          一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server；
-zabbix-server迁移进行时，zabbix_pro
+          首先，要知道Python类中两个概念：字段和方法“字段”和“方法”都有“动态”和“静态”之分，即：
+
+字段
+
+静态字段
+动态字段
+
+
+方法
+
+静态方法
+动态方法
+
+
+
+以下事例标明了：“静态字段”，“动态字段”以及“动态方法”是什么样子的，因为显而易见，就不用语言进行过多描述：
+
+#coding:u
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/23/zabbix问题汇总/#more" rel="contents">
+            <a class="btn" href="/2018/02/23/字段和方法/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -622,7 +638,7 @@ zabbix-server迁移进行时，zabbix_pro
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix报警/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -641,7 +657,7 @@ zabbix-server迁移进行时，zabbix_pro
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/zabbix_agent主动模式/" itemprop="url">zabbix_agent主动模式</a></h1>
+                <a class="post-title-link" href="/2018/02/23/zabbix报警/" itemprop="url">zabbix报警</a></h1>
         
 
         <div class="post-meta">
@@ -693,7 +709,7 @@ zabbix-server迁移进行时，zabbix_pro
 
           
           
-             <span id="/2018/02/23/zabbix_agent主动模式/" class="leancloud_visitors" data-flag-title="zabbix_agent主动模式">
+             <span id="/2018/02/23/zabbix报警/" class="leancloud_visitors" data-flag-title="zabbix报警">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -726,17 +742,15 @@ zabbix-server迁移进行时，zabbix_pro
       
         
           
-          概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:
+          概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。
+##配置
+一、 zabbix-server脚本指定位置1vim zabbix_server.conf
 
-当监控端到一个量级的时候，web操作界面很卡，容易出现502；
-图层断裂；
-开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。
-
-所以主要往2个优化方面考虑
+AlertS
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/23/zabbix_agent主动模式/#more" rel="contents">
+            <a class="btn" href="/2018/02/23/zabbix报警/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
