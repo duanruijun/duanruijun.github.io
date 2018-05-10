@@ -88,7 +88,7 @@
 <meta property="og:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png">
-<meta property="og:updated_time" content="2018-05-10T03:50:20.608Z">
+<meta property="og:updated_time" content="2018-05-10T05:34:21.760Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx笔记">
 <meta name="twitter:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
@@ -440,6 +440,18 @@
 3. 如果返回EAGAIN时，再次放到epoll里；
 4. 当所有事件都没准备好时，才在epoll里等待。
 </code></pre><p>这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。</p>
+<p>对于web服务器，事件通常有三种类型：<strong>网络事件</strong>、<strong>信号</strong>和<strong>定时器</strong>：</p>
+<ul>
+<li><p>网络事件</p>
+<p>  通过异步非阻塞能解决问题</p>
+</li>
+<li><p>信号</p>
+<p>  nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。</p>
+</li>
+<li><p>定时器</p>
+<p>  由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。</p>
+</li>
+</ul>
 
       
     </div>
