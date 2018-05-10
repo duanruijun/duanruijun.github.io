@@ -23,17 +23,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[书籍]]></title>
-    <url>%2F2018%2F03%2F05%2Fbooks%2F</url>
-    <content type="text"><![CDATA[《自控力》]]></content>
-      <categories>
-        <category>books</category>
-      </categories>
-      <tags>
-        <tag>书籍</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[devops书籍]]></title>
     <url>%2F2018%2F03%2F05%2Fdevops%E4%B9%A6%E7%B1%8D%2F</url>
     <content type="text"><![CDATA[书籍收藏]]></content>
@@ -42,6 +31,17 @@
       </categories>
       <tags>
         <tag>devops书籍</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[书籍]]></title>
+    <url>%2F2018%2F03%2F05%2Fbooks%2F</url>
+    <content type="text"><![CDATA[《自控力》]]></content>
+      <categories>
+        <category>books</category>
+      </categories>
+      <tags>
+        <tag>书籍</tag>
       </tags>
   </entry>
   <entry>
@@ -212,7 +212,7 @@
   <entry>
     <title><![CDATA[nginx笔记]]></title>
     <url>%2F2016%2F05%2F11%2Fnginx%2F</url>
-    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ 未完待续。。。]]></content>
+    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ worker之间的信息处理前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。 一个woker处理一个请求，那高并发是怎么做的呢？ 高并发处理原理nginx采用异步非阻塞方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？ 阻塞 事件没有准备好，那就只能等了，等事件准备好了，才可以继续。 此时，阻塞调用会进入内核等待。 非阻塞 事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。 虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说： 1. 当事件没准备好时，放到epoll里； 2. 事件准备好了，就去读写； 3. 如果返回EAGAIN时，再次放到epoll里； 4. 当所有事件都没准备好时，才在epoll里等待。 这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。]]></content>
       <categories>
         <category>Service</category>
       </categories>
