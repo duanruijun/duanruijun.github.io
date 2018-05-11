@@ -307,7 +307,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix报警/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/jenkins/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -326,7 +326,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/zabbix报警/" itemprop="url">zabbix报警</a></h1>
+                <a class="post-title-link" href="/2018/02/23/jenkins/" itemprop="url">jenkins基本使用</a></h1>
         
 
         <div class="post-meta">
@@ -378,7 +378,7 @@
 
           
           
-             <span id="/2018/02/23/zabbix报警/" class="leancloud_visitors" data-flag-title="zabbix报警">
+             <span id="/2018/02/23/jenkins/" class="leancloud_visitors" data-flag-title="jenkins基本使用">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -411,15 +411,18 @@
       
         
           
-          概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。
-##配置
-一、 zabbix-server脚本指定位置1vim zabbix_server.conf
+          jenkins基本使用Install这个很简单，直接在官网下载安装即可。
+jenkins前期使用思路
+安装插件
 
-AlertS
+如果需要git或者gitlab插件，可按上图添加。
+##服务器说明
+- gitlab:            192.168.62.206
+- jenkins:            1
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/23/zabbix报警/#more" rel="contents">
+            <a class="btn" href="/2018/02/23/jenkins/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -470,7 +473,7 @@ AlertS
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_proxy/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_monito/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -489,7 +492,7 @@ AlertS
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/zabbix_proxy/" itemprop="url">zabbix_proxy</a></h1>
+                <a class="post-title-link" href="/2018/02/23/zabbix_monito/" itemprop="url">监控网络设备</a></h1>
         
 
         <div class="post-meta">
@@ -541,7 +544,7 @@ AlertS
 
           
           
-             <span id="/2018/02/23/zabbix_proxy/" class="leancloud_visitors" data-flag-title="zabbix_proxy">
+             <span id="/2018/02/23/zabbix_monito/" class="leancloud_visitors" data-flag-title="监控网络设备">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -574,14 +577,17 @@ AlertS
       
         
           
-          概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。
-样例
-服务列表
-  | 名称 | IP |  |——–|:——–:|  | zabbix serv
+          一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp
+二、检测与路由器的连通性测试之前工作
+
+路由上要开启snmp功能
+本地snmp服务器的snmp的密码和路由上的密码一致
+
+1vim /et
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/23/zabbix_proxy/#more" rel="contents">
+            <a class="btn" href="/2018/02/23/zabbix_monito/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

@@ -67,17 +67,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[zabbix问题汇总]]></title>
     <url>%2F2018%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
     <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
@@ -86,17 +75,6 @@
       </categories>
       <tags>
         <tag>zabbix</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[jenkins基本使用]]></title>
-    <url>%2F2018%2F02%2F23%2Fjenkins%2F</url>
-    <content type="text"><![CDATA[jenkins基本使用Install这个很简单，直接在官网下载安装即可。 jenkins前期使用思路 安装插件 如果需要git或者gitlab插件，可按上图添加。 ##服务器说明 - gitlab: 192.168.62.206 - jenkins: 192.168.62.210:8080 - deploy_server: 192.168.63.116 添加SSH_Key系统管理&gt;&gt;系统设置&gt;&gt;SSH server 选择高级key栏填写deploy_server的私钥 构建工程 选择刚构建的工程，我这里为ams运维平台 Exec command 可以使写命令，也可以使用脚本。 代码更新立即构建相当于UPdate 上述是基本的流程 持续集成&amp;安装部署jenkins从git获取代码如果项目更新的比较频繁，就可以用到CI了，持续集成&amp;安装部署jenkins从git获取代码。 一、 持续集成的概念：1.1 总体的概括 持续集成Continuous Integration 持续交付Continuous Delivery 持续部署Continuous Deployment 1.2 什么是持续集成 续集成是指开发者在代码的开发过程中，可以频繁的将代码部署集成到主干，并进程自动化测试。 1.3 什么是持续交付 持续交付指的是在持续集成的环境基础之上，将代码部署到预生产环境 1.4 持续部署 在持续交付的基础上，把部署到生产环境的过程自动化，持续部署和持续交付的区别就是最终部署到生产环境是自动化的。 #####以 新工程local_ams为例 新建工程略。。。 jenkins服务器和deploy_server要生成ssh公钥和密钥 gitlab上配置local_ams项目设置private deploy key 在jenkins服务器192.168.3.199上测试下是否能够正常获取代码 [root@linux-node2 tmp]# git clone git@192.168.62.206:OPS/AMS.git Initialized empty Git repository in /tmp/AMS/.git/ remote: Counting objects: 1587, done. remote: Compressing objects: 100% (1132/1132), done. remote: Total 1587 (delta 420), reused 1533 (delta 368) Receiving objects: 100% (1587/1587), 6.81 MiB | 11.07 MiB/s, done. Resolving deltas: 100% (420/420), done. 配置git项目地址，我们先进行其他配置，等会再继续配置git相关的选项 在填写git地址时，会报权限问题，暂忽略，一会回来配置 系统管理 –&gt; Global Tool Configuration 复制jenkins拉取git代码服务器root的私钥(jenkins服务端私钥) 继续编辑配置 配置定时任务 如果每2分钟执行建议使用 H/2 而不是 /2 * 现在我们当前如果执行的节点是 deploy_server端的deploy.php文件内容是这样 修改本地内容 提交代码 gitlab上已生成 等待2分钟后，查看结果 deploy_server端也成功更新 gitlab全局deploy Keys添加后，在需要部署项目上一定要启动该key,否则clone时会报错： [root@192v168v62v210 tmp]# git clone git@192.168.62.206:Mall/eureka.git Initialized empty Git repository in /tmp/eureka/.git/ GitLab: The project you were looking for could not be found. fatal: The remote end hung up unexpectedly]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>jenkins</tag>
       </tags>
   </entry>
   <entry>
@@ -125,6 +103,28 @@
     <title><![CDATA[zabbix_proxy]]></title>
     <url>%2F2018%2F02%2F23%2Fzabbix_proxy%2F</url>
     <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[jenkins基本使用]]></title>
+    <url>%2F2018%2F02%2F23%2Fjenkins%2F</url>
+    <content type="text"><![CDATA[jenkins基本使用Install这个很简单，直接在官网下载安装即可。 jenkins前期使用思路 安装插件 如果需要git或者gitlab插件，可按上图添加。 ##服务器说明 - gitlab: 192.168.62.206 - jenkins: 192.168.62.210:8080 - deploy_server: 192.168.63.116 添加SSH_Key系统管理&gt;&gt;系统设置&gt;&gt;SSH server 选择高级key栏填写deploy_server的私钥 构建工程 选择刚构建的工程，我这里为ams运维平台 Exec command 可以使写命令，也可以使用脚本。 代码更新立即构建相当于UPdate 上述是基本的流程 持续集成&amp;安装部署jenkins从git获取代码如果项目更新的比较频繁，就可以用到CI了，持续集成&amp;安装部署jenkins从git获取代码。 一、 持续集成的概念：1.1 总体的概括 持续集成Continuous Integration 持续交付Continuous Delivery 持续部署Continuous Deployment 1.2 什么是持续集成 续集成是指开发者在代码的开发过程中，可以频繁的将代码部署集成到主干，并进程自动化测试。 1.3 什么是持续交付 持续交付指的是在持续集成的环境基础之上，将代码部署到预生产环境 1.4 持续部署 在持续交付的基础上，把部署到生产环境的过程自动化，持续部署和持续交付的区别就是最终部署到生产环境是自动化的。 #####以 新工程local_ams为例 新建工程略。。。 jenkins服务器和deploy_server要生成ssh公钥和密钥 gitlab上配置local_ams项目设置private deploy key 在jenkins服务器192.168.3.199上测试下是否能够正常获取代码 [root@linux-node2 tmp]# git clone git@192.168.62.206:OPS/AMS.git Initialized empty Git repository in /tmp/AMS/.git/ remote: Counting objects: 1587, done. remote: Compressing objects: 100% (1132/1132), done. remote: Total 1587 (delta 420), reused 1533 (delta 368) Receiving objects: 100% (1587/1587), 6.81 MiB | 11.07 MiB/s, done. Resolving deltas: 100% (420/420), done. 配置git项目地址，我们先进行其他配置，等会再继续配置git相关的选项 在填写git地址时，会报权限问题，暂忽略，一会回来配置 系统管理 –&gt; Global Tool Configuration 复制jenkins拉取git代码服务器root的私钥(jenkins服务端私钥) 继续编辑配置 配置定时任务 如果每2分钟执行建议使用 H/2 而不是 /2 * 现在我们当前如果执行的节点是 deploy_server端的deploy.php文件内容是这样 修改本地内容 提交代码 gitlab上已生成 等待2分钟后，查看结果 deploy_server端也成功更新 gitlab全局deploy Keys添加后，在需要部署项目上一定要启动该key,否则clone时会报错： [root@192v168v62v210 tmp]# git clone git@192.168.62.206:Mall/eureka.git Initialized empty Git repository in /tmp/eureka/.git/ GitLab: The project you were looking for could not be found. fatal: The remote end hung up unexpectedly]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>jenkins</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
       <categories>
         <category>Server</category>
       </categories>
