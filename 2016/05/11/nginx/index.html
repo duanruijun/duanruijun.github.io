@@ -88,7 +88,7 @@
 <meta property="og:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png">
-<meta property="og:updated_time" content="2018-05-10T05:34:21.760Z">
+<meta property="og:updated_time" content="2018-05-10T06:35:05.859Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx笔记">
 <meta name="twitter:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
@@ -452,6 +452,10 @@
 <p>  由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。</p>
 </li>
 </ul>
+<h2 id="connection"><a href="#connection" class="headerlink" title="connection"></a>connection</h2><p>connection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。</p>
+<p>所以，nginx不仅可以做webServer,还能做sendMail。</p>
+<h2 id="request"><a href="#request" class="headerlink" title="request"></a>request</h2><p>在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。</p>
+<p>Nginx作为web服务器时使用的配置</p>
 
       
     </div>
@@ -630,7 +634,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初探"><span class="nav-number">1.</span> <span class="nav-text">初探</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#worker之间的信息处理"><span class="nav-number">2.</span> <span class="nav-text">worker之间的信息处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高并发处理原理"><span class="nav-number">3.</span> <span class="nav-text">高并发处理原理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初探"><span class="nav-number">1.</span> <span class="nav-text">初探</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#worker之间的信息处理"><span class="nav-number">2.</span> <span class="nav-text">worker之间的信息处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高并发处理原理"><span class="nav-number">3.</span> <span class="nav-text">高并发处理原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connection"><span class="nav-number">4.</span> <span class="nav-text">connection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#request"><span class="nav-number">5.</span> <span class="nav-text">request</span></a></li></ol></div>
             
 
           </div>
