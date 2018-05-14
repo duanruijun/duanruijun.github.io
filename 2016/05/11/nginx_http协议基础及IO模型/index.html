@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="zabbix," />
+  <meta name="keywords" content="nginx," />
 
 
 
@@ -79,27 +79,18 @@
 
 
 
-<meta name="description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
-<meta name="keywords" content="zabbix">
+<meta name="description" content="Nginx通常作为两种应用，既：  Web Server Web Reverse Proxy  做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0">
+<meta name="keywords" content="nginx">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zabbix_agent主动模式">
-<meta property="og:url" content="http://yoursite.com/2018/02/23/zabbix_agent主动模式/index.html">
+<meta property="og:title" content="nginx笔记1">
+<meta property="og:url" content="http://yoursite.com/2016/05/11/nginx_http协议基础及IO模型/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
+<meta property="og:description" content="Nginx通常作为两种应用，既：  Web Server Web Reverse Proxy  做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png">
-<meta property="og:image" content="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png">
-<meta property="og:updated_time" content="2018-02-24T09:19:50.570Z">
+<meta property="og:updated_time" content="2018-05-14T15:00:23.567Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zabbix_agent主动模式">
-<meta name="twitter:description" content="概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:  当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。  所以主要往2个优化方面考虑：  添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。  由于第一个方">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png">
+<meta name="twitter:title" content="nginx笔记1">
+<meta name="twitter:description" content="Nginx通常作为两种应用，既：  Web Server Web Reverse Proxy  做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0">
 
 
 
@@ -129,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/05/11/nginx_http协议基础及IO模型/"/>
 
 
 
 
 
-  <title>zabbix_agent主动模式 | sundshinerj</title>
+  <title>nginx笔记1 | sundshinerj</title>
   
 
 
@@ -320,7 +311,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/23/zabbix_agent主动模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/11/nginx_http协议基础及IO模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -337,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">zabbix_agent主动模式</h1>
+          <h1 class="post-title" itemprop="name headline">nginx笔记1</h1>
         
 
         <div class="post-meta">
@@ -349,8 +340,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-23T16:27:49+08:00">
-                2018-02-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-11T00:00:00+08:00">
+                2016-05-11
               </time>
             
 
@@ -372,8 +363,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Server/" itemprop="url" rel="index">
-                    <span itemprop="name">Server</span>
+                  <a href="/categories/Service/" itemprop="url" rel="index">
+                    <span itemprop="name">Service</span>
                   </a>
                 </span>
 
@@ -389,7 +380,7 @@
 
           
           
-             <span id="/2018/02/23/zabbix_agent主动模式/" class="leancloud_visitors" data-flag-title="zabbix_agent主动模式">
+             <span id="/2016/05/11/nginx_http协议基础及IO模型/" class="leancloud_visitors" data-flag-title="nginx笔记1">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -420,70 +411,52 @@
       
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:</p>
-<ol>
-<li>当监控端到一个量级的时候，web操作界面很卡，容易出现502；</li>
-<li>图层断裂；</li>
-<li>开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。</li>
-</ol>
-<p>所以主要往2个优化方面考虑：</p>
-<ol>
-<li>添加proxy节点或者node模式做分布式监控；</li>
-<li>调整agentd为主动模式。</li>
-</ol>
-<p>由于第一个方案需要物理节点，所以尝试第二个方案。</p>
-<p><strong>主动模式：</strong></p>
-<p>主动模式一定要记得设置ServerActive=ServerIP</p>
-<ol>
-<li>Agent向Server建立一个TCP连接</li>
-<li>Agent请求需要检测的数据列表</li>
-<li>Server响应Agent，发送一个Items列表</li>
-<li>Agent允许响应</li>
-<li>TCP连接完成本次会话关闭</li>
-<li>Agent开始周期性地收集数据</li>
-</ol>
-<h3 id="一、-被监控端zabbix-agentd-conf的配置调整"><a href="#一、-被监控端zabbix-agentd-conf的配置调整" class="headerlink" title="一、 被监控端zabbix_agentd.conf的配置调整"></a>一、 被监控端zabbix_agentd.conf的配置调整</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_agentd.conf</span><br></pre></td></tr></table></figure>
-<pre>
-StartAgents=0                #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程
-#Server=172.16.100.84        #如果设置纯被动模式，应该注释掉这行
-ServerActive=172.16.100.84   #主动模式的serverip地址
-Hostname=172.16.100.47       #客户端的hostname，不配置则使用主机名
-RefreshActiveChecks=120      #被监控端到服务器获取监控项的周期，默认120S
-BufferSize=200               #被监控端存储监控信息的空间大小
-Timeout=3                    #超时时间
-</pre>
+        <p>Nginx通常作为两种应用，既：</p>
+<ul>
+<li>Web Server</li>
+<li>Web Reverse Proxy</li>
+</ul>
+<p>做为web服务器最核心的是<strong>http协议</strong>（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在<strong>80端口</strong>上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了<strong>MIME</strong>（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。</p>
+<p>互联网上访问一个资源是根据<strong>URL</strong>标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。</p>
+<p>http事务由两部分组成：</p>
+<ul>
+<li><p>request</p>
+<p>  格式：  <method> <url> <version> <headers></headers></version></url></method></p>
+<pre><code>&lt;body&gt;
+</code></pre></li>
+<li><p>response</p>
+<p>  格式： <version> <status> <reason phrase=""></reason></status></version></p>
+<pre><code>&lt;HEADERS&gt;
 
-<blockquote>
-<p>纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项</p>
-</blockquote>
-<h3 id="二、-调整监控模版"><a href="#二、-调整监控模版" class="headerlink" title="二、 调整监控模版"></a>二、 调整监控模版</h3><ol>
-<li>克隆一个temple os linux模版来修改</li>
-<li><p>全选</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>找到最下方的批量更新</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png" alt=""></p>
-</li>
-<li><p>类型打勾，选择主动式，然后更新</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png" alt=""></p>
-</li>
-<li><p>主机修改</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png" alt=""></p>
-</li>
-<li><p>这时候就有相关数据，如果硬盘或网卡监控没有数据</p>
-<p> <strong>模板</strong>&gt;&gt;<strong>主动监控模板名称</strong>&gt;&gt;<strong>自动发现规则</strong></p>
-<p> <img src="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true" alt=""></p>
-</li>
-<li><p>选择<strong>监控项原型</strong>-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用</p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png" alt=""></p>
-<p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png" alt=""></p>
-</li>
-<li><p>过会，网卡和硬盘的监控情况就出来了。</p>
-</li>
-</ol>
+&lt;body&gt;
+</code></pre></li>
+</ul>
+<p>method包括：</p>
+<ul>
+<li>GET</li>
+<li>HEADE</li>
+<li>POST</li>
+<li>PUT</li>
+<li>DELETE</li>
+<li>TRACE</li>
+<li>OPTIONS</li>
+</ul>
+<p>status:</p>
+<ul>
+<li>1xx: 信息类</li>
+<li>2xx: 成功类</li>
+<li>3xx: 重定向 301 302 304</li>
+<li>4xx: 客户端错误 404 401</li>
+<li>5xx: 502 504</li>
+</ul>
+<p>HEADE:</p>
+<ul>
+<li>通用首部</li>
+<li>请求首部<br>  If-Modified-Since、IF-None-Match</li>
+<li>响应首部</li>
+<li>实体首部</li>
+<li>扩展首部</li>
+</ul>
 
       
     </div>
@@ -501,7 +474,7 @@ Timeout=3                    #超时时间
       
         <div class="post-tags">
           
-            <a href="/tags/zabbix/" rel="tag"># zabbix</a>
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
           
         </div>
       
@@ -514,8 +487,8 @@ Timeout=3                    #超时时间
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/10/python_ping包检测/" rel="next" title="ping包检测">
-                <i class="fa fa-chevron-left"></i> ping包检测
+              <a href="/2015/02/27/Linux发行版本介绍/" rel="next" title="Linux基础">
+                <i class="fa fa-chevron-left"></i> Linux基础
               </a>
             
           </div>
@@ -524,8 +497,8 @@ Timeout=3                    #超时时间
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/23/zabbix报警/" rel="prev" title="zabbix报警">
-                zabbix报警 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/05/11/nginx/" rel="prev" title="nginx笔记">
+                nginx笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -578,17 +551,8 @@ Timeout=3                    #超时时间
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -652,22 +616,6 @@ Timeout=3                    #超时时间
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-被监控端zabbix-agentd-conf的配置调整"><span class="nav-number">1.1.</span> <span class="nav-text">一、 被监控端zabbix_agentd.conf的配置调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-调整监控模版"><span class="nav-number">1.2.</span> <span class="nav-text">二、 调整监控模版</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
