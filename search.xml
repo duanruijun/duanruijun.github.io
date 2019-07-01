@@ -1,499 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-    
-    <entry>
-      <title>jenkins基本使用</title>
-      <link href="/2019/02/15/jenkins%E8%87%AA%E5%AE%9A%E4%B9%89tag/"/>
-      <url>/2019/02/15/jenkins%E8%87%AA%E5%AE%9A%E4%B9%89tag/</url>
-      <content type="html"><![CDATA[<h1 id="创建证书步骤"><a href="#创建证书步骤" class="headerlink" title="创建证书步骤"></a>创建证书步骤</h1><h2 id="证书存放目录"><a href="#证书存放目录" class="headerlink" title="证书存放目录"></a>证书存放目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /home/gitsource/</span><br><span class="line">mkdir &lt;item_name&gt;</span><br><span class="line">cd &lt;item_name&gt;</span><br></pre></td></tr></table></figure><h2 id="创建全局存储证书"><a href="#创建全局存储证书" class="headerlink" title="创建全局存储证书"></a>创建全局存储证书</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure><h2 id="获取版本-账号-密码"><a href="#获取版本-账号-密码" class="headerlink" title="获取版本(账号|密码)"></a>获取版本(账号|密码)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone &lt;Gitlab_url&gt;</span><br></pre></td></tr></table></figure><h2 id="获取tag列表"><a href="#获取tag列表" class="headerlink" title="获取tag列表"></a>获取tag列表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git ls-remote -h -t &lt;Gitlab_url&gt; refs/tags/*</span><br></pre></td></tr></table></figure><h1 id="Jenkins配置"><a href="#Jenkins配置" class="headerlink" title="Jenkins配置"></a>Jenkins配置</h1><h2 id="添加动态选择变量"><a href="#添加动态选择变量" class="headerlink" title="添加动态选择变量"></a>添加动态选择变量</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 创建变量参数</span><br><span class="line">Dynamic Choice Parameter</span><br><span class="line"></span><br><span class="line">Name </span><br><span class="line">=&gt;select_tag</span><br><span class="line"></span><br><span class="line">Choices </span><br><span class="line"></span><br><span class="line">=&gt;</span><br><span class="line">proc1 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;git ls-remote -h -t http://git.epailive.com/epailive/phpweb.git refs/tags/v* &quot;].execute()</span><br><span class="line">proc2 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;awk &apos;&#123;print \$2&#125;&apos;&quot;].execute()</span><br><span class="line">proc3 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;sed s%^refs/heads%origin%&quot;].execute()</span><br><span class="line">proc4 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;sort -nr&quot;].execute()</span><br><span class="line">proc5 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;grep -v &#123;&#125;&quot;].execute()</span><br><span class="line"></span><br><span class="line">all = proc1 | proc2 | proc3 | proc4 |proc5</span><br><span class="line">String result = all.text</span><br><span class="line">result.tokenize()</span><br><span class="line"></span><br><span class="line">=&gt; 更改后，获取的字符串确实不用sed替换</span><br><span class="line">proc1 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;git ls-remote -h -t http://git.epailive.com/epailive/phpweb.git refs/tags/v* &quot;].execute()</span><br><span class="line">proc2 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;awk &apos;&#123;print \$2&#125;&apos;&quot;].execute()</span><br><span class="line">proc3 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;sort -nr&quot;].execute()</span><br><span class="line">proc4 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;grep -v &#123;&#125;&quot;].execute()</span><br><span class="line"></span><br><span class="line">all = proc1 | proc2 | proc3 | proc4</span><br><span class="line">String result = all.text</span><br><span class="line">result.tokenize()</span><br></pre></td></tr></table></figure><h2 id="修改gitlab拉取规则"><a href="#修改gitlab拉取规则" class="headerlink" title="修改gitlab拉取规则"></a>修改gitlab拉取规则</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 资源管理</span><br><span class="line">Git</span><br><span class="line"></span><br><span class="line"># Repository URL</span><br><span class="line">&lt;gitlab url&gt;</span><br><span class="line"></span><br><span class="line"># Credentials</span><br><span class="line">账号密码</span><br><span class="line"></span><br><span class="line"># Branch Specifier (blank for &apos;any&apos;)</span><br><span class="line">$&#123;select_tag&#125;</span><br><span class="line"></span><br><span class="line"># Additional Behaviours</span><br><span class="line">## check out to a sub-directory</span><br><span class="line">$&#123;BUILD_TAG&#125; //内置变量</span><br></pre></td></tr></table></figure>]]></content>
-      
+<search>
+  <entry>
+    <title><![CDATA[jenkins基本使用]]></title>
+    <url>%2F2019%2F02%2F15%2Fjenkins%E8%87%AA%E5%AE%9A%E4%B9%89tag%2F</url>
+    <content type="text"><![CDATA[创建证书步骤证书存放目录123cd /home/gitsource/mkdir &lt;item_name&gt;cd &lt;item_name&gt; 创建全局存储证书1git config --global credential.helper store 获取版本(账号|密码)1git clone &lt;Gitlab_url&gt; 获取tag列表1git ls-remote -h -t &lt;Gitlab_url&gt; refs/tags/* Jenkins配置添加动态选择变量12345678910111213141516171819202122232425262728# 创建变量参数Dynamic Choice ParameterName =&gt;select_tagChoices =&gt;proc1 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;git ls-remote -h -t http://git.epailive.com/epailive/phpweb.git refs/tags/v* &quot;].execute()proc2 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;awk &apos;&#123;print \$2&#125;&apos;&quot;].execute()proc3 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;sed s%^refs/heads%origin%&quot;].execute()proc4 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;sort -nr&quot;].execute()proc5 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;grep -v &#123;&#125;&quot;].execute()all = proc1 | proc2 | proc3 | proc4 |proc5String result = all.textresult.tokenize()=&gt; 更改后，获取的字符串确实不用sed替换proc1 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;git ls-remote -h -t http://git.epailive.com/epailive/phpweb.git refs/tags/v* &quot;].execute()proc2 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;awk &apos;&#123;print \$2&#125;&apos;&quot;].execute()proc3 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;sort -nr&quot;].execute()proc4 = [&apos;/bin/bash&apos;, &apos;-c&apos;, &quot;grep -v &#123;&#125;&quot;].execute()all = proc1 | proc2 | proc3 | proc4String result = all.textresult.tokenize() 修改gitlab拉取规则123456789101112131415# 资源管理Git# Repository URL&lt;gitlab url&gt;# Credentials账号密码# Branch Specifier (blank for &apos;any&apos;)$&#123;select_tag&#125;# Additional Behaviours## check out to a sub-directory$&#123;BUILD_TAG&#125; //内置变量]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> jenkins </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>一次数据表损坏的修复过程</title>
-      <link href="/2018/12/15/MySQL_%E4%B8%80%E6%AC%A1%E6%95%B0%E6%8D%AE%E8%A1%A8%E6%8D%9F%E5%9D%8F%E8%AE%B0%E5%BD%95%E4%BF%AE%E5%A4%8D/"/>
-      <url>/2018/12/15/MySQL_%E4%B8%80%E6%AC%A1%E6%95%B0%E6%8D%AE%E8%A1%A8%E6%8D%9F%E5%9D%8F%E8%AE%B0%E5%BD%95%E4%BF%AE%E5%A4%8D/</url>
-      <content type="html"><![CDATA[<p>## </p><h3 id="一、数据库表损坏"><a href="#一、数据库表损坏" class="headerlink" title="一、数据库表损坏"></a>一、数据库表损坏</h3><h4 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h4><p>mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表<strong>提示：表不存在</strong>，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">2019-01-25 13:46:19 13621 [Note] Server socket created on IP: '::'.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_master_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.ht</span><br><span class="line"></span><br><span class="line">ml for how you can resolve the problem.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] Info table is not ready to be used. Table 'mysql.slave_master_info' cannot be opened.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_worker_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.ht</span><br><span class="line"></span><br><span class="line">ml for how you can resolve the problem.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_relay_log_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting</span><br><span class="line"></span><br><span class="line">.html for how you can resolve the problem.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] Info table is not ready to be used. Table 'mysql.slave_relay_log_info' cannot be opened.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Note] Event Scheduler: Loaded 0 events</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Note] /usr/local/mysql/bin/mysqld: ready for connections.</span><br><span class="line"></span><br><span class="line">Version: '5.6.29-log'  socket: '/usr/local/mysql/mysqld.sock'  port: 3306  Source distribution</span><br><span class="line"></span><br><span class="line">2019-01-25 13:47:23 13621 [Note] /usr/local/mysql/bin/mysqld: Normal shutdown</span><br></pre></td></tr></table></figure><p> 上述日志获取到： InnoDB: Cannot open table mysql/slave_worker_info from the internal data dictionary of InnoDB though the .frm file for the table exists. 尽管表“slave_worker_info”已经存在，但是获取不到信息。而且报大量类似表的错误信息</p><p>解决</p><p> 根据错误提示及尝试打开表操作证明数据没有丢失，只是表丢失而已，把表删除，新建表结构，重新挂在数据节点即可：</p><ol><li><p>备份原始表数据（例如：这里操作auth_user表）</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls dataDir</span><br><span class="line"></span><br><span class="line">  auth_user.frm</span><br><span class="line"></span><br><span class="line">  auth_user.ibd</span><br></pre></td></tr></table></figure></li><li><p>删除表</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE IF EXISTS `auth_user</span><br></pre></td></tr></table></figure></li><li><p>删除ibd文件</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf  push_user_question_record.ibd</span><br></pre></td></tr></table></figure></li><li><p>重新创建表</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `auth_user</span><br></pre></td></tr></table></figure></li><li><p>丢弃新建表的表空间</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE auth_user DISCARD TABLESPACE;</span><br></pre></td></tr></table></figure></li><li><p>复制备份的数据信息</p> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\cp /BACKUPDIR/auth_user.* MYSQLDATA/DATABASES/</span><br></pre></td></tr></table></figure></li><li><p>授权</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R mysql.mysql base_area.*</span><br></pre></td></tr></table></figure></li><li><p>挂载数据</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE auth_user IMPORT TABLESPACE;</span><br></pre></td></tr></table></figure></li></ol><h3 id="二、用户添加索引权限"><a href="#二、用户添加索引权限" class="headerlink" title="二、用户添加索引权限"></a>二、用户添加索引权限</h3><p>mysql给用户添加索引权限：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant index on *.* to username@'%'</span><br></pre></td></tr></table></figure><p><strong>注意</strong>：</p><p>这里只是给用户赋予了添加和删除索引的权限，如果想要修改的话，用户\&lt;username>还需要有alter权限，否则会报如下错误：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1142 - ALTER command denied to user 'xxxx'@'xx.xx.xx.xx' tor table 'TABLE_NAME'</span><br></pre></td></tr></table></figure><p>添加alter权限：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant alter on  xx.xx to username@'xx'</span><br></pre></td></tr></table></figure><h3 id="三、停止执行过长的sql"><a href="#三、停止执行过长的sql" class="headerlink" title="三、停止执行过长的sql"></a>三、停止执行过长的sql</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span> show processlist;</span><br><span class="line"></span><br><span class="line">此时可以看到MySQL中正在运行的进程：</span><br><span class="line"><span class="meta">mysql&gt;</span> kill [Id NAME]</span><br></pre></td></tr></table></figure>]]></content>
-      
+      <tags>
+        <tag>jenkins</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[一次数据表损坏的修复过程]]></title>
+    <url>%2F2018%2F12%2F15%2FMySQL_%E4%B8%80%E6%AC%A1%E6%95%B0%E6%8D%AE%E8%A1%A8%E6%8D%9F%E5%9D%8F%E8%AE%B0%E5%BD%95%E4%BF%AE%E5%A4%8D%2F</url>
+    <content type="text"><![CDATA[一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket created on IP: '::'.2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_master_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.html for how you can resolve the problem.2019-01-25 13:46:19 13621 [Warning] Info table is not ready to be used. Table 'mysql.slave_master_info' cannot be opened.2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_worker_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.html for how you can resolve the problem.2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_relay_log_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.html for how you can resolve the problem.2019-01-25 13:46:19 13621 [Warning] Info table is not ready to be used. Table 'mysql.slave_relay_log_info' cannot be opened.2019-01-25 13:46:19 13621 [Note] Event Scheduler: Loaded 0 events2019-01-25 13:46:19 13621 [Note] /usr/local/mysql/bin/mysqld: ready for connections.Version: '5.6.29-log' socket: '/usr/local/mysql/mysqld.sock' port: 3306 Source distribution2019-01-25 13:47:23 13621 [Note] /usr/local/mysql/bin/mysqld: Normal shutdown 上述日志获取到： InnoDB: Cannot open table mysql/slave_worker_info from the internal data dictionary of InnoDB though the .frm file for the table exists. 尽管表“slave_worker_info”已经存在，但是获取不到信息。而且报大量类似表的错误信息 解决 根据错误提示及尝试打开表操作证明数据没有丢失，只是表丢失而已，把表删除，新建表结构，重新挂在数据节点即可： 备份原始表数据（例如：这里操作auth_user表） 12345ls dataDir auth_user.frm auth_user.ibd 删除表 1DROP TABLE IF EXISTS `auth_user 删除ibd文件 1rm -rf push_user_question_record.ibd 重新创建表 1CREATE TABLE `auth_user 丢弃新建表的表空间 1ALTER TABLE auth_user DISCARD TABLESPACE; 复制备份的数据信息 1\cp /BACKUPDIR/auth_user.* MYSQLDATA/DATABASES/ 授权 1chown -R mysql.mysql base_area.* 挂载数据 1ALTER TABLE auth_user IMPORT TABLESPACE; 二、用户添加索引权限mysql给用户添加索引权限： 1grant index on *.* to username@'%' 注意： 这里只是给用户赋予了添加和删除索引的权限，如果想要修改的话，用户\&lt;username>还需要有alter权限，否则会报如下错误： 11142 - ALTER command denied to user 'xxxx'@'xx.xx.xx.xx' tor table 'TABLE_NAME' 添加alter权限： 1grant alter on xx.xx to username@'xx' 三、停止执行过长的sql1234mysql&gt; show processlist;此时可以看到MySQL中正在运行的进程：mysql&gt; kill [Id NAME]]]></content>
       <categories>
-          
-          <category> 数据库 </category>
-          
+        <category>数据库</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> mysql </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title></title>
-      <link href="/2018/05/11/python_%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
-      <url>/2018/05/11/python_%E8%A3%85%E9%A5%B0%E5%99%A8/</url>
-      <content type="html"><![CDATA[<p>函数带参数</p><pre>#-*- coding:utf-8 -*-def outer(fun):    def wrapper(arg):        print_r('验证')        fun(arg)        print_r('你好')@outerdef Func1(arg):    print_r('func1', arg)    return 'return'a = Func1('sundshinerj')print_r(a)</pre><blockquote><p>结果</p></blockquote><pre>验证func1 sundshinerjnihaoreturn</pre>]]></content>
-      
-      
-    </entry>
-    
-    <entry>
-      <title>zabbix 监控cpu load</title>
-      <link href="/2018/03/12/zabbix_%E7%9B%91%E6%8E%A7CPUload/"/>
-      <url>/2018/03/12/zabbix_%E7%9B%91%E6%8E%A7CPUload/</url>
-      <content type="html"><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><ol><li>zabbix的cpu load要与系统（linux）上的对应（top）；</li><li>服务器的CPU核数不一致；</li><li>监控CPU核数总数/2触发报警；</li></ol><h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ol><li>要动态获取zabbix-agent的core；</li><li>两个监控项目对比的差异（cpu_load&gt;cpu_num/2）并触发相关报警。</li></ol><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><ol><li>在各agent端配置自定义key，并在zabbix-server上设置相关触发器；</li></ol><h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><ol><li>zabbix-server从触发器入手，直接动态获取；</li></ol><p>方法一固然可行，但是在服务器数量庞大的基础下，虽然通过ansible等之类的工具把自定义key推送过去后再配置触发器，这样是不是有点“笨拙”？能不能从zabbix-server现有的key中寻找另一条路呢？答案当然是可以的！</p><h3 id="关键的两个key"><a href="#关键的两个key" class="headerlink" title="关键的两个key"></a>关键的两个key</h3><ul><li>system.cpu.load[all,avg1]<ul><li>#1分钟的所有核数负载值</li></ul></li><li>system.cpu.num<ul><li>系统总核数</li></ul></li></ul><p>自定义触发器可参考<a href="http://www.ttlsa.com/zabbix/zabbix-trigger-expression/" target="_blank" rel="noopener">触发器表达式</a>,通过对自定义触发器的了解，就可以进行配置相关操作！</p><h3 id="展示效果"><a href="#展示效果" class="headerlink" title="展示效果"></a>展示效果</h3><p>{Template OS Linux-18:system.cpu.load[all,avg1].min(5m)}&gt;{Template OS Linux-18:system.cpu.num.last()}/2</p><blockquote><p>最近5分钟的负载大于一半的核数就触发报警</p></blockquote>]]></content>
-      
+      <tags>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>%2F2018%2F05%2F11%2Fpython_%E8%A3%85%E9%A5%B0%E5%99%A8%2F</url>
+    <content type="text"><![CDATA[函数带参数 #-*- coding:utf-8 -*- def outer(fun): def wrapper(arg): print_r('验证') fun(arg) print_r('你好') @outer def Func1(arg): print_r('func1', arg) return 'return' a = Func1('sundshinerj') print_r(a) 结果 验证 func1 sundshinerj nihao return]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix 监控cpu load]]></title>
+    <url>%2F2018%2F03%2F12%2Fzabbix_%E7%9B%91%E6%8E%A7CPUload%2F</url>
+    <content type="text"><![CDATA[场景 zabbix的cpu load要与系统（linux）上的对应（top）； 服务器的CPU核数不一致； 监控CPU核数总数/2触发报警； 思路 要动态获取zabbix-agent的core； 两个监控项目对比的差异（cpu_load&gt;cpu_num/2）并触发相关报警。 解决办法方法一 在各agent端配置自定义key，并在zabbix-server上设置相关触发器； 方法二 zabbix-server从触发器入手，直接动态获取； 方法一固然可行，但是在服务器数量庞大的基础下，虽然通过ansible等之类的工具把自定义key推送过去后再配置触发器，这样是不是有点“笨拙”？能不能从zabbix-server现有的key中寻找另一条路呢？答案当然是可以的！ 关键的两个key system.cpu.load[all,avg1] #1分钟的所有核数负载值 system.cpu.num 系统总核数 自定义触发器可参考触发器表达式,通过对自定义触发器的了解，就可以进行配置相关操作！ 展示效果{Template OS Linux-18:system.cpu.load[all,avg1].min(5m)}&gt;{Template OS Linux-18:system.cpu.num.last()}/2 最近5分钟的负载大于一半的核数就触发报警]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>jenkins maven项目实战1</title>
-      <link href="/2018/03/07/jenkins_maven%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%981/"/>
-      <url>/2018/03/07/jenkins_maven%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%981/</url>
-      <content type="html"><![CDATA[<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul><li>gitlab: <a href="http://192.168.62.206" target="_blank" rel="noopener">http://192.168.62.206</a></li><li>jenkins: <a href="http://192.168.62.210:8080" target="_blank" rel="noopener">http://192.168.62.210:8080</a></li><li>depserver: 192.168.63.116</li></ul><h2 id="实例说明"><a href="#实例说明" class="headerlink" title="实例说明"></a>实例说明</h2><ul><li>gitlab工程地址：<a href="mailto:git@192.168.62.206" target="_blank" rel="noopener">git@192.168.62.206</a>:Mall/eureka.git</li><li>jenkins构建完成后本地存放位置：/target</li><li>depserver工程目录：/home/jiagouzu/tingyun/target/</li></ul><h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol><li>jenkins通过gitlab pull工程代码</li><li>jenkins通过本地maven工具构建、打包工程代码</li><li>jenkins把完成的.jar推送到服务器<depserver>相应目录下</depserver></li></ol><h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol><li><p>jenkins pull代码时，gitlab要确保有jenkins的Deploy key</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new26.png" alt=""></p><p>key信息</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new27.png" alt=""></p></li><li><p>gitlab的项目“Mall/eureka”启用deploy key(settings–&gt; Repository–&gt;Deploy Keys)：</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new28.png" alt=""></p></li></ol><h2 id="jenkins配置说明"><a href="#jenkins配置说明" class="headerlink" title="jenkins配置说明"></a>jenkins配置说明</h2><h3 id="jenkins配置depServer节点"><a href="#jenkins配置depServer节点" class="headerlink" title="jenkins配置depServer节点"></a>jenkins配置depServer节点</h3><ol><li>添加depserver服务器节点（系统管理–&gt;系统设置–&gt;SSH Servers）</li><li><p>新建一个Server,完成后选择高级配置相关信息：</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new29.png" alt=""></p><blockquote><p>其他保持默认，最后选择<strong>Test Configuration</strong>可测试下</p></blockquote><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new30.png" alt=""></p></li></ol><h3 id="配置拉取gitlab地址私钥信息"><a href="#配置拉取gitlab地址私钥信息" class="headerlink" title="配置拉取gitlab地址私钥信息"></a>配置拉取gitlab地址私钥信息</h3><p>这里就不多讲了，具体步骤可见<a href="https://duanruijun.github.io/2018/02/23/jenkins/" target="_blank" rel="noopener">jenkins基本使用</a></p><h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><ol><li>新建一个项目，类型为自由风格的（maven类型有很多限制），这里我的名称为“商城”</li><li><p>配置“商城”，在General标签里配置相关信息，注意点开“高级”选择“使用自定义的工作空间”</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new31.png" alt=""></p></li><li><p>源码管理</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new32.png" alt=""></p></li><li><p>构建触发器</p><p>手动还是自动构建，这里也可以看之前的文章<a href="https://duanruijun.github.io/2018/02/23/jenkins/" target="_blank" rel="noopener">jenkins基本使用</a></p></li><li><p>构建环境</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new33.png" alt=""></p></li><li><p>构建（mvn命令执行构建）</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new34.png" alt=""></p><p>这里注意mvn命令的位置，jenkins默认安装选择在</p><pre>/home/apache-maven-3.5.2/bin/mvn</pre><p>可通过（系统管理–&gt;全局工具配置）进行相应的更改，但要给予jenkins执行的权限，这里我把命令ln到/usr/local/bin目录下，chmod +x mvn</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new35.png" alt=""></p><p>如果没有设置会报类似错误：</p><pre>[/target] $ /bin/sh -xe /tmp/jenkins6497126245319590786.sh+ mvn clean package/tmp/jenkins6497126245319590786.sh: line 2: mvn: command not foundBuild step 'Execute shell' marked build as failureSSH: Current build result is [FAILURE], not going to run.</pre></li><li><p>构建后操作（完成构建后的部署工作）</p><p>选择“Send build artifacts over SSH”,注意要安装 over ssh插件</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/jenkins_new36.png" alt=""></p><p>注意： 这里的<strong>Remote directory</strong>指的就是前面配置depserver的工程目录地址“/home/jiagouzu/tingyun”</p></li><li><p>点击完成后就可以测试了，默认maven构建的配置文件直接找的官方地址，在构建日志当中会出现如下信息</p><pre>https://repo.maven.apache.org/maven2/org/hibernate/hibernate-validator/5.3.6.Final/hibernate-validator-5.3.6.Final.jar (727 kB at 2.4 kB/s)Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-actuator/1.5.9.RELEASE/spring-boot-starter-actuator-1.5.9.RELEASE.jar</pre><p>这里需要注意：</p><p>第一次构建时，maven需要下载部署工程所需要的jar包；</p><p>改善办法之一是同开发要一份maven构建工具的settings.xml 配置文件替换你的maven工具里的settings.xml（一般开发会有自己的内部仓库），在这里是我的jenkins服务器中的“/home/apache-maven-3.5.2/conf/settings.xml”，注意修改里面的“<localrepository>/MavenRepository</localrepository>”这是指你存放maven工具所需jar包的目录，别忘了给jenkins能执行的权限。</p></li><li><p>最后测试输出类似信息证明配置成功：</p><pre>[INFO] BUILD SUCCESS[INFO] ------------------------------------------------------------------------[INFO] Total time: 4.246 s[INFO] Finished at: 2018-03-07T14:54:53+08:00[INFO] Final Memory: 36M/203M[INFO] ------------------------------------------------------------------------SSH: Failed to get hostname [192v168v62v210: 192v168v62v210: 未知的名称或服务]SSH: Connecting with configuration [192.168.63.116] ...SSH: EXEC: STDOUT/STDERR from command [/bin/bash /home/mall_start.sh start] ...SSH: EXEC: completed after 200 msSSH: Disconnecting configuration [192.168.63.116] ...SSH: Transferred 1 file(s)Finished: SUCCESS</pre></li></ol>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[jenkins maven项目实战1]]></title>
+    <url>%2F2018%2F03%2F07%2Fjenkins_maven%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%981%2F</url>
+    <content type="text"><![CDATA[环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116 实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagouzu/tingyun/target/ 流程 jenkins通过gitlab pull工程代码 jenkins通过本地maven工具构建、打包工程代码 jenkins把完成的.jar推送到服务器相应目录下 注意事项 jenkins pull代码时，gitlab要确保有jenkins的Deploy key key信息 gitlab的项目“Mall/eureka”启用deploy key(settings–&gt; Repository–&gt;Deploy Keys)： jenkins配置说明jenkins配置depServer节点 添加depserver服务器节点（系统管理–&gt;系统设置–&gt;SSH Servers） 新建一个Server,完成后选择高级配置相关信息： 其他保持默认，最后选择Test Configuration可测试下 配置拉取gitlab地址私钥信息这里就不多讲了，具体步骤可见jenkins基本使用 创建项目 新建一个项目，类型为自由风格的（maven类型有很多限制），这里我的名称为“商城” 配置“商城”，在General标签里配置相关信息，注意点开“高级”选择“使用自定义的工作空间” 源码管理 构建触发器 手动还是自动构建，这里也可以看之前的文章jenkins基本使用 构建环境 构建（mvn命令执行构建） 这里注意mvn命令的位置，jenkins默认安装选择在 /home/apache-maven-3.5.2/bin/mvn 可通过（系统管理–&gt;全局工具配置）进行相应的更改，但要给予jenkins执行的权限，这里我把命令ln到/usr/local/bin目录下，chmod +x mvn 如果没有设置会报类似错误： [/target] $ /bin/sh -xe /tmp/jenkins6497126245319590786.sh + mvn clean package /tmp/jenkins6497126245319590786.sh: line 2: mvn: command not found Build step 'Execute shell' marked build as failure SSH: Current build result is [FAILURE], not going to run. 构建后操作（完成构建后的部署工作） 选择“Send build artifacts over SSH”,注意要安装 over ssh插件 注意： 这里的Remote directory指的就是前面配置depserver的工程目录地址“/home/jiagouzu/tingyun” 点击完成后就可以测试了，默认maven构建的配置文件直接找的官方地址，在构建日志当中会出现如下信息 https://repo.maven.apache.org/maven2/org/hibernate/hibernate-validator/5.3.6.Final/hibernate-validator-5.3.6.Final.jar (727 kB at 2.4 kB/s) Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-actuator/1.5.9.RELEASE/spring-boot-starter-actuator-1.5.9.RELEASE.jar 这里需要注意： 第一次构建时，maven需要下载部署工程所需要的jar包； 改善办法之一是同开发要一份maven构建工具的settings.xml 配置文件替换你的maven工具里的settings.xml（一般开发会有自己的内部仓库），在这里是我的jenkins服务器中的“/home/apache-maven-3.5.2/conf/settings.xml”，注意修改里面的“/MavenRepository”这是指你存放maven工具所需jar包的目录，别忘了给jenkins能执行的权限。 最后测试输出类似信息证明配置成功： [INFO] BUILD SUCCESS [INFO] ------------------------------------------------------------------------ [INFO] Total time: 4.246 s [INFO] Finished at: 2018-03-07T14:54:53+08:00 [INFO] Final Memory: 36M/203M [INFO] ------------------------------------------------------------------------ SSH: Failed to get hostname [192v168v62v210: 192v168v62v210: 未知的名称或服务] SSH: Connecting with configuration [192.168.63.116] ... SSH: EXEC: STDOUT/STDERR from command [/bin/bash /home/mall_start.sh start] ... SSH: EXEC: completed after 200 ms SSH: Disconnecting configuration [192.168.63.116] ... SSH: Transferred 1 file(s) Finished: SUCCESS]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> jenkins </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>书籍</title>
-      <link href="/2018/03/05/books/"/>
-      <url>/2018/03/05/books/</url>
-      <content type="html"><![CDATA[<p><a href="https://book.douban.com/subject/10786473/" target="_blank" rel="noopener">《自控力》</a></p>]]></content>
-      
+      <tags>
+        <tag>jenkins</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[devops书籍]]></title>
+    <url>%2F2018%2F03%2F05%2Fdevops%E4%B9%A6%E7%B1%8D%2F</url>
+    <content type="text"><![CDATA[书籍收藏]]></content>
       <categories>
-          
-          <category> books </category>
-          
+        <category>DevOps</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 书籍 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>devops书籍</title>
-      <link href="/2018/03/05/devops%E4%B9%A6%E7%B1%8D/"/>
-      <url>/2018/03/05/devops%E4%B9%A6%E7%B1%8D/</url>
-      <content type="html"><![CDATA[<p><a href="https://mp.weixin.qq.com/s?__biz=MzIyMjQ2Mjc1NQ==&amp;mid=2247484717&amp;idx=1&amp;sn=9e0cf37bf7e6b89b54e1859b691cc17a&amp;chksm=e82c5361df5bda775f0f5575306651f94f5bd0b1f37870c1741bd6fdeeca0233e505857be7d7&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">书籍收藏</a></p>]]></content>
-      
+      <tags>
+        <tag>devops书籍</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[书籍]]></title>
+    <url>%2F2018%2F03%2F05%2Fbooks%2F</url>
+    <content type="text"><![CDATA[《自控力》]]></content>
       <categories>
-          
-          <category> DevOps </category>
-          
+        <category>books</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> devops书籍 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>django笔记</title>
-      <link href="/2018/02/27/django%E7%AC%94%E8%AE%B0/"/>
-      <url>/2018/02/27/django%E7%AC%94%E8%AE%B0/</url>
-      <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>官网很多相关文档，省略。。。</p><p>一些文档是整理的网上资源，可以参考<a href="https://www.cnblogs.com/yuanchenqi/articles/6083427.html" target="_blank" rel="noopener"><strong>Yuan先生</strong></a> 的技术博客。</p><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul><li>python： 3.6</li><li>pip： 9.0.1</li><li>django： 1.11.7</li></ul><h2 id="安装Django"><a href="#安装Django" class="headerlink" title="安装Django"></a>安装Django</h2><ul><li>根据自己环境安装pip</li><li>pip install Django</li></ul><h2 id="新建django工程"><a href="#新建django工程" class="headerlink" title="新建django工程"></a>新建django工程</h2><ul><li>创建Django工程（根据自己环境配置修改）</li></ul><pre>c:\Python36\Scripts\django-admin.exe startproject mysite</pre><p>mysite：django工程名称</p><ul><li>cd mysite目录下</li></ul><pre>python manage.py startapp blog</pre><p>blog：应用名称</p><h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><pre>python manage.py runserver 8090</pre><h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p>mysite目录</p><ul><li>manage.py     #入口文件</li><li>mysite<ul><li>__init__.py    #初始化文件</li><li>settings.py    #项目主配置文件</li><li>urls.py        #路由分配配置文件</li><li>wsgi.py        #Django web server(封装socket,解析APP)</li></ul></li></ul><p>blog目录</p><ul><li>__init__.py</li><li>admin.py    </li><li>apps.py</li><li>models.py #数据库相关配置(orm)</li><li>tests.py    #检测、测试</li><li>views.py  #视图函数</li></ul><h2 id="settings-py文件配置"><a href="#settings-py文件配置" class="headerlink" title="settings.py文件配置"></a>settings.py文件配置</h2><h3 id="定义templates位置"><a href="#定义templates位置" class="headerlink" title="定义templates位置"></a>定义templates位置</h3><p>修改<strong>TEMPLATES</strong>中的<strong>DIRS:</strong></p><pre>'DIRS': [os.path.join(BASE_DIR, 'templates')],</pre><p>最后效果为</p><pre>TEMPLATES = [    {        'BACKEND': 'django.template.backends.django.DjangoTemplates',        'DIRS': [os.path.join(BASE_DIR, 'templates')],        'APP_DIRS': True,        'OPTIONS': {            'context_processors': [                'django.template.context_processors.debug',                'django.template.context_processors.request',                'django.contrib.auth.context_processors.auth',                'django.contrib.messages.context_processors.messages',            ],        },    },]</pre><h3 id="创建APP后要在-INSTALLED-APPS-添加相应名称"><a href="#创建APP后要在-INSTALLED-APPS-添加相应名称" class="headerlink" title="创建APP后要在 INSTALLED_APPS 添加相应名称"></a>创建APP后要在 <strong>INSTALLED_APPS</strong> 添加相应名称</h3><p>比如，我这里创建的是blog应用</p><pre>INSTALLED_APPS = [    'django.contrib.admin',    'django.contrib.auth',    'django.contrib.contenttypes',    'django.contrib.sessions',    'django.contrib.messages',    'django.contrib.staticfiles',    'blog',]</pre><h3 id="添加mysql数据库连接"><a href="#添加mysql数据库连接" class="headerlink" title="添加mysql数据库连接"></a>添加mysql数据库连接</h3><p><strong>DATABASES</strong> 中修改</p><pre>DATABASES = {    'default': {        # 'ENGINE': 'django.db.backends.sqlite3',        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),        'ENGINE': 'django.db.backends.mysql',        'NAME': 'DBNAME',        'USER': 'username',        'PASSWORD': 'password',        'HOST': 'db_host',        'PORT': 'port',    }}</pre><h3 id="注释掉错误警告"><a href="#注释掉错误警告" class="headerlink" title="注释掉错误警告"></a>注释掉错误警告</h3><pre>MIDDLEWARE = [    'django.middleware.security.SecurityMiddleware',    'django.contrib.sessions.middleware.SessionMiddleware',    'django.middleware.common.CommonMiddleware',    # 'django.middleware.csrf.CsrfViewMiddleware',    'django.contrib.auth.middleware.AuthenticationMiddleware',    'django.contrib.messages.middleware.MessageMiddleware',    'django.middleware.clickjacking.XFrameOptionsMiddleware',]</pre><h3 id="指定静态文件位置（如：js、css、jpg等）"><a href="#指定静态文件位置（如：js、css、jpg等）" class="headerlink" title="指定静态文件位置（如：js、css、jpg等）"></a>指定静态文件位置（如：js、css、jpg等）</h3><pre>STATICFILES_DIRS = (    os.path.join(BASE_DIR, 'statics'))</pre><h2 id="开启配置之旅"><a href="#开启配置之旅" class="headerlink" title="开启配置之旅"></a>开启配置之旅</h2><p>第一个页面</p><h3 id="blog-APP下views-py文件添加一个展示数据的函数"><a href="#blog-APP下views-py文件添加一个展示数据的函数" class="headerlink" title="blog APP下views.py文件添加一个展示数据的函数"></a>blog APP下views.py文件添加一个展示数据的函数</h3><pre>from django.shortcuts import render, HttpResponse# Create your views here.def cur_time(request):    return HttpResponse('hello world!')</pre><ul><li>request： 请求，参数可以自定义，但必须有</li><li>HttpResponse： 返回（当请求成功后要返回的信息）</li></ul><h3 id="mysite下的urls-py添加相关路由信息"><a href="#mysite下的urls-py添加相关路由信息" class="headerlink" title="mysite下的urls.py添加相关路由信息"></a>mysite下的urls.py添加相关路由信息</h3><pre>from blog import views    #导入blog下的views模块urlpatterns = [    url(r'^admin/', admin.site.urls),    url(r'^cur_time', views.cur_time),]</pre><p>运行启动命令</p><pre>python manage.py runserver 8090</pre><p>浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。</p><h3 id="添加html文件"><a href="#添加html文件" class="headerlink" title="添加html文件"></a>添加html文件</h3><p>之前在 <strong>settings.py</strong> 配置文件中指定了html文件的路径。所以，django会在 <strong>templates</strong> 目录下获取html文件，在mysite工程下新建一个 <strong>templates</strong> 目录，最后整个工程目录机构为：</p><p>mysite</p><ul><li>+mysite</li><li>+blog</li><li>+templates</li></ul><p>在templates目录下新键一个cur_time.html的html文件并进行编辑，最后代码为</p><blockquote><p>cat views.py</p></blockquote><pre>from django.shortcuts import render, HttpResponse# Create your views here.import datetimedef cur_time(request):    times = datetime.datetime.now()    return render(request, 'cur_time.html', {'abc': times})</pre><blockquote><p>cat cur_time.html</p></blockquote><pre>&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;body&gt;当前时间：&lt;/body&gt;&lt;/html&gt;</pre><p>解释</p><ul><li>render： 模版渲染,第一个是请求参数&lt;request&gt;,第二个参数是跳转的url名称，第三个是传递变量 <strong>abc</strong></li><li>cur_time.html中的｛｛｝｝是jinja2的模版语言，<strong>abc</strong> 则是render传过来的变量名，<strong>注意两边有空格</strong></li></ul><p>再次访问浏览器，应该就能看到当前时间了。</p><h2 id="HttpResponse与render的区别"><a href="#HttpResponse与render的区别" class="headerlink" title="HttpResponse与render的区别"></a>HttpResponse与render的区别</h2><ul><li>HttpResponse： <ul><li>一个类，后面跟一个字符串，是实例化的一个对象，直接返回给客户端浏览器，django所有返回给客户端浏览器都是通过这个类实现的</li></ul></li><li>render<ul><li>渲染工作，首先指定一个html文件，解析完成后调用HttpResponse类返回给客户端浏览器，html文件中的变量、｛｝都不会显示在客户端浏览器上</li></ul></li></ul><h2 id="数据库连接"><a href="#数据库连接" class="headerlink" title="数据库连接"></a>数据库连接</h2><p>做一个userInfo信息表单，当用户填入相关信息提交后，数据存入数据库中，并展示信息功能</p><h3 id="如前面settings-py中的配置文件指定的数据库"><a href="#如前面settings-py中的配置文件指定的数据库" class="headerlink" title="如前面settings.py中的配置文件指定的数据库"></a>如前面settings.py中的配置文件指定的数据库</h3><p>userInfo信息有三个字段：username、sex、email,所以需要在blog中的models.py进行初始化数据库操作</p><pre>from django.db import models# Create your models here.class UserInfo(models.Model):    username = models.CharField(max_length=64)    sex = models.CharField(max_length=64)    email = models.CharField(max_length=64)</pre><p>运行初始化数据命令</p><pre>python manage.py makemigrations</pre><p>如果报类似如下错误</p><pre>  File "C:\Python36\lib\site-packages\django\db\__init__.py", line 33, in __getattr__    return getattr(connections[DEFAULT_DB_ALIAS], item)  File "C:\Python36\lib\site-packages\django\db\utils.py", line 211, in __getitem__    backend = load_backend(db['ENGINE'])  File "C:\Python36\lib\site-packages\django\db\utils.py", line 115, in load_backend    return import_module('%s.base' % backend_name)  File "C:\Python36\lib\importlib\__init__.py", line 126, in import_module    return _bootstrap._gcd_import(name[level:], package, level)  File "C:\Python36\lib\site-packages\django\db\backends\mysql\base.py", line 30, in <module>    'Did you install mysqlclient or MySQL-python?' % edjango.core.exceptions.ImproperlyConfigured: Error loading MySQLdb module: No module named 'MySQLdb'.Did you install mysqlclient or MySQL-python?</module></pre><p>原因：python3不支持MySQLdb，需要在工程<strong>mysite</strong>下的<strong>init</strong>.py文件中添加如下内容</p><pre>import pymysqlpymysql.install_as_MySQLdb()</pre><h4 id="切记"><a href="#切记" class="headerlink" title="切记"></a>切记</h4><ol><li><p>settings.py里的<strong>INSTALLED_APPS</strong>添加应用名称，否则报错：</p> <pre>  File "C:\Python36\lib\site-packages\django\db\models\base.py", line 118, in __new__ "INSTALLED_APPS." % (module, name)RuntimeError: Model class blog.models.UserInfo doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS. </pre></li><li><p>django不会创建数据库，所以要提前手动创建。</p></li></ol><h3 id="mysite下的urls-py添加路由指向"><a href="#mysite下的urls-py添加路由指向" class="headerlink" title="mysite下的urls.py添加路由指向"></a>mysite下的urls.py添加路由指向</h3><pre>from django.conf.urls import urlfrom django.contrib import adminfrom blog import viewsurlpatterns = [    url(r'^admin/', admin.site.urls),    url(r'^cur_time', views.cur_time),    url(r'^userInfo', views.userInfo),  #添加userInfo路由指向]</pre><h3 id="views-py更新后的内容为："><a href="#views-py更新后的内容为：" class="headerlink" title="views.py更新后的内容为："></a>views.py更新后的内容为：</h3><pre>from django.shortcuts import render, HttpResponsefrom blog import models    #导入models模块，用于数据库操作# Create your views here.import datetimedef cur_time(request):    times = datetime.datetime.now()    # return HttpResponse('hello world!')    return render(request, 'cur_time.html', {'abc': times})def userInfo(req):    if req.method == "POST":        u = req.POST.get('username', None)        s = req.POST.get('sex', None)        e = req.POST.get('email', None)        # user={'username':username,"sex": sex, "email": email}        models.UserInfo.objects.create(  #插入数据            username=u,            sex=s,            email=e        )    user_list = models.UserInfo.objects.all() #从数据库中获取所有数据    return render(req, "index.html", {"user_list": user_list})</pre><h3 id="index-html文件内容"><a href="#index-html文件内容" class="headerlink" title="index.html文件内容"></a>index.html文件内容</h3><pre>&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;body&gt;    &lt;form action="/userInfo/" method="post"&gt;        &lt;p&gt;姓名&lt;input type="text" name="username"&gt;&lt;/p&gt;        &lt;p&gt;性别&lt;input type="text" name="sex"&gt;&lt;/p&gt;        &lt;p&gt;邮箱&lt;input type="text" name="email"&gt;&lt;/p&gt;        &lt;p&gt;&lt;input type="submit" value="submit"&gt;&lt;/p&gt;    &lt;/form&gt;    &lt;table border="1px"&gt;        &lt;tr&gt;            &lt;td&gt;姓名&lt;/td&gt;            &lt;td&gt;性别&lt;/td&gt;            &lt;td&gt;邮箱&lt;/td&gt;        &lt;/tr&gt;            &lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</pre><p>表单以 <strong>post</strong> 提交后跳转到 <strong>userInfo</strong> 页面。</p><h2 id="Django-URL-路由系统"><a href="#Django-URL-路由系统" class="headerlink" title="Django URL(路由系统)"></a>Django URL(路由系统)</h2><p>URL配置(URLconf)就像Django 所支撑网站的目录。它的本质是URL模式以及要为该URL模式调用的视图函数之间的映射表；你就是以这种方式告诉Django，对于这个URL调用这段代码，对于那个URL调用那段代码。</p><pre>urlpatterns = [    url(正则表达式, views视图函数，参数，别名),]</pre><p>参数：</p><ul><li>一个正则表达式字符串</li><li>一个可调用对象，通常为一个视图函数或一个指定视图函数路径的字符串</li><li>可选的要传递给视图函数的默认参数（字典形式）</li><li>一个可选的name参数</li></ul><blockquote><p>示例</p></blockquote><pre>from django.conf.urls import urlfrom django.contrib import adminfrom blog import viewsurlpatterns = [    url(r'^admin/', admin.site.urls),    url(r'^cur_time', views.cur_time),    url(r'^userInfo', views.userInfo),    url(r'^articles/2003/$', views.special_case_2003),    #url(r'^articles/[0-9]{4}/$', views.year_archive),    url(r'^articles/([0-9]{4})/$', views.year_archive),  #no_named group    url(r'^articles/([0-9]{4})/([0-9]{2})/$', views.month_archive),    url(r'^articles/([0-9]{4})/([0-9]{2})/([0-9]+)/$', views.article_detail),]</pre><ul><li>URL匹配规则是<strong>由上到下</strong>，比如url(r’^articles/2003/$’, views.special_case_2003)和url(r’^articles/([0-9]{4})/$’, views.year_archive) 这两条，都是匹配四个数字。如果URL是articles/2003，虽然也属于^articles/([0-9]{4})，但是会优先匹配url(r’^articles/2003/$’, views.special_case_2003)。</li><li>正则表达式添加（）后，指定的views的视图函数也要增加一个自定义的<strong>形参</strong>，如上面的url(r’^articles/([0-9]{4})/$’, views.year_archive)，在views.year_archive中的year_archive视图函数定义时也要添加一个形参：</li></ul><pre>def year_archive(req,year):    return HttpResponse(year)</pre><p>浏览器访问时就会返回year值</p><p>多个()，year_archive要设定多个形参</p><h3 id="正则分组（Named-groups）"><a href="#正则分组（Named-groups）" class="headerlink" title="正则分组（Named groups）"></a>正则分组（Named groups）</h3><p>有时候URL传参需要指定值，这里就会用到Python正则表达式的<strong>?P<name>pattern</name></strong>，</p><blockquote><p>named groups</p></blockquote><pre>ret=re.search('(?P<id>\d{3})/(?P<name>\w{3})','weeew34ttt123/ooo')print(ret.group())print(ret.group('id'))print(ret.group('name'))</name></id></pre><pre>from django.conf.urls import urlfrom . import viewsurlpatterns = [    url(r'^articles/2003/$', views.special_case_2003),    url(r'^articles/(?P<year>[0-9]{4})/$', views.year_archive),    url(r'^articles/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', views.month_archive),    url(r'^articles/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})/$', views.article_detail),]</day></month></year></month></year></year></pre><h3 id="参数名称（name-param）"><a href="#参数名称（name-param）" class="headerlink" title="参数名称（name param）"></a>参数名称（name param）</h3><pre>urlpatterns = [    url(r'^index',views.index,name='bieming'),]</pre><pre>def index(req):    if req.method=='POST':        username=req.POST.get('username')        password=req.POST.get('password')        if username=='alex' and password=='123':            return HttpResponse("登陆成功")    return render(req,'index.html')</pre><pre>&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;body&gt;    &lt;form action="｛% url 'bieming' %｝" method="post"&gt;         用户名:&lt;input type="text" name="username"&gt;         密码:&lt;input type="password" name="password"&gt;         &lt;input type="submit" value="submit"&gt;     &lt;/form&gt;&lt;/body&gt;&lt;/html&gt;</pre><h3 id="导入其他URLconfs"><a href="#导入其他URLconfs" class="headerlink" title="导入其他URLconfs"></a>导入其他URLconfs</h3><pre>#At any point, your urlpatterns can “include” other URLconf modules. This#essentially “roots” a set of URLs below other ones.#For example, here’s an excerpt of the URLconf for the Django website itself.#It includes a number of other URLconfs:from django.conf.urls import include, urlurlpatterns = [   url(r'^admin/', admin.site.urls),   url(r'^blog/', include('blog.urls')),]</pre><h2 id="Django-Views-视图函数"><a href="#Django-Views-视图函数" class="headerlink" title="Django Views(视图函数)"></a>Django Views(视图函数)</h2><p>浏览器 –(Rquest)–&gt; WebServer</p><p>浏览器 &lt;–(Response)– WebServer</p><p>http请求中产生两个核心对象：</p><pre><code>- http请求： HttpRequest对象- http响应： HttpResponse对象</code></pre><ol><li><p>HttpRequest对象的属性和方法：</p> <pre> # path：       请求页面的全路径，不包括域名 # # method：     请求中使用的HTTP方法的字符串表示。全大写表示。例如 # #                    if  req.method=="GET": # #                              do_something() # #                    elseif req.method=="POST": # #                              do_something_else() # # GET:         包含所有HTTP GET参数的类字典对象 # # POST：       包含所有HTTP POST参数的类字典对象 # #              服务器收到空的POST请求的情况也是可能发生的，也就是说，表单form通过 #              HTTP POST方法提交请求，但是表单中可能没有数据，因此不能使用 #              if req.POST来判断是否使用了HTTP POST 方法；应该使用  if req.method=="POST" # # # # COOKIES:     包含所有cookies的标准Python字典对象；keys和values都是字符串。 # # FILES：      包含所有上传文件的类字典对象；FILES中的每一个Key都是<input type="file" name="">标签中                     name属性的值，FILES中的每一个value同时也是一个标准的python字典对象，包含下面三个Keys： # #             filename：      上传文件名，用字符串表示 #             content_type:   上传文件的Content Type #             content：       上传文件的原始内容 # # # user：       是一个django.contrib.auth.models.User对象，代表当前登陆的用户。如果访问用户当前 #              没有登陆，user将被初始化为django.contrib.auth.models.AnonymousUser的实例。你 #              可以通过user的is_authenticated()方法来辨别用户是否登陆： #              if req.user.is_authenticated();只有激活Django中的AuthenticationMiddleware #              时该属性才可用 # # session：    唯一可读写的属性，代表当前会话的字典对象；自己有激活Django中的session支持时该属性才可用。 #方法 get_full_path(),   比如：http://127.0.0.1:8000/index33/?name=123 ,req.get_full_path()得到的结果就是/index33/?name=123 req.path:/index33 </pre><p> 注意一个常用方法：<strong>request.POST.getlist(‘’)</strong></p></li><li><p>HttpResponse对象：</p><p> 对于HttpRequest对象来说，是由django自动创建的，但是，HttpResponse对象就必须我们自己创建。每个view请求处理方法必须返回一个HttpResponse对象。</p><p> HttpResponse类在django.http.HttpResponse</p><p> 在HttpResponse对象上扩展的常用方法：</p> <pre> 页面渲染：         render()（推荐）<br>                  render_to_response(), 页面跳转：         redirect("路径") locals()：    可以直接将函数中所有的变量传给模板 </pre><p> url.py</p> <pre> url(r"login",   views.login), url(r"yuan_back",   views.yuan_back), </pre><p> views.py</p> <pre> def login(req):     if req.method=="POST":         if 1:             # return redirect("/yuan_back/")             name="yuanhao"             return render(req,"my backend.html",locals())     return render(req,"login.html",locals()) def yuan_back(req):     name="duanruijun"     return render(req,"my backend.html",locals()) </pre><p> login.html</p> <pre> &lt;form action="/login/" method="post"&gt;     &lt;p&gt;姓名&lt;input type="text" name="username"&gt;&lt;/p&gt;     &lt;p&gt;性别&lt;input type="text" name="sex"&gt;&lt;/p&gt;     &lt;p&gt;邮箱&lt;input type="text" name="email"&gt;&lt;/p&gt;     &lt;p&gt;&lt;input type="submit" value="submit"&gt;&lt;/p&gt; &lt;/form&gt; </pre><p> my backend.html</p> <pre> &lt;h1&gt;用户｛｛ name ｝｝你好&lt;/h1&gt; </pre> <pre> #总结: render和redirect的区别: #   1 if render的页面需要模板语言渲染,需要的将数据库的数据加载到html,那么所有的这一部分 #     除了写在yuan_back的视图函数中,必须还要写在login中,代码重复,没有解耦. #   2 the most important: url没有跳转到/yuan_back/,而是还在/login/,所以当刷新后 #     又得重新登录. </pre></li></ol><h2 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h2><h3 id="什么是模版语言"><a href="#什么是模版语言" class="headerlink" title="什么是模版语言"></a>什么是模版语言</h3><p>简单说就是html+逻辑控制语句。</p><h3 id="模版常用用例-–-万能的句号点（-）"><a href="#模版常用用例-–-万能的句号点（-）" class="headerlink" title="模版常用用例 – 万能的句号点（.）"></a>模版常用用例 – 万能的句号点（.）</h3><p>urls.py</p><pre>from django.conf.urls import urlfrom django.contrib import adminfrom app01 import viewsurlpatterns = [    url(r'^admin/', admin.site.urls),    url(r'^index/', views.index),</pre><p>views.py</p><pre>from django.shortcuts import renderimport datetime# Create your views here.def index(req):    class profile(object):        def __init__(self, name, age):            self.name = name            self.age = age    s1 = [1,22,333]    s2 = {'username': 'duanrj', 'email': '123@qq.com'}    s3 = datetime.datetime.now()    s4 = profile("Bob", "20")    s5 = 'hello'    s6 = 6    s7 = []    s8 = "<a href="#">跳转</a>"    return render(req, 'index.html', {        'value1': s1,        'value2': s2,        'value3': s3,        'value4': s4,        'value5': s5,        'value6': s6,        'value7': s7,        'value8': s8,    })</pre><p>index.html</p><pre>&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;body&gt;====打印列表第n个值====<br>｛｛ value1.2 ｝｝<br>====打印dict的username值====<br>｛｛ value2.username ｝｝<br>打印对象的属性<br>｛｛ value3.year ｝｝<br>====打印对象的属性2====<br>｛｛ value4 ｝｝<br>｛｛ value4.name ｝｝<br>｛｛ value4.age ｝｝<br>====模版语言中的遍历====｛% for i in obj %｝    <p>｛｛ forloop.counter ｝｝:｛｛ i ｝｝</p><br> //索引从1开始    <p>｛｛ forloop.counter0 ｝｝:｛｛ i ｝｝</p><br> //索引从0开始｛% endfor %｝====filter:小写转为大写====<br>｛｛ value5 | upper ｝｝<br>｛｛ value5 | lower ｝｝<br>｛｛ value5 | capfirst ｝｝<br>｛｛ value5 | first ｝｝<br>====算数运算====<br>｛｛ value6 | add:5 ｝｝<br>====为空时提示信息====<br>｛｛ value7 | default:'空的' ｝｝<br>====当成普通字符串处理====<br>｛｛ value8 ｝｝<br>如果想把类似于html 标签的都渲染出来可以这样<br>｛% autoescape off %}    ｛｛ value8 ｝｝｛% endautoescape %}也可以用safe｛｛ obj|safe ｝｝====禁止render====｛% verbatim %｝    ｛｛ name ｝｝｛% endverbatim %｝&lt;/body&gt;&lt;/html&gt;</pre><h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><p>作用于简单操作，简化前后端开发重复性工作</p>]]></content>
-      
+      <tags>
+        <tag>书籍</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[django笔记]]></title>
+    <url>%2F2018%2F02%2F27%2Fdjango%E7%AC%94%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[概述官网很多相关文档，省略。。。 一些文档是整理的网上资源，可以参考Yuan先生 的技术博客。 环境 python： 3.6 pip： 9.0.1 django： 1.11.7 安装Django 根据自己环境安装pip pip install Django 新建django工程 创建Django工程（根据自己环境配置修改） c:\Python36\Scripts\django-admin.exe startproject mysite mysite：django工程名称 cd mysite目录下 python manage.py startapp blog blog：应用名称 启动 python manage.py runserver 8090 目录结构mysite目录 manage.py #入口文件 mysite __init__.py #初始化文件 settings.py #项目主配置文件 urls.py #路由分配配置文件 wsgi.py #Django web server(封装socket,解析APP) blog目录 __init__.py admin.py apps.py models.py #数据库相关配置(orm) tests.py #检测、测试 views.py #视图函数 settings.py文件配置定义templates位置修改TEMPLATES中的DIRS: 'DIRS': [os.path.join(BASE_DIR, 'templates')], 最后效果为 TEMPLATES = [ { 'BACKEND': 'django.template.backends.django.DjangoTemplates', 'DIRS': [os.path.join(BASE_DIR, 'templates')], 'APP_DIRS': True, 'OPTIONS': { 'context_processors': [ 'django.template.context_processors.debug', 'django.template.context_processors.request', 'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages', ], }, }, ] 创建APP后要在 INSTALLED_APPS 添加相应名称比如，我这里创建的是blog应用 INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'blog', ] 添加mysql数据库连接DATABASES 中修改 DATABASES = { 'default': { # 'ENGINE': 'django.db.backends.sqlite3', # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 'ENGINE': 'django.db.backends.mysql', 'NAME': 'DBNAME', 'USER': 'username', 'PASSWORD': 'password', 'HOST': 'db_host', 'PORT': 'port', } } 注释掉错误警告 MIDDLEWARE = [ 'django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.common.CommonMiddleware', # 'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware', 'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware', ] 指定静态文件位置（如：js、css、jpg等） STATICFILES_DIRS = ( os.path.join(BASE_DIR, 'statics') ) 开启配置之旅第一个页面 blog APP下views.py文件添加一个展示数据的函数 from django.shortcuts import render, HttpResponse # Create your views here. def cur_time(request): return HttpResponse('hello world!') request： 请求，参数可以自定义，但必须有 HttpResponse： 返回（当请求成功后要返回的信息） mysite下的urls.py添加相关路由信息 from blog import views #导入blog下的views模块 urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^cur_time', views.cur_time), ] 运行启动命令 python manage.py runserver 8090 浏览器打开 localhost:8090/cur_time 就能看到 hello world!信息了。 添加html文件之前在 settings.py 配置文件中指定了html文件的路径。所以，django会在 templates 目录下获取html文件，在mysite工程下新建一个 templates 目录，最后整个工程目录机构为： mysite +mysite +blog +templates 在templates目录下新键一个cur_time.html的html文件并进行编辑，最后代码为 cat views.py from django.shortcuts import render, HttpResponse # Create your views here. import datetime def cur_time(request): times = datetime.datetime.now() return render(request, 'cur_time.html', {'abc': times}) cat cur_time.html &lt;!DOCTYPE html&gt; &lt;html lang="en"&gt; &lt;body&gt; 当前时间： &lt;/body&gt; &lt;/html&gt; 解释 render： 模版渲染,第一个是请求参数&lt;request&gt;,第二个参数是跳转的url名称，第三个是传递变量 abc cur_time.html中的｛｛｝｝是jinja2的模版语言，abc 则是render传过来的变量名，注意两边有空格 再次访问浏览器，应该就能看到当前时间了。 HttpResponse与render的区别 HttpResponse： 一个类，后面跟一个字符串，是实例化的一个对象，直接返回给客户端浏览器，django所有返回给客户端浏览器都是通过这个类实现的 render 渲染工作，首先指定一个html文件，解析完成后调用HttpResponse类返回给客户端浏览器，html文件中的变量、｛｝都不会显示在客户端浏览器上 数据库连接做一个userInfo信息表单，当用户填入相关信息提交后，数据存入数据库中，并展示信息功能 如前面settings.py中的配置文件指定的数据库userInfo信息有三个字段：username、sex、email,所以需要在blog中的models.py进行初始化数据库操作 from django.db import models # Create your models here. class UserInfo(models.Model): username = models.CharField(max_length=64) sex = models.CharField(max_length=64) email = models.CharField(max_length=64) 运行初始化数据命令 python manage.py makemigrations 如果报类似如下错误 File "C:\Python36\lib\site-packages\django\db\__init__.py", line 33, in __getattr__ return getattr(connections[DEFAULT_DB_ALIAS], item) File "C:\Python36\lib\site-packages\django\db\utils.py", line 211, in __getitem__ backend = load_backend(db['ENGINE']) File "C:\Python36\lib\site-packages\django\db\utils.py", line 115, in load_backend return import_module('%s.base' % backend_name) File "C:\Python36\lib\importlib\__init__.py", line 126, in import_module return _bootstrap._gcd_import(name[level:], package, level) File "C:\Python36\lib\site-packages\django\db\backends\mysql\base.py", line 30, in 'Did you install mysqlclient or MySQL-python?' % e django.core.exceptions.ImproperlyConfigured: Error loading MySQLdb module: No module named 'MySQLdb'. Did you install mysqlclient or MySQL-python? 原因：python3不支持MySQLdb，需要在工程mysite下的init.py文件中添加如下内容 import pymysql pymysql.install_as_MySQLdb() 切记 settings.py里的INSTALLED_APPS添加应用名称，否则报错： File "C:\Python36\lib\site-packages\django\db\models\base.py", line 118, in __new__ "INSTALLED_APPS." % (module, name) RuntimeError: Model class blog.models.UserInfo doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS. django不会创建数据库，所以要提前手动创建。 mysite下的urls.py添加路由指向 from django.conf.urls import url from django.contrib import admin from blog import views urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^cur_time', views.cur_time), url(r'^userInfo', views.userInfo), #添加userInfo路由指向 ] views.py更新后的内容为： from django.shortcuts import render, HttpResponse from blog import models #导入models模块，用于数据库操作 # Create your views here. import datetime def cur_time(request): times = datetime.datetime.now() # return HttpResponse('hello world!') return render(request, 'cur_time.html', {'abc': times}) def userInfo(req): if req.method == "POST": u = req.POST.get('username', None) s = req.POST.get('sex', None) e = req.POST.get('email', None) # user={'username':username,"sex": sex, "email": email} models.UserInfo.objects.create( #插入数据 username=u, sex=s, email=e ) user_list = models.UserInfo.objects.all() #从数据库中获取所有数据 return render(req, "index.html", {"user_list": user_list}) index.html文件内容 &lt;!DOCTYPE html&gt; &lt;html lang="en"&gt; &lt;body&gt; &lt;form action="/userInfo/" method="post"&gt; &lt;p&gt;姓名&lt;input type="text" name="username"&gt;&lt;/p&gt; &lt;p&gt;性别&lt;input type="text" name="sex"&gt;&lt;/p&gt; &lt;p&gt;邮箱&lt;input type="text" name="email"&gt;&lt;/p&gt; &lt;p&gt;&lt;input type="submit" value="submit"&gt;&lt;/p&gt; &lt;/form&gt; &lt;table border="1px"&gt; &lt;tr&gt; &lt;td&gt;姓名&lt;/td&gt; &lt;td&gt;性别&lt;/td&gt; &lt;td&gt;邮箱&lt;/td&gt; &lt;/tr&gt; &lt;/table&gt; &lt;/body&gt; &lt;/html&gt; 表单以 post 提交后跳转到 userInfo 页面。 Django URL(路由系统)URL配置(URLconf)就像Django 所支撑网站的目录。它的本质是URL模式以及要为该URL模式调用的视图函数之间的映射表；你就是以这种方式告诉Django，对于这个URL调用这段代码，对于那个URL调用那段代码。 urlpatterns = [ url(正则表达式, views视图函数，参数，别名), ] 参数： 一个正则表达式字符串 一个可调用对象，通常为一个视图函数或一个指定视图函数路径的字符串 可选的要传递给视图函数的默认参数（字典形式） 一个可选的name参数 示例 from django.conf.urls import url from django.contrib import admin from blog import views urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^cur_time', views.cur_time), url(r'^userInfo', views.userInfo), url(r'^articles/2003/$', views.special_case_2003), #url(r'^articles/[0-9]{4}/$', views.year_archive), url(r'^articles/([0-9]{4})/$', views.year_archive), #no_named group url(r'^articles/([0-9]{4})/([0-9]{2})/$', views.month_archive), url(r'^articles/([0-9]{4})/([0-9]{2})/([0-9]+)/$', views.article_detail), ] URL匹配规则是由上到下，比如url(r’^articles/2003/$’, views.special_case_2003)和url(r’^articles/([0-9]{4})/$’, views.year_archive) 这两条，都是匹配四个数字。如果URL是articles/2003，虽然也属于^articles/([0-9]{4})，但是会优先匹配url(r’^articles/2003/$’, views.special_case_2003)。 正则表达式添加（）后，指定的views的视图函数也要增加一个自定义的形参，如上面的url(r’^articles/([0-9]{4})/$’, views.year_archive)，在views.year_archive中的year_archive视图函数定义时也要添加一个形参： def year_archive(req,year): return HttpResponse(year) 浏览器访问时就会返回year值 多个()，year_archive要设定多个形参 正则分组（Named groups）有时候URL传参需要指定值，这里就会用到Python正则表达式的?Ppattern， named groups ret=re.search('(?P\d{3})/(?P\w{3})','weeew34ttt123/ooo') print(ret.group()) print(ret.group('id')) print(ret.group('name')) from django.conf.urls import url from . import views urlpatterns = [ url(r'^articles/2003/$', views.special_case_2003), url(r'^articles/(?P[0-9]{4})/$', views.year_archive), url(r'^articles/(?P[0-9]{4})/(?P[0-9]{2})/$', views.month_archive), url(r'^articles/(?P[0-9]{4})/(?P[0-9]{2})/(?P[0-9]{2})/$', views.article_detail), ] 参数名称（name param） urlpatterns = [ url(r'^index',views.index,name='bieming'), ] def index(req): if req.method=='POST': username=req.POST.get('username') password=req.POST.get('password') if username=='alex' and password=='123': return HttpResponse("登陆成功") return render(req,'index.html') &lt;!DOCTYPE html&gt; &lt;html lang="en"&gt; &lt;body&gt; &lt;form action="｛% url 'bieming' %｝" method="post"&gt; 用户名:&lt;input type="text" name="username"&gt; 密码:&lt;input type="password" name="password"&gt; &lt;input type="submit" value="submit"&gt; &lt;/form&gt; &lt;/body&gt; &lt;/html&gt; 导入其他URLconfs #At any point, your urlpatterns can “include” other URLconf modules. This #essentially “roots” a set of URLs below other ones. #For example, here’s an excerpt of the URLconf for the Django website itself. #It includes a number of other URLconfs: from django.conf.urls import include, url urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^blog/', include('blog.urls')), ] Django Views(视图函数)浏览器 –(Rquest)–&gt; WebServer 浏览器 &lt;–(Response)– WebServer http请求中产生两个核心对象： - http请求： HttpRequest对象 - http响应： HttpResponse对象 HttpRequest对象的属性和方法： # path： 请求页面的全路径，不包括域名 # # method： 请求中使用的HTTP方法的字符串表示。全大写表示。例如 # # if req.method=="GET": # # do_something() # # elseif req.method=="POST": # # do_something_else() # # GET: 包含所有HTTP GET参数的类字典对象 # # POST： 包含所有HTTP POST参数的类字典对象 # # 服务器收到空的POST请求的情况也是可能发生的，也就是说，表单form通过 # HTTP POST方法提交请求，但是表单中可能没有数据，因此不能使用 # if req.POST来判断是否使用了HTTP POST 方法；应该使用 if req.method=="POST" # # # # COOKIES: 包含所有cookies的标准Python字典对象；keys和values都是字符串。 # # FILES： 包含所有上传文件的类字典对象；FILES中的每一个Key都是标签中 name属性的值，FILES中的每一个value同时也是一个标准的python字典对象，包含下面三个Keys： # # filename： 上传文件名，用字符串表示 # content_type: 上传文件的Content Type # content： 上传文件的原始内容 # # # user： 是一个django.contrib.auth.models.User对象，代表当前登陆的用户。如果访问用户当前 # 没有登陆，user将被初始化为django.contrib.auth.models.AnonymousUser的实例。你 # 可以通过user的is_authenticated()方法来辨别用户是否登陆： # if req.user.is_authenticated();只有激活Django中的AuthenticationMiddleware # 时该属性才可用 # # session： 唯一可读写的属性，代表当前会话的字典对象；自己有激活Django中的session支持时该属性才可用。 #方法 get_full_path(), 比如：http://127.0.0.1:8000/index33/?name=123 ,req.get_full_path()得到的结果就是/index33/?name=123 req.path:/index33 注意一个常用方法：request.POST.getlist(‘’) HttpResponse对象： 对于HttpRequest对象来说，是由django自动创建的，但是，HttpResponse对象就必须我们自己创建。每个view请求处理方法必须返回一个HttpResponse对象。 HttpResponse类在django.http.HttpResponse 在HttpResponse对象上扩展的常用方法： 页面渲染： render()（推荐） render_to_response(), 页面跳转： redirect("路径") locals()： 可以直接将函数中所有的变量传给模板 url.py url(r"login", views.login), url(r"yuan_back", views.yuan_back), views.py def login(req): if req.method=="POST": if 1: # return redirect("/yuan_back/") name="yuanhao" return render(req,"my backend.html",locals()) return render(req,"login.html",locals()) def yuan_back(req): name="duanruijun" return render(req,"my backend.html",locals()) login.html &lt;form action="/login/" method="post"&gt; &lt;p&gt;姓名&lt;input type="text" name="username"&gt;&lt;/p&gt; &lt;p&gt;性别&lt;input type="text" name="sex"&gt;&lt;/p&gt; &lt;p&gt;邮箱&lt;input type="text" name="email"&gt;&lt;/p&gt; &lt;p&gt;&lt;input type="submit" value="submit"&gt;&lt;/p&gt; &lt;/form&gt; my backend.html &lt;h1&gt;用户｛｛ name ｝｝你好&lt;/h1&gt; #总结: render和redirect的区别: # 1 if render的页面需要模板语言渲染,需要的将数据库的数据加载到html,那么所有的这一部分 # 除了写在yuan_back的视图函数中,必须还要写在login中,代码重复,没有解耦. # 2 the most important: url没有跳转到/yuan_back/,而是还在/login/,所以当刷新后 # 又得重新登录. 模版什么是模版语言简单说就是html+逻辑控制语句。 模版常用用例 – 万能的句号点（.）urls.py from django.conf.urls import url from django.contrib import admin from app01 import views urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^index/', views.index), views.py from django.shortcuts import render import datetime # Create your views here. def index(req): class profile(object): def __init__(self, name, age): self.name = name self.age = age s1 = [1,22,333] s2 = {'username': 'duanrj', 'email': '123@qq.com'} s3 = datetime.datetime.now() s4 = profile("Bob", "20") s5 = 'hello' s6 = 6 s7 = [] s8 = "跳转" return render(req, 'index.html', { 'value1': s1, 'value2': s2, 'value3': s3, 'value4': s4, 'value5': s5, 'value6': s6, 'value7': s7, 'value8': s8, }) index.html &lt;!DOCTYPE html&gt; &lt;html lang="en"&gt; &lt;body&gt; ====打印列表第n个值==== ｛｛ value1.2 ｝｝ ====打印dict的username值==== ｛｛ value2.username ｝｝ 打印对象的属性 ｛｛ value3.year ｝｝ ====打印对象的属性2==== ｛｛ value4 ｝｝ ｛｛ value4.name ｝｝ ｛｛ value4.age ｝｝ ====模版语言中的遍历==== ｛% for i in obj %｝ ｛｛ forloop.counter ｝｝:｛｛ i ｝｝ //索引从1开始 ｛｛ forloop.counter0 ｝｝:｛｛ i ｝｝ //索引从0开始 ｛% endfor %｝ ====filter:小写转为大写==== ｛｛ value5 | upper ｝｝ ｛｛ value5 | lower ｝｝ ｛｛ value5 | capfirst ｝｝ ｛｛ value5 | first ｝｝ ====算数运算==== ｛｛ value6 | add:5 ｝｝ ====为空时提示信息==== ｛｛ value7 | default:'空的' ｝｝ ====当成普通字符串处理==== ｛｛ value8 ｝｝ 如果想把类似于html 标签的都渲染出来可以这样 ｛% autoescape off %} ｛｛ value8 ｝｝ ｛% endautoescape %} 也可以用safe ｛｛ obj|safe ｝｝ ====禁止render==== ｛% verbatim %｝ ｛｛ name ｝｝ ｛% endverbatim %｝ &lt;/body&gt; &lt;/html&gt; filter作用于简单操作，简化前后端开发重复性工作]]></content>
       <categories>
-          
-          <category> 编程 </category>
-          
+        <category>编程</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> django笔记 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>zabbix低级发现</title>
-      <link href="/2018/02/24/zabbix_%E4%BD%8E%E7%BA%A7%E5%8F%91%E7%8E%B0/"/>
-      <url>/2018/02/24/zabbix_%E4%BD%8E%E7%BA%A7%E5%8F%91%E7%8E%B0/</url>
-      <content type="html"><![CDATA[<h3 id="一、-low-level-discover-概述"><a href="#一、-low-level-discover-概述" class="headerlink" title="一、(low level discover)概述"></a>一、(low level discover)概述</h3><blockquote><p>什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从<a href="https://www.zabbix.com/documentation/3.4/zh/manual/discovery/low_level_discovery" target="_blank" rel="noopener">官方文档</a>上翻译过来的话。</p></blockquote><h3 id="二、创建模版"><a href="#二、创建模版" class="headerlink" title="二、创建模版"></a>二、创建模版</h3><blockquote><p>由于创建模板不是本篇的重点，就不提创建模板的过程了 。这里重点提下如何在模板中创建自动发现规则。</p></blockquote><h4 id="1-创建自动发现规则"><a href="#1-创建自动发现规则" class="headerlink" title="1. 创建自动发现规则"></a>1. 创建自动发现规则</h4><blockquote><p>步骤为：<strong>配置</strong> –&gt; <strong>模版</strong> –&gt; 选中之前创建好的模版(这里我用 app discover) –&gt; <strong>自动发现规则</strong> –&gt; <strong>创建发现规则</strong></p></blockquote><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_creatdiscover.png" alt=""></p><h4 id="2-选择监控项原型并创建监控项"><a href="#2-选择监控项原型并创建监控项" class="headerlink" title="2. 选择监控项原型并创建监控项"></a>2. 选择监控项原型并创建监控项</h4><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_creatitem.png" alt=""></p><blockquote><ul><li>名称：｛#DISCOVER} 自定义的宏变量（后续脚本会提到)；</li><li>类型：根据自身主动/被动模式选择；</li><li>键值：后续监控的自定义Key会提到。</li></ul></blockquote><h4 id="3-触发器类型"><a href="#3-触发器类型" class="headerlink" title="3. 触发器类型"></a>3. 触发器类型</h4><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_trider.png" alt=""></p><blockquote><p>可根据自身情况做定义</p></blockquote><h3 id="三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd）"><a href="#三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd）" class="headerlink" title="三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd）"></a>三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd）</h3><blockquote><p>配置发现规则</p></blockquote><blockquote><p>这里发现规则是找的/app目录下的所有目录名（公司的所有项目都创建在/app目录下）</p></blockquote><p>cat check_app.py</p><pre><code>#!/usr/bin/env python#-*- coding:utf-8 -*-#@author: sundsinerj#@date: 2017/9/28import osimport jsonimport getoptimport sys#list app nameapp_list = os.listdir(os.path.expanduser("/app"))if 'lost+found' in app_list:    del app_list[app_list.index('lost+found')]elif 'zabbix' in app_list:    del app_list[app_list.index('lost+found')]elif 'tomcat-6.0.48_wp' in app_list:    del app_list[app_list.index('lost+found')]opts, arge = getopt.getopt(sys.argv[1:],[])#print appname for jsonpool_list = []for appname in app_list:    #def json data    pool_list += [｛'｛#DISCOVER｝': appname｝]print json.dumps({'data': pool_list},sort_keys=True,indent=4,separators=(',',':'))</code> </pre><blockquote><p>配置监控项规则</p></blockquote><p>cat check_app.sh</p><pre> #! /bin/bash help() {         echo "USAGE:`basename $0` [-n] the name of app"         exit -1 } while getopts ":n" opt do         case $opt in                 n)      appname=$OPTARG                         ;;                 h)      help                         ;;                 *)      unkown=$OPTARG                         echo "error,plase check for help,USAGE:./`basename $0` -h"                         exit $STAT_UNKNOWN                         ;;         esac done apppid=`ps aux | grep "$appname" | grep -v grep | wc -c` if [ $apppid -eq 0 ]     then         echo 0         exit 0     else         echo 1         exit 1 fi</pre><ul><li>发现规则必需是json格式的</li></ul><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_lld_printlld.png" alt=""></p><p>*｛#DISCOVER｝</p><pre><code>就是zabbix创建的模版的宏变量</code></pre><ul><li>check_app.sh脚本就是定义的监控项</li></ul><h3 id="四、自定义key"><a href="#四、自定义key" class="headerlink" title="四、自定义key"></a>四、自定义key</h3><blockquote><p>cat userparameter_app.conf</p></blockquote> <pre>  UserParameter=app.status[*],/bin/bash /etc/zabbix/zabbix_agentd.d/libexec/check_app.sh -n $1 UserParameter=app.discover,python /etc/zabbix/zabbix_agentd.d/libexec/check_app.py </pre><h3 id="五、验证"><a href="#五、验证" class="headerlink" title="五、验证"></a>五、验证</h3><p>在被发现的主机上关联<strong>app discover</strong> 模版就可以了。过会，就能看到相关的低级发现项目。</p>]]></content>
-      
+      <tags>
+        <tag>django笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix低级发现]]></title>
+    <url>%2F2018%2F02%2F24%2Fzabbix_%E4%BD%8E%E7%BA%A7%E5%8F%91%E7%8E%B0%2F</url>
+    <content type="text"><![CDATA[一、(low level discover)概述 什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从官方文档上翻译过来的话。 二、创建模版 由于创建模板不是本篇的重点，就不提创建模板的过程了 。这里重点提下如何在模板中创建自动发现规则。 1. 创建自动发现规则 步骤为：配置 –&gt; 模版 –&gt; 选中之前创建好的模版(这里我用 app discover) –&gt; 自动发现规则 –&gt; 创建发现规则 2. 选择监控项原型并创建监控项 名称：｛#DISCOVER} 自定义的宏变量（后续脚本会提到)； 类型：根据自身主动/被动模式选择； 键值：后续监控的自定义Key会提到。 3. 触发器类型 可根据自身情况做定义 三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd） 配置发现规则 这里发现规则是找的/app目录下的所有目录名（公司的所有项目都创建在/app目录下） cat check_app.py #!/usr/bin/env python #-*- coding:utf-8 -*- #@author: sundsinerj #@date: 2017/9/28 import os import json import getopt import sys #list app name app_list = os.listdir(os.path.expanduser("/app")) if 'lost+found' in app_list: del app_list[app_list.index('lost+found')] elif 'zabbix' in app_list: del app_list[app_list.index('lost+found')] elif 'tomcat-6.0.48_wp' in app_list: del app_list[app_list.index('lost+found')] opts, arge = getopt.getopt(sys.argv[1:],[]) #print appname for json pool_list = [] for appname in app_list: #def json data pool_list += [｛'｛#DISCOVER｝': appname｝] print json.dumps({'data': pool_list},sort_keys=True,indent=4,separators=(',',':')) 配置监控项规则 cat check_app.sh #! /bin/bash help() { echo "USAGE:`basename $0` [-n] the name of app" exit -1 } while getopts ":n" opt do case $opt in n) appname=$OPTARG ;; h) help ;; *) unkown=$OPTARG echo "error,plase check for help,USAGE:./`basename $0` -h" exit $STAT_UNKNOWN ;; esac done apppid=`ps aux | grep "$appname" | grep -v grep | wc -c` if [ $apppid -eq 0 ] then echo 0 exit 0 else echo 1 exit 1 fi 发现规则必需是json格式的 *｛#DISCOVER｝ 就是zabbix创建的模版的宏变量 check_app.sh脚本就是定义的监控项 四、自定义key cat userparameter_app.conf UserParameter=app.status[*],/bin/bash /etc/zabbix/zabbix_agentd.d/libexec/check_app.sh -n $1 UserParameter=app.discover,python /etc/zabbix/zabbix_agentd.d/libexec/check_app.py 五、验证在被发现的主机上关联app discover 模版就可以了。过会，就能看到相关的低级发现项目。]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>监控网络设备</title>
-      <link href="/2018/02/23/zabbix_monito/"/>
-      <url>/2018/02/23/zabbix_monito/</url>
-      <content type="html"><![CDATA[<h4 id="一、zabbix-server端安装snmp工具"><a href="#一、zabbix-server端安装snmp工具" class="headerlink" title="一、zabbix-server端安装snmp工具"></a>一、zabbix-server端安装snmp工具</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-snmp-utils snmp-libs snmp-devel snmp</span><br></pre></td></tr></table></figure><h4 id="二、检测与路由器的连通性"><a href="#二、检测与路由器的连通性" class="headerlink" title="二、检测与路由器的连通性"></a>二、检测与路由器的连通性</h4><p>测试之前工作</p><ol><li>路由上要开启snmp功能</li><li>本地snmp服务器的snmp的密码和路由上的密码一致</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/snmp/snmpd.conf</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmpd.conf.png" alt=""></p><ol><li>测试连通性</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">snmpwalk -v 2c -c 19e#! 10.18.221.4</span><br></pre></td></tr></table></figure><pre><code>- 2c：协议版本- 19e#!：密码与路由一致，- 10.18.221.4：路由IP</code></pre><ul><li>注意selinux、iptables<br><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_snmp.test.png" alt=""></li><li>如果出现上面信息说明成功</li></ul><h4 id="三、zabbix-server添加路由监控"><a href="#三、zabbix-server添加路由监控" class="headerlink" title="三、zabbix-server添加路由监控"></a>三、zabbix-server添加路由监控</h4><p>主机 –&gt; 创建主机</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snmp_addhost.png" alt=""></p><p>由于添加了密钥认证，须在zabbix-server中添加密钥<br>管理–&gt;一般–&gt;选择宏，进行设置</p><p><img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_snme_keyvalue.png" alt=""></p><p>过几分钟就能出相关监控项了！</p>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix_agent主动模式]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>字段和方法</title>
-      <link href="/2018/02/23/%E5%AD%97%E6%AE%B5%E5%92%8C%E6%96%B9%E6%B3%95/"/>
-      <url>/2018/02/23/%E5%AD%97%E6%AE%B5%E5%92%8C%E6%96%B9%E6%B3%95/</url>
-      <content type="html"><![CDATA[<h2 id="首先，要知道Python类中两个概念：字段和方法"><a href="#首先，要知道Python类中两个概念：字段和方法" class="headerlink" title="首先，要知道Python类中两个概念：字段和方法"></a>首先，要知道Python类中两个概念：字段和方法</h2><p>“字段”和“方法”都有“动态”和“静态”之分，即：</p><ul><li><p>字段</p><ul><li>静态字段</li><li>动态字段</li></ul></li><li><p>方法</p><ul><li>静态方法</li><li>动态方法</li></ul></li></ul><p>以下事例标明了：“静态字段”，“动态字段”以及“动态方法”是什么样子的，因为显而易见，就不用语言进行过多描述：</p><pre>#coding:utf-8 class Car:     # 下面是静态字段     memo = u'车辆具有出厂合格证'     def __init__(self, brand, model, speed, price, engine):         # 下面是动态字段         self.Brand = brand         self.Model = model         self.Speed = speed         self.Price = price         self.__EngineType = engine     # 下面是动态方法     def Turnleft(self):         print self.Brand + u'开始向右转向。'</pre><p>上述事例中，并没有展现“静态方法”，那么“静态方法”长什么样子？如何生成？<br>其实“静态方法”只需要执行两步操作，就可以转换成“静态方法”</p><ol><li>在方法前加上 @staticmethod</li><li>把“动态方法”括号中的“self”去掉</li></ol><p>如：</p><pre>@staticmethod def Forward():     print u'开始向前进'</pre><p>那么关于这四种类型，有什么特点？以下进行总结：</p><ol><li>四种类型，均可以被“对象”进行调用，但不建议使用“对象”调用“静态方法”和“静态字段”，而建议使用“类”对其进行调用</li><li>“动态方法”和“动态字段”只能由“对象”进行调用，而无法使用“类”进行调用</li></ol>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix报警]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
+    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh &lt;pre&gt; #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t &quot;$to&quot; -u &quot;$subject&quot; -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m &quot;$body&quot; ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u &quot;我是邮件主题&quot; 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m &quot;我是邮件内容&quot; 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 &lt;/pre&gt; - web配置 1. **管理** &gt;&gt; **报警媒介类型** &gt;&gt; **创建媒体类型** 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E9%85%8D%E7%BD%AE.png) 2. **管理** &gt;&gt; **用户** &gt;&gt; **报警媒介** ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE.png) 3. **配置** &gt;&gt; **动作** &gt;&gt; **触发器类型下新建动作** ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E5%90%8D%E7%A7%B0.png) &lt;pre&gt; 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&amp;nbsp;{HOSTNAME1}&lt;br/&gt; 告警时间:&amp;nbsp;{EVENT.DATE}{EVENT.TIME}&lt;br/&gt; 告警等级:&amp;nbsp;{TRIGGER.SEVERITY}&lt;br/&gt; 告警信息:&amp;nbsp;{TRIGGER.NAME}&lt;br/&gt; 告警项目:&amp;nbsp;{TRIGGER.KEY1}&lt;br/&gt; 问题详情:&amp;nbsp;{ITEM.NAME}:&amp;nbsp;{ITEM.VALUE}&lt;br/&gt; 当前状态:&amp;nbsp;{TRIGGER.STATUS}:&amp;nbsp;{ITEM.VALUE1}&lt;br/&gt; 事件ID:&amp;nbsp;{EVENT.ID}&lt;br/&gt; 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 &lt;/pre&gt; - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py &lt;pre&gt; #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding(&apos;utf-8&apos;) #请求主题参数 def phonelist(plist): phonelist=plist.split(&quot;,&quot;) return phonelist def requestinterface(strp): url=&quot;http://test.com?sname=接口用户名&amp;spwd=接口密码&quot; #定义一个字典，值为请求的参数 param={} param[&apos;sdst&apos;]=strp param[&apos;smsg&apos;]=sys.argv[2] str3=url+&apos;sdst=&apos;+param[&apos;sdst&apos;]+&apos;&amp;smsg=&apos;+urllib.quote(param[&apos;smsg&apos;]+&apos;【标题】&apos;) r = requests.get(str3,verify=False) if __name__ == &apos;__main__&apos;: #now=datetime.datetime.now().strftime(&apos;%Y-%m-%d-%H&apos;) #os.system(&quot;touch sendsms.`date +\&apos;%F-%H\&apos;`&quot;) #print fname #f = open(&apos;sendsms.&apos;+str(now),&apos;a&apos;) #f.write(sys.argv[1]+&apos; -- &apos;+sys.argv[2]+&apos; &apos;+str(now)+&apos;\n&apos;) plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) &lt;/pre&gt; 至此，短信报警配置完成。]]></content>
       <categories>
-          
-          <category> 编程 </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> python随笔 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>zabbix问题汇总</title>
-      <link href="/2018/02/23/zabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/"/>
-      <url>/2018/02/23/zabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/</url>
-      <content type="html"><![CDATA[<h2 id="一、agent连接正常，server端报agent-ping问题"><a href="#一、agent连接正常，server端报agent-ping问题" class="headerlink" title="一、agent连接正常，server端报agent.ping问题"></a>一、agent连接正常，server端报agent.ping问题</h2><h4 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h4><p>zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server；</p><p>zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。</p><h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><p>把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。</p><h2 id="二、报警风暴"><a href="#二、报警风暴" class="headerlink" title="二、报警风暴"></a>二、报警风暴</h2><h4 id="由来-1"><a href="#由来-1" class="headerlink" title="由来"></a>由来</h4><p>当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！</p><h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法"></a>解决办法</h4><p>比如zabbix_server调用的邮件通知，把邮件脚本改成：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo `date` &gt;&gt; /tmp/sms.txt</span><br></pre></td></tr></table></figure><p>这样的操作很明显能弯路思想改善接受大量报警信息。</p>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>zabbix报警</title>
-      <link href="/2018/02/23/zabbix%E6%8A%A5%E8%AD%A6/"/>
-      <url>/2018/02/23/zabbix%E6%8A%A5%E8%AD%A6/</url>
-      <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了<strong>报警升级</strong>，可根据自身情况进行设置。</p><p>##配置</p><h5 id="一、-zabbix-server脚本指定位置"><a href="#一、-zabbix-server脚本指定位置" class="headerlink" title="一、 zabbix-server脚本指定位置"></a>一、 zabbix-server脚本指定位置</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim zabbix_server.conf</span><br></pre></td></tr></table></figure><pre>AlertScriptsPath=/etc/zabbix/alertscripts</pre><h5 id="二、-报警类型（这里主要讲邮件和短信，后期会补上微信）"><a href="#二、-报警类型（这里主要讲邮件和短信，后期会补上微信）" class="headerlink" title="二、 报警类型（这里主要讲邮件和短信，后期会补上微信）"></a>二、 报警类型（这里主要讲邮件和短信，后期会补上微信）</h5><ul><li><p>邮件</p><p>  邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见<a href="https://www.cnblogs.com/rysinal/p/5834421.html" target="_blank" rel="noopener">安装sendemail</a></p>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/zabbix/alertscripts/sendEmail.sh</span><br></pre></td></tr></table></figure></li></ul><pre><code>&lt;pre&gt;#!/bin/bashto=$1subject=$2body=$3/usr/local/bin/sendEmail -f ex@uu.com -t &quot;$to&quot; -u &quot;$subject&quot; -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m &quot;$body&quot;############/usr/local/bin/sendEmail        命令主程序-f from@163.com                 发件人邮箱-t to@163.com                   收件人邮箱-s smtp.163.com                 发件人邮箱的smtp服务器-u &quot;我是邮件主题&quot;                邮件的标题-o message-content-type=html    邮件内容的格式,html表示它是html格式-o message-charset=utf8         邮件内容编码-xu from@163.com                发件人邮箱的用户名-xp 123456                      发件人邮箱密码-m &quot;我是邮件内容&quot;                邮件的具体内容-l  /var/log/sendMyEmail.log    非必输项，邮件发送日志记录到日志文件&lt;/pre&gt;- web配置    1. **管理** &gt;&gt; **报警媒介类型** &gt;&gt; **创建媒体类型**        名称： 自定义        类型： 脚本        脚本参数：            {ALERT.SENDTO}            {ALERT.SUBJECT}            {ALERT.MESSAGE}        ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E9%85%8D%E7%BD%AE.png)    2. **管理** &gt;&gt; **用户** &gt;&gt; **报警媒介**        ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE.png)    3. **配置** &gt;&gt; **动作** &gt;&gt; **触发器类型下新建动作**        ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E5%90%8D%E7%A7%B0.png)        &lt;pre&gt;        名称：Zabbix-Server告警邮件        默认接收人：主机： {HOSTNAME1}  状态：{TRIGGER.STATUS}        默认信息：        告警主机:&amp;nbsp;{HOSTNAME1}&lt;br/&gt;        告警时间:&amp;nbsp;{EVENT.DATE}{EVENT.TIME}&lt;br/&gt;        告警等级:&amp;nbsp;{TRIGGER.SEVERITY}&lt;br/&gt;        告警信息:&amp;nbsp;{TRIGGER.NAME}&lt;br/&gt;        告警项目:&amp;nbsp;{TRIGGER.KEY1}&lt;br/&gt;        问题详情:&amp;nbsp;{ITEM.NAME}:&amp;nbsp;{ITEM.VALUE}&lt;br/&gt;        当前状态:&amp;nbsp;{TRIGGER.STATUS}:&amp;nbsp;{ITEM.VALUE1}&lt;br/&gt;        事件ID:&amp;nbsp;{EVENT.ID}&lt;br/&gt;        恢复主题：主机： {HOSTNAME1}  状态：{TRIGGER.STATUS}！！        恢复信息：同上        &lt;/pre&gt;        - 条件            ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png)        - 操作            ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png)             步骤：可以指定报警升级至此，邮件报警配置完成！</code></pre><ul><li><p>短信</p><p>  短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容）</p><p>  名称： 自定义</p><pre><code>类型： 脚本脚本参数：    {ALERT.SENDTO}    {ALERT.MESSAGE}</code></pre><p>  <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E7%9F%AD%E4%BF%A1%E9%85%8D%E7%BD%AE.png" alt=""></p><p>  代码</p>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat sendSms.py</span><br></pre></td></tr></table></figure></li></ul><pre><code>&lt;pre&gt;#! /usr/bin/python#encoding:utf-8import requestsimport jsonimport urllibimport hashlibimport osimport sysimport subprocessimport datetimereload(sys)#设置字符集，否则再输出重定向时出编码错误sys.setdefaultencoding(&apos;utf-8&apos;)#请求主题参数def phonelist(plist):    phonelist=plist.split(&quot;,&quot;)    return phonelistdef requestinterface(strp):    url=&quot;http://test.com?sname=接口用户名&amp;spwd=接口密码&quot;#定义一个字典，值为请求的参数       param={}    param[&apos;sdst&apos;]=strp    param[&apos;smsg&apos;]=sys.argv[2]    str3=url+&apos;sdst=&apos;+param[&apos;sdst&apos;]+&apos;&amp;smsg=&apos;+urllib.quote(param[&apos;smsg&apos;]+&apos;【标题】&apos;)    r = requests.get(str3,verify=False)if __name__ == &apos;__main__&apos;:    #now=datetime.datetime.now().strftime(&apos;%Y-%m-%d-%H&apos;)    #os.system(&quot;touch sendsms.`date +\&apos;%F-%H\&apos;`&quot;)    #print fname    #f = open(&apos;sendsms.&apos;+str(now),&apos;a&apos;)    #f.write(sys.argv[1]+&apos; -- &apos;+sys.argv[2]+&apos;  &apos;+str(now)+&apos;\n&apos;)    plist=phonelist(sys.argv[1])    for i,value in enumerate(plist):    sms=requestinterface(value)&lt;/pre&gt;至此，短信报警配置完成。</code></pre>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix_proxy]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_proxy%2F</url>
+    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>zabbix_agent主动模式</title>
-      <link href="/2018/02/23/zabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F/"/>
-      <url>/2018/02/23/zabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F/</url>
-      <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:</p><ol><li>当监控端到一个量级的时候，web操作界面很卡，容易出现502；</li><li>图层断裂；</li><li>开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。</li></ol><p>所以主要往2个优化方面考虑：</p><ol><li>添加proxy节点或者node模式做分布式监控；</li><li>调整agentd为主动模式。</li></ol><p>由于第一个方案需要物理节点，所以尝试第二个方案。</p><p><strong>主动模式：</strong></p><p>主动模式一定要记得设置ServerActive=ServerIP</p><ol><li>Agent向Server建立一个TCP连接</li><li>Agent请求需要检测的数据列表</li><li>Server响应Agent，发送一个Items列表</li><li>Agent允许响应</li><li>TCP连接完成本次会话关闭</li><li>Agent开始周期性地收集数据</li></ol><h3 id="一、-被监控端zabbix-agentd-conf的配置调整"><a href="#一、-被监控端zabbix-agentd-conf的配置调整" class="headerlink" title="一、 被监控端zabbix_agentd.conf的配置调整"></a>一、 被监控端zabbix_agentd.conf的配置调整</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_agentd.conf</span><br></pre></td></tr></table></figure><pre>StartAgents=0                #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程#Server=172.16.100.84        #如果设置纯被动模式，应该注释掉这行ServerActive=172.16.100.84   #主动模式的serverip地址Hostname=172.16.100.47       #客户端的hostname，不配置则使用主机名RefreshActiveChecks=120      #被监控端到服务器获取监控项的周期，默认120SBufferSize=200               #被监控端存储监控信息的空间大小Timeout=3                    #超时时间</pre><blockquote><p>纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项</p></blockquote><h3 id="二、-调整监控模版"><a href="#二、-调整监控模版" class="headerlink" title="二、 调整监控模版"></a>二、 调整监控模版</h3><ol><li>克隆一个temple os linux模版来修改</li><li><p>全选</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E5%85%A8%E5%B1%80%E4%BF%AE%E6%94%B9.png" alt=""></p></li><li><p>找到最下方的批量更新</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.png" alt=""></p></li><li><p>类型打勾，选择主动式，然后更新</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E6%A8%A1%E7%89%88%E6%89%B9%E9%87%8F%E4%B8%BB%E5%8A%A8%E5%BC%8Fpng.png" alt=""></p></li><li><p>主机修改</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E4%BF%AE%E6%94%B9.png" alt=""></p></li><li><p>添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81.png" alt=""></p></li><li><p>这时候就有相关数据，如果硬盘或网卡监控没有数据</p><p> <strong>模板</strong>&gt;&gt;<strong>主动监控模板名称</strong>&gt;&gt;<strong>自动发现规则</strong></p><p> <img src="https://github.com/sundshinerj/img/blob/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.png?raw=true" alt=""></p></li><li><p>选择<strong>监控项原型</strong>-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9.png" alt=""></p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F_%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E4%BF%AE%E6%94%B9-%E5%8E%9F%E5%9E%8B%E4%BF%AE%E6%94%B9.png" alt=""></p></li><li><p>过会，网卡和硬盘的监控情况就出来了。</p></li></ol>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[字段和方法]]></title>
+    <url>%2F2018%2F02%2F23%2F%E5%AD%97%E6%AE%B5%E5%92%8C%E6%96%B9%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[首先，要知道Python类中两个概念：字段和方法“字段”和“方法”都有“动态”和“静态”之分，即： 字段 静态字段 动态字段 方法 静态方法 动态方法 以下事例标明了：“静态字段”，“动态字段”以及“动态方法”是什么样子的，因为显而易见，就不用语言进行过多描述： #coding:utf-8 class Car: # 下面是静态字段 memo = u'车辆具有出厂合格证' def __init__(self, brand, model, speed, price, engine): # 下面是动态字段 self.Brand = brand self.Model = model self.Speed = speed self.Price = price self.__EngineType = engine # 下面是动态方法 def Turnleft(self): print self.Brand + u'开始向右转向。' 上述事例中，并没有展现“静态方法”，那么“静态方法”长什么样子？如何生成？其实“静态方法”只需要执行两步操作，就可以转换成“静态方法” 在方法前加上 @staticmethod 把“动态方法”括号中的“self”去掉 如： @staticmethod def Forward(): print u'开始向前进' 那么关于这四种类型，有什么特点？以下进行总结： 四种类型，均可以被“对象”进行调用，但不建议使用“对象”调用“静态方法”和“静态字段”，而建议使用“类”对其进行调用 “动态方法”和“动态字段”只能由“对象”进行调用，而无法使用“类”进行调用]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>编程</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>zabbix_proxy</title>
-      <link href="/2018/02/23/zabbix_proxy/"/>
-      <url>/2018/02/23/zabbix_proxy/</url>
-      <content type="html"><![CDATA[<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>zabbix proxy可以<strong>代替</strong>zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见<a href="https://www.zabbix.com/documentation/3.4/zh/manual/distributed_monitoring/proxies" target="_blank" rel="noopener">官方文档</a>。</p><h3 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h3><ol><li><p>服务列表</p><p>  | <strong>名称</strong> | <strong>IP</strong> |<br>  |——–|:——–:|<br>  | zabbix server | 10.18.12.98 |<br>  | zabbix proxy | 10.18.12.93 |<br>  | zabbix agent | 10.18.12.63 |</p></li><li><p>zabbix agent配置文件</p><p> cat /etc/zabbix_agentd.conf<br> <pre><br> LogFile=/log/zabbix/zabbix_agentd.log<br> PidFile=/log/zabbix/zabbix_agentd.pid<br> StartAgents=0<br> ServerActive=10.18.12.93<br> RefreshActiveChecks=120<br> BufferSend=5<br> BufferSize=100<br> Hostname=10.18.12.63<br> DebugLevel=3<br> Timeout=20<br> MaxLinesPerSecond=100<br> AllowRoot=1<br> Include=/etc/zabbix/zabbix_agentd.d/*.conf<br> </pre></p><ul><li>ServerActive: 代理节点IP</li></ul></li><li><p>zabbix proxy配置文件</p><p> cat /etc/zabbix/zabbix_proxy.conf<br> <pre><br> Server=10.18.12.98<br> Hostname=Zabbix_proxy_18<br> LogFile=/log/zabbix/zabbix_proxy.log<br> DebugLevel=3<br> DBName=zabbix<br> DBUser=zabbix<br> DBPassword=zabbix<br> ProxyLocalBuffer=0<br> ProxyOfflineBuffer=1<br> ConfigFrequency=30<br> DataSenderFrequency=30<br> StartPollers=100<br> StartPollersUnreachable=1<br> StartTrappers=200<br> StartPingers=1<br> CacheSize=64M<br> TrapperTimeout=30<br> Timeout=10<br> LogSlowQueries=3000<br> </pre></p><ul><li>Server: zabbix server IP</li><li>Hostname: 代理节点IP</li><li>DB*<ul><li>由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互；</li></ul></li></ul></li><li><p>zabbix server配置文件</p><ul><li>无</li></ul></li><li><p>web端配置</p><p> 1) 添加代理节点</p><blockquote><p>管理&gt;&gt;agent代理程序&gt;&gt;创建代理</p></blockquote><p> 样例中配置的名称是zabbix_proxy_18<br> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_proxy_creat.png" alt=""></p><p> 2)  在agent主机的最下方选择zabbix_proxy_18</p><p> <img src="https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_proxy_edit.png" alt=""></p><p> 完成配置后生效</p></li><li><p>过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。</p></li></ol>]]></content>
-      
+      <tags>
+        <tag>python随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix问题汇总]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>shell文件对比</title>
-      <link href="/2017/10/10/shell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94/"/>
-      <url>/2017/10/10/shell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94/</url>
-      <content type="html"><![CDATA[<pre>#!/bin/bash#----判断给定的文件是否存在----if [ -d $1 ] && [ -d $2 ];then  echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对."else  if [ -d $1 ];then    echo "不存在文件夹:$2"    exit  else    echo "不存在文件夹:$1"    exit  fifi#----判断俩个文件中改动过的文件有哪些----#判断俩个文件的文件和文件夹的个数echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m"fnum1=`ls -Rl $1|grep -e "^-"|wc -l`fnum2=`ls -Rl $2|grep -e "^-"|wc -l`dnum1=`ls -Rl $1|grep -e "^d"|wc -l`dnum2=`ls -Rl $2|grep -e "^d"|wc -l`echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件."echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件."#判断$2中新增或者减少的文件夹和文件有哪些echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m"only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"`only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"`echo -e "$only1"echo -e "\e[1;31m$only2\e[0m"#判断$2中改变的文件有哪些echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m"change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"`change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"`echo -e "$change1"echo -e "\e[1;31m$change2\e[0m"#查看版本号是否已经更改echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m"cd $1if [ -f version.html ];then  version1=`cat version.html`else  echo -e "\e[1;31m$1没有版本号信息.\e[0m"  exitficd $2if [ -f version.html ];then  version2=`cat version.html`else  echo -e "\e[1;31m$2没有版本号信息.\e[0m"  exitfiif [ $version1 == $version2 ];then  echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m"else  echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m."fi</pre>]]></content>
-      
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ping包检测]]></title>
+    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
+    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
       <categories>
-          
-          <category> 编程 </category>
-          
+        <category>编程</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> shell随笔 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>ping包检测</title>
-      <link href="/2017/10/10/python_ping%E5%8C%85%E6%A3%80%E6%B5%8B/"/>
-      <url>/2017/10/10/python_ping%E5%8C%85%E6%A3%80%E6%B5%8B/</url>
-      <content type="html"><![CDATA[<h4 id="ping包检测"><a href="#ping包检测" class="headerlink" title="ping包检测"></a>ping包检测</h4><pre>#!/usr/bin/env python#-*- coding: utf-8 -*-import reimport subprocessdef check_alive(ip,count=1,timeout=1):    '''    ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常    '''    cmd = 'ping -c %d -w %d %s' %     (count,timeout,ip)    p = subprocess.Popen(cmd,    stdin=subprocess.PIPE,    stdout=subprocess.PIPE,    stderr=subprocess.PIPE,    shell=True    )    result = p.stdout.read()    regex = re.findall('100% packet loss',result)    if len(regex) == 0:        print "\033[31m%s UP\033[0m" % (ip)    else:        print "\033[32m%s DOWN\033[0m" % (ip)if __name__ == "__main__":    with file('/root/ip.txt','r') as f:        for line in f.readlines():            ip = line.strip()            check_alive(ip)</pre>]]></content>
-      
+      <tags>
+        <tag>python随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[shell文件对比]]></title>
+    <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
+    <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
       <categories>
-          
-          <category> 编程 </category>
-          
+        <category>编程</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> python随笔 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>http请求方法介绍</title>
-      <link href="/2017/08/23/http_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D/"/>
-      <url>/2017/08/23/http_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D/</url>
-      <content type="html"><![CDATA[<blockquote><h4 id="HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要-做-什么。以下是常见-的方法"><a href="#HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要-做-什么。以下是常见-的方法" class="headerlink" title="HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法"></a>HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法</h4></blockquote><h5 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h5><p>浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。</p><h5 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h5><p>浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。</p><h5 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h5><p>浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。</p><h5 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h5><p>与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。</p><h5 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h5><p>删除给定位置的信息。</p><h5 id="OPTIONS"><a href="#OPTIONS" class="headerlink" title="OPTIONS"></a>OPTIONS</h5><p>为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。<br>有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。</p>]]></content>
-      
+      <tags>
+        <tag>shell随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[http请求方法介绍]]></title>
+    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
+    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
       <categories>
-          
-          <category> Server </category>
-          
+        <category>Server</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> http </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>记录linux用户操作</title>
-      <link href="/2017/08/23/linux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/"/>
-      <url>/2017/08/23/linux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C/</url>
-      <content type="html"><![CDATA[<h3 id="记录用户操作"><a href="#记录用户操作" class="headerlink" title="记录用户操作"></a>记录用户操作</h3><h4 id="追加在-etc-profile"><a href="#追加在-etc-profile" class="headerlink" title="追加在 /etc/profile"></a>追加在 /etc/profile</h4><p><pre><br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null<br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null<br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null<br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null<br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null<br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null<br>PS1=”<code>whoami</code>@<code>hostname</code>:”‘[$PWD]’<br>history<br>USER_IP=<code>who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;</code><br>if [ “$USER_IP” = “” ]<br>then<br>USER_IP=<code>hostname</code><br>fi<br>if [ ! -d /tmp/dbasky ]<br>then<br>mkdir /tmp/dbasky<br>chmod 777 /tmp/dbasky<br>fi<br>if [ ! -d /tmp/dbasky/${LOGNAME} ]<br>then<br>mkdir /tmp/dbasky/${LOGNAME}<br>chmod 300 /tmp/dbasky/${LOGNAME}<br>fi<br>export HISTSIZE=4096<br>DT=<code>date &quot;+%Y-%m-%d_%H:%M:%S&quot;</code><br>export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”<br>chmod 600 /tmp/dbasky/${LOGNAME}/<em>dbasky</em> 2&gt;/dev/null</pre></p><pre></pre>]]></content>
-      
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[记录linux用户操作]]></title>
+    <url>%2F2017%2F08%2F23%2Flinux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%2F</url>
+    <content type="text"><![CDATA[记录用户操作追加在 /etc/profilePS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/null]]></content>
       <categories>
-          
-          <category> 系统 </category>
-          
+        <category>系统</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>常用函数</title>
-      <link href="/2017/07/28/python_%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/"/>
-      <url>/2017/07/28/python_%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/</url>
-      <content type="html"><![CDATA[<h3 id="isinstance"><a href="#isinstance" class="headerlink" title="isinstance"></a>isinstance</h3><h6 id="判断一个对象是否是一个已知的类型，类似-type"><a href="#判断一个对象是否是一个已知的类型，类似-type" class="headerlink" title="判断一个对象是否是一个已知的类型，类似 type()"></a>判断一个对象是否是一个已知的类型，类似 type()</h6><p>isinstance() 与 type() 区别：</p><ul><li>type() 不会认为子类是一种父类类型，不考虑继承关系。</li><li>isinstance() 会认为子类是一种父类类型，考虑继承关系。</li></ul><blockquote><p>例如</p></blockquote><pre>class A:    passclass B:    passisinstance(A(), A)    # reutrn Truetype(A()) == A        # return Trueisinstance(B(), A)    # return Truetype(B()) == A        # return False</pre><h3 id="Iterable"><a href="#Iterable" class="headerlink" title="Iterable"></a>Iterable</h3><h6 id="判断一个对象是否可迭代"><a href="#判断一个对象是否可迭代" class="headerlink" title="判断一个对象是否可迭代"></a>判断一个对象是否可迭代</h6><blockquote><p>例如</p></blockquote><pre>>>> from collections import Iterable>>> isinstance('abc', Iterable) # str是否可迭代True>>> isinstance([1,2,3], Iterable) # # list是否可迭代True>>> isinstance(123, Iterable) # 整数是否可迭代False</pre><h3 id="enumerate"><a href="#enumerate" class="headerlink" title="enumerate"></a>enumerate</h3><h6 id="把一个list变成索引-元素对，这样就可以在for循环中同时迭代索引和元素本身"><a href="#把一个list变成索引-元素对，这样就可以在for循环中同时迭代索引和元素本身" class="headerlink" title="把一个list变成索引-元素对，这样就可以在for循环中同时迭代索引和元素本身"></a>把一个list变成索引-元素对，这样就可以在for循环中同时迭代索引和元素本身</h6><blockquote><p>例如</p></blockquote><pre>>>> for i, value in enumerate(['a', 'b', 'c']):...     print(i, value)...(0, 'a')(1, 'b')(2, 'c')</pre>]]></content>
-      
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[常用函数]]></title>
+    <url>%2F2017%2F07%2F28%2Fpython_%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%2F</url>
+    <content type="text"><![CDATA[isinstance判断一个对象是否是一个已知的类型，类似 type()isinstance() 与 type() 区别： type() 不会认为子类是一种父类类型，不考虑继承关系。 isinstance() 会认为子类是一种父类类型，考虑继承关系。 例如 class A: pass class B: pass isinstance(A(), A) # reutrn True type(A()) == A # return True isinstance(B(), A) # return True type(B()) == A # return False Iterable判断一个对象是否可迭代 例如 >>> from collections import Iterable >>> isinstance('abc', Iterable) # str是否可迭代 True >>> isinstance([1,2,3], Iterable) # # list是否可迭代 True >>> isinstance(123, Iterable) # 整数是否可迭代 False enumerate把一个list变成索引-元素对，这样就可以在for循环中同时迭代索引和元素本身 例如 >>> for i, value in enumerate(['a', 'b', 'c']): ... print(i, value) ... (0, 'a') (1, 'b') (2, 'c')]]></content>
       <categories>
-          
-          <category> 编程 </category>
-          
+        <category>编程</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> python随笔 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>正则</title>
-      <link href="/2017/07/20/python_%E6%AD%A3%E5%88%99/"/>
-      <url>/2017/07/20/python_%E6%AD%A3%E5%88%99/</url>
-      <content type="html"><![CDATA[<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><h4 id="字符"><a href="#字符" class="headerlink" title="字符"></a>字符</h4><ul><li>\d： 数字</li><li>\w： 字母</li><li>\t： 制表符 </li><li>. ： 除回车外所有字符</li></ul><h4 id="次数"><a href="#次数" class="headerlink" title="次数"></a>次数</h4><ul><li>*：   大于等于0</li><li>+：   大于等1</li><li>{m}： 次数</li><li>{m,n}： {3,5}从3到5</li></ul><h2 id="re-match和re-search"><a href="#re-match和re-search" class="headerlink" title="re.match和re.search"></a>re.match和re.search</h2><p><strong>re.match:</strong> 给出的字符串起始位置去匹配</p><p><strong>re.search:</strong> 整个字符串去匹配</p><blockquote><p>例子</p></blockquote><pre><code>import reresult1 = re.match(&apos;\d+&apos;, &apos;a123fdsa234f4532&apos;)result2 = re.search(&apos;\d+&apos;, &apos;a123fdsa234f4532&apos;)print(result1)print(result2)</code></pre><blockquote><p>结果</p></blockquote><pre><code>None&lt;_sre.SRE_Match object; span=(1, 4), match=&apos;123&apos;&gt;</code></pre><p>上面可看到，如果没有返回<strong>None</strong>，否则返回一个对象，如果要取到值则为<strong>print(result2.group())</strong>。</p><h2 id="re-findall"><a href="#re-findall" class="headerlink" title="re.findall"></a>re.findall</h2><p>一直找到所有相关匹配项（适合一次，100次需要编译一百次）。</p><blockquote><p>例子</p></blockquote><pre><code>result3 = re.findall(&apos;\d+&apos;,&apos;a123fdsa234f4532&apos;)print(result3)</code></pre><blockquote><p>结果</p></blockquote><pre><code>[&apos;123&apos;, &apos;234&apos;, &apos;4532&apos;]</code></pre><h2 id="re-compile"><a href="#re-compile" class="headerlink" title="re.compile"></a>re.compile</h2><p>返回一个对象需要用findall函数获取字符串来匹配（适合多次）。</p><blockquote><p>例子</p></blockquote><pre><code>com = re.compile(&apos;\d+&apos;)print(com.findall(&apos;a123fdsa234f4532&apos;))</code></pre><blockquote><p>结果</p></blockquote><pre><code>[&apos;123&apos;, &apos;234&apos;, &apos;4532&apos;]</code></pre><h2 id="re-group和re-groups"><a href="#re-group和re-groups" class="headerlink" title="re.group和re.groups"></a>re.group和re.groups</h2><ul><li>re.group：  获取所有</li><li>re.groups：（只获取组里面（括号里）的匹配值）</li></ul><blockquote><p>例子</p></blockquote><pre><code>result3 = re.search(&apos;(\d+)fdsa(\d+)&apos;, &apos;a123fdsa234f4532&apos;)print(result3.group())print(result3.groups())</code></pre><blockquote><p>结果</p></blockquote><pre><code>123fdsa234(&apos;123&apos;, &apos;234&apos;)</code></pre><h2 id="查找IP"><a href="#查找IP" class="headerlink" title="查找IP"></a>查找IP</h2><blockquote><p>例子</p></blockquote><pre><code>ip = &apos;12.32.123.432.23432fdsa+fds;fdsa192.23.32.44_fdsa#@9ds&apos;print(re.findall(&apos;(?:\d{1,3}\.){3}\d{1,3}&apos;, ip))</code></pre><blockquote><p>结果</p></blockquote><pre><code>[&apos;12.32.123.432&apos;, &apos;192.23.32.44&apos;]</code></pre>]]></content>
-      
+      <tags>
+        <tag>python随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[正则]]></title>
+    <url>%2F2017%2F07%2F20%2Fpython_%E6%AD%A3%E5%88%99%2F</url>
+    <content type="text"><![CDATA[正则表达式字符 \d： 数字 \w： 字母 \t： 制表符 . ： 除回车外所有字符 次数 *： 大于等于0 +： 大于等1 {m}： 次数 {m,n}： {3,5}从3到5 re.match和re.searchre.match: 给出的字符串起始位置去匹配 re.search: 整个字符串去匹配 例子 import re result1 = re.match(&apos;\d+&apos;, &apos;a123fdsa234f4532&apos;) result2 = re.search(&apos;\d+&apos;, &apos;a123fdsa234f4532&apos;) print(result1) print(result2) 结果 None &lt;_sre.SRE_Match object; span=(1, 4), match=&apos;123&apos;&gt; 上面可看到，如果没有返回None，否则返回一个对象，如果要取到值则为print(result2.group())。 re.findall一直找到所有相关匹配项（适合一次，100次需要编译一百次）。 例子 result3 = re.findall(&apos;\d+&apos;,&apos;a123fdsa234f4532&apos;) print(result3) 结果 [&apos;123&apos;, &apos;234&apos;, &apos;4532&apos;] re.compile返回一个对象需要用findall函数获取字符串来匹配（适合多次）。 例子 com = re.compile(&apos;\d+&apos;) print(com.findall(&apos;a123fdsa234f4532&apos;)) 结果 [&apos;123&apos;, &apos;234&apos;, &apos;4532&apos;] re.group和re.groups re.group： 获取所有 re.groups：（只获取组里面（括号里）的匹配值） 例子 result3 = re.search(&apos;(\d+)fdsa(\d+)&apos;, &apos;a123fdsa234f4532&apos;) print(result3.group()) print(result3.groups()) 结果 123fdsa234 (&apos;123&apos;, &apos;234&apos;) 查找IP 例子 ip = &apos;12.32.123.432.23432fdsa+fds;fdsa192.23.32.44_fdsa#@9ds&apos; print(re.findall(&apos;(?:\d{1,3}\.){3}\d{1,3}&apos;, ip)) 结果 [&apos;12.32.123.432&apos;, &apos;192.23.32.44&apos;]]]></content>
       <categories>
-          
-          <category> 编程 </category>
-          
+        <category>编程</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> python随笔 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>nginx笔记</title>
-      <link href="/2016/05/11/nginx/"/>
-      <url>/2016/05/11/nginx/</url>
-      <content type="html"><![CDATA[<h2 id="初探"><a href="#初探" class="headerlink" title="初探"></a>初探</h2><p>nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个<strong>master</strong>和多个<strong>worker</strong>进程，而<strong>master</strong>主要管理<strong>worker</strong>，包含：</p><ol><li>接收来自外界的信号；</li><li>向各worker进程发送信号；</li><li>监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。</li></ol><p>worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。<strong>一个请求</strong>只可能在<strong>一个worker进程</strong>中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示：</p><p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png" alt=""></p><p>图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。</p><p>当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？</p><h2 id="worker之间的信息处理"><a href="#worker之间的信息处理" class="headerlink" title="worker之间的信息处理"></a>worker之间的信息处理</h2><p>前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。</p><p>一个woker处理一个请求，那高并发是怎么做的呢？</p><h2 id="高并发处理原理"><a href="#高并发处理原理" class="headerlink" title="高并发处理原理"></a>高并发处理原理</h2><p>nginx采用<strong>异步非阻塞</strong>方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？</p><ul><li><p>阻塞</p><p>  事件没有准备好，那就只能等了，等事件准备好了，才可以继续。<br>  此时，阻塞调用会进入内核等待。</p></li><li><p>非阻塞</p><p>  事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。</p></li></ul><p>虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说：</p><pre><code>1. 当事件没准备好时，放到epoll里；2. 事件准备好了，就去读写；3. 如果返回EAGAIN时，再次放到epoll里；4. 当所有事件都没准备好时，才在epoll里等待。</code></pre><p>这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。</p><p>对于web服务器，事件通常有三种类型：<strong>网络事件</strong>、<strong>信号</strong>和<strong>定时器</strong>：</p><ul><li><p>网络事件</p><p>  通过异步非阻塞能解决问题</p></li><li><p>信号</p><p>  nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。</p></li><li><p>定时器</p><p>  由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。</p></li></ul><h2 id="connection"><a href="#connection" class="headerlink" title="connection"></a>connection</h2><p>connection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。</p><p>所以，nginx不仅可以做webServer,还能做sendMail。</p><h2 id="request"><a href="#request" class="headerlink" title="request"></a>request</h2><p>在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。</p><p>Nginx作为web服务器时使用的配置</p>]]></content>
-      
+      <tags>
+        <tag>python随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[nginx笔记]]></title>
+    <url>%2F2016%2F05%2F11%2Fnginx%2F</url>
+    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ worker之间的信息处理前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。 一个woker处理一个请求，那高并发是怎么做的呢？ 高并发处理原理nginx采用异步非阻塞方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？ 阻塞 事件没有准备好，那就只能等了，等事件准备好了，才可以继续。 此时，阻塞调用会进入内核等待。 非阻塞 事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。 虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说： 1. 当事件没准备好时，放到epoll里； 2. 事件准备好了，就去读写； 3. 如果返回EAGAIN时，再次放到epoll里； 4. 当所有事件都没准备好时，才在epoll里等待。 这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。 对于web服务器，事件通常有三种类型：网络事件、信号和定时器： 网络事件 通过异步非阻塞能解决问题 信号 nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。 定时器 由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。 connectionconnection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。 所以，nginx不仅可以做webServer,还能做sendMail。 request在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。 Nginx作为web服务器时使用的配置]]></content>
       <categories>
-          
-          <category> Service </category>
-          
+        <category>Service</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>nginx笔记1</title>
-      <link href="/2016/05/11/nginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B/"/>
-      <url>/2016/05/11/nginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B/</url>
-      <content type="html"><![CDATA[<p>Nginx通常作为两种应用，既：</p><ul><li>Web Server</li><li>Web Reverse Proxy</li></ul><p>做为web服务器最核心的是<strong>http协议</strong>（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在<strong>80端口</strong>上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了<strong>MIME</strong>（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。</p><p>互联网上访问一个资源是根据<strong>URL</strong>标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。</p><p>http事务由两部分组成：</p><ul><li><p>request</p><p>  格式：  <method> <url> <version> <headers></headers></version></url></method></p><pre><code>&lt;body&gt;</code></pre></li><li><p>response</p><p>  格式： <version> <status> <reason phrase=""></reason></status></version></p><pre><code>&lt;HEADERS&gt;&lt;body&gt;</code></pre></li></ul><p>method包括：</p><ul><li>GET</li><li>HEADE</li><li>POST</li><li>PUT</li><li>DELETE</li><li>TRACE</li><li>OPTIONS</li></ul><p>status:</p><ul><li>1xx: 信息类</li><li>2xx: 成功类</li><li>3xx: 重定向 301 302 304</li><li>4xx: 客户端错误 404 401</li><li>5xx: 502 504</li></ul><p>HEADE:</p><ul><li>通用首部</li><li>请求首部<br>  If-Modified-Since、IF-None-Match</li><li>响应首部</li><li>实体首部</li><li>扩展首部</li></ul>]]></content>
-      
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[nginx笔记1]]></title>
+    <url>%2F2016%2F05%2F11%2Fnginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[Nginx通常作为两种应用，既： Web Server Web Reverse Proxy 做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了MIME（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。 互联网上访问一个资源是根据URL标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。 http事务由两部分组成： request 格式： &lt;body&gt; response 格式： &lt;HEADERS&gt; &lt;body&gt; method包括： GET HEADE POST PUT DELETE TRACE OPTIONS status: 1xx: 信息类 2xx: 成功类 3xx: 重定向 301 302 304 4xx: 客户端错误 404 401 5xx: 502 504 HEADE: 通用首部 请求首部 If-Modified-Since、IF-None-Match 响应首部 实体首部 扩展首部]]></content>
       <categories>
-          
-          <category> Service </category>
-          
+        <category>Service</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>Linux基础</title>
-      <link href="/2015/02/27/Linux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC%E4%BB%8B%E7%BB%8D/"/>
-      <url>/2015/02/27/Linux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC%E4%BB%8B%E7%BB%8D/</url>
-      <content type="html"><![CDATA[]]></content>
-      
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Linux基础]]></title>
+    <url>%2F2015%2F02%2F27%2FLinux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC%E4%BB%8B%E7%BB%8D%2F</url>
+    <content type="text"></content>
       <categories>
-          
-          <category> Linux </category>
-          
+        <category>Linux</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> Linux基础 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-  
-  
+      <tags>
+        <tag>Linux基础</tag>
+      </tags>
+  </entry>
 </search>

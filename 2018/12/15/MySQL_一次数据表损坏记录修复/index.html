@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="##  一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket crea">
+<meta name="description" content="一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket created">
 <meta name="keywords" content="mysql">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一次数据表损坏的修复过程">
 <meta property="og:url" content="http://yoursite.com/2018/12/15/MySQL_一次数据表损坏记录修复/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="##  一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket crea">
+<meta property="og:description" content="一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket created">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-01T02:27:41.969Z">
+<meta property="og:updated_time" content="2019-07-01T05:37:35.474Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一次数据表损坏的修复过程">
-<meta name="twitter:description" content="##  一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket crea">
+<meta name="twitter:description" content="一、数据库表损坏现象mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表提示：表不存在，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息： 123456789101112131415161718192021222324252019-01-25 13:46:19 13621 [Note] Server socket created">
 
 
 
@@ -411,8 +411,7 @@
       
 
       
-        <p>## </p>
-<h3 id="一、数据库表损坏"><a href="#一、数据库表损坏" class="headerlink" title="一、数据库表损坏"></a>一、数据库表损坏</h3><h4 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h4><p>mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表<strong>提示：表不存在</strong>，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息：</p>
+        <h3 id="一、数据库表损坏"><a href="#一、数据库表损坏" class="headerlink" title="一、数据库表损坏"></a>一、数据库表损坏</h3><h4 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h4><p>mysql数据库非正常停止，导致所有数据库（除自身数据库信息）信息表名正常显示，但打开表<strong>提示：表不存在</strong>，数据库数据存放路径信息显示占用大小正常，证明数据没有丢失，数据库启动报错如下信息：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">2019-01-25 13:46:19 13621 [Note] Server socket created on IP: '::'.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_master_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.ht</span><br><span class="line"></span><br><span class="line">ml for how you can resolve the problem.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] Info table is not ready to be used. Table 'mysql.slave_master_info' cannot be opened.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_worker_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.ht</span><br><span class="line"></span><br><span class="line">ml for how you can resolve the problem.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] InnoDB: Cannot open table mysql/slave_relay_log_info from the internal data dictionary of InnoDB though the .frm file for the table exists. See http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting</span><br><span class="line"></span><br><span class="line">.html for how you can resolve the problem.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Warning] Info table is not ready to be used. Table 'mysql.slave_relay_log_info' cannot be opened.</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Note] Event Scheduler: Loaded 0 events</span><br><span class="line"></span><br><span class="line">2019-01-25 13:46:19 13621 [Note] /usr/local/mysql/bin/mysqld: ready for connections.</span><br><span class="line"></span><br><span class="line">Version: '5.6.29-log'  socket: '/usr/local/mysql/mysqld.sock'  port: 3306  Source distribution</span><br><span class="line"></span><br><span class="line">2019-01-25 13:47:23 13621 [Note] /usr/local/mysql/bin/mysqld: Normal shutdown</span><br></pre></td></tr></table></figure>
 <p> 上述日志获取到： InnoDB: Cannot open table mysql/slave_worker_info from the internal data dictionary of InnoDB though the .frm file for the table exists. 尽管表“slave_worker_info”已经存在，但是获取不到信息。而且报大量类似表的错误信息</p>
 <p>解决</p>
