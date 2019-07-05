@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[jenkinsfile声明式流水线配置说明]]></title>
     <url>%2F2019%2F05%2F15%2Fjenkinsfile%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E%2F</url>
-    <content type="text"><![CDATA[jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为&#123;&#125;```,其他的代码都放在这个闭包里12345```shellpipeline &#123; // 流水线代码区域&#125; agent 指定整个流水线或者一个特定阶段在哪运行，在color12345678```sheagent any 可运行在任何一个定义好的代理节点上agent none 需要为单个阶段指定代理节点agent &#123; label &quot;&lt;label&gt;&quot;&#125; 流水线可以运行任意一个具有&lt;lable&gt;标签的代理节点上 environment 可选指令，设置环境变量 123456pipeline &#123; agent any environment &#123; TIMEZONE = 'Shanghai' &#125;&#125; 上述代码为定义一个TIMEZONE的变量，稍后会在后续例子中介绍调用。 options 可选参数，指定在jenkins配置选项中的一些配置值，例如输出带时间戳，构建历史保留次数等等 1234options &#123; // 操作台输出日志(需要安装timestamps插件) timestamps() &#125; timestamps需要额外安装Timestamper插件才能使用。 后续待持续更新。。。]]></content>
+    <content type="text"><![CDATA[jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为&#123;&#125;```,其他的代码都放在这个闭包里12345```shellpipeline &#123; // 流水线代码区域&#125; agent 指定整个流水线或者一个特定阶段在哪运行，在color12345678```sheagent any 可运行在任何一个定义好的代理节点上agent none 需要为单个阶段指定代理节点agent &#123; label &quot;&lt;label&gt;&quot;&#125; 流水线可以运行任意一个具有&lt;lable&gt;标签的代理节点上 environment 可选指令，设置环境变量 123456pipeline &#123; agent any environment &#123; TIMEZONE = 'Shanghai' &#125;&#125; 上述代码为定义一个TIMEZONE的变量，稍后会在后续例子中介绍调用。 options 可选参数，指定在jenkins配置选项中的一些配置值，例如输出带时间戳，构建历史保留次数等等 1234options &#123; // 操作台输出日志(需要安装timestamps插件) timestamps() &#125; timestamps需要额外安装Timestamper插件才能使用。 后续待更新。。。]]></content>
       <categories>
         <category>Server</category>
       </categories>
@@ -61,17 +61,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[devops书籍]]></title>
-    <url>%2F2018%2F03%2F05%2Fdevops%E4%B9%A6%E7%B1%8D%2F</url>
-    <content type="text"><![CDATA[书籍收藏]]></content>
-      <categories>
-        <category>DevOps</category>
-      </categories>
-      <tags>
-        <tag>devops书籍</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[书籍]]></title>
     <url>%2F2018%2F03%2F05%2Fbooks%2F</url>
     <content type="text"><![CDATA[《自控力》]]></content>
@@ -80,6 +69,17 @@
       </categories>
       <tags>
         <tag>书籍</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[devops书籍]]></title>
+    <url>%2F2018%2F03%2F05%2Fdevops%E4%B9%A6%E7%B1%8D%2F</url>
+    <content type="text"><![CDATA[书籍收藏]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>devops书籍</tag>
       </tags>
   </entry>
   <entry>
@@ -97,6 +97,17 @@
     <title><![CDATA[zabbix低级发现]]></title>
     <url>%2F2018%2F02%2F24%2Fzabbix_%E4%BD%8E%E7%BA%A7%E5%8F%91%E7%8E%B0%2F</url>
     <content type="text"><![CDATA[一、(low level discover)概述 什么是lld ？即低水平自动发现，使用它可以自动创建项目、触发器及被监控主机上的实体图。如zabbix 可以自动监控主机上的文件系统和网络拉口，而不需要为每个监控项创建items 。此处，其也可以实现被监控项目的自动删除 。上面的话不是我的总结，是我从官方文档上翻译过来的话。 二、创建模版 由于创建模板不是本篇的重点，就不提创建模板的过程了 。这里重点提下如何在模板中创建自动发现规则。 1. 创建自动发现规则 步骤为：配置 –&gt; 模版 –&gt; 选中之前创建好的模版(这里我用 app discover) –&gt; 自动发现规则 –&gt; 创建发现规则 2. 选择监控项原型并创建监控项 名称：｛#DISCOVER} 自定义的宏变量（后续脚本会提到)； 类型：根据自身主动/被动模式选择； 键值：后续监控的自定义Key会提到。 3. 触发器类型 可根据自身情况做定义 三、客户端配置脚本（在配置发现的主机上配置，比如zabbix-server的agentd） 配置发现规则 这里发现规则是找的/app目录下的所有目录名（公司的所有项目都创建在/app目录下） cat check_app.py #!/usr/bin/env python #-*- coding:utf-8 -*- #@author: sundsinerj #@date: 2017/9/28 import os import json import getopt import sys #list app name app_list = os.listdir(os.path.expanduser("/app")) if 'lost+found' in app_list: del app_list[app_list.index('lost+found')] elif 'zabbix' in app_list: del app_list[app_list.index('lost+found')] elif 'tomcat-6.0.48_wp' in app_list: del app_list[app_list.index('lost+found')] opts, arge = getopt.getopt(sys.argv[1:],[]) #print appname for json pool_list = [] for appname in app_list: #def json data pool_list += [｛'｛#DISCOVER｝': appname｝] print json.dumps({'data': pool_list},sort_keys=True,indent=4,separators=(',',':')) 配置监控项规则 cat check_app.sh #! /bin/bash help() { echo "USAGE:`basename $0` [-n] the name of app" exit -1 } while getopts ":n" opt do case $opt in n) appname=$OPTARG ;; h) help ;; *) unkown=$OPTARG echo "error,plase check for help,USAGE:./`basename $0` -h" exit $STAT_UNKNOWN ;; esac done apppid=`ps aux | grep "$appname" | grep -v grep | wc -c` if [ $apppid -eq 0 ] then echo 0 exit 0 else echo 1 exit 1 fi 发现规则必需是json格式的 *｛#DISCOVER｝ 就是zabbix创建的模版的宏变量 check_app.sh脚本就是定义的监控项 四、自定义key cat userparameter_app.conf UserParameter=app.status[*],/bin/bash /etc/zabbix/zabbix_agentd.d/libexec/check_app.sh -n $1 UserParameter=app.discover,python /etc/zabbix/zabbix_agentd.d/libexec/check_app.py 五、验证在被发现的主机上关联app discover 模版就可以了。过会，就能看到相关的低级发现项目。]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
       <categories>
         <category>Server</category>
       </categories>
@@ -160,17 +171,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2018%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[shell文件对比]]></title>
     <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
     <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
@@ -193,17 +193,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[记录linux用户操作]]></title>
-    <url>%2F2017%2F08%2F23%2Flinux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%2F</url>
-    <content type="text"><![CDATA[记录用户操作追加在 /etc/profilePS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/null]]></content>
-      <categories>
-        <category>系统</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[http请求方法介绍]]></title>
     <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
     <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
@@ -212,6 +201,17 @@
       </categories>
       <tags>
         <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[记录linux用户操作]]></title>
+    <url>%2F2017%2F08%2F23%2Flinux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%2F</url>
+    <content type="text"><![CDATA[记录用户操作追加在 /etc/profilePS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/null]]></content>
+      <categories>
+        <category>系统</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -237,9 +237,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[nginx笔记1]]></title>
-    <url>%2F2016%2F05%2F11%2Fnginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B%2F</url>
-    <content type="text"><![CDATA[Nginx通常作为两种应用，既： Web Server Web Reverse Proxy 做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了MIME（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。 互联网上访问一个资源是根据URL标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。 http事务由两部分组成： request 格式： &lt;body&gt; response 格式： &lt;HEADERS&gt; &lt;body&gt; method包括： GET HEADE POST PUT DELETE TRACE OPTIONS status: 1xx: 信息类 2xx: 成功类 3xx: 重定向 301 302 304 4xx: 客户端错误 404 401 5xx: 502 504 HEADE: 通用首部 请求首部 If-Modified-Since、IF-None-Match 响应首部 实体首部 扩展首部]]></content>
+    <title><![CDATA[nginx笔记]]></title>
+    <url>%2F2016%2F05%2F11%2Fnginx%2F</url>
+    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ worker之间的信息处理前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。 一个woker处理一个请求，那高并发是怎么做的呢？ 高并发处理原理nginx采用异步非阻塞方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？ 阻塞 事件没有准备好，那就只能等了，等事件准备好了，才可以继续。 此时，阻塞调用会进入内核等待。 非阻塞 事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。 虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说： 1. 当事件没准备好时，放到epoll里； 2. 事件准备好了，就去读写； 3. 如果返回EAGAIN时，再次放到epoll里； 4. 当所有事件都没准备好时，才在epoll里等待。 这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。 对于web服务器，事件通常有三种类型：网络事件、信号和定时器： 网络事件 通过异步非阻塞能解决问题 信号 nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。 定时器 由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。 connectionconnection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。 所以，nginx不仅可以做webServer,还能做sendMail。 request在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。 Nginx作为web服务器时使用的配置]]></content>
       <categories>
         <category>Service</category>
       </categories>
@@ -248,9 +248,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[nginx笔记]]></title>
-    <url>%2F2016%2F05%2F11%2Fnginx%2F</url>
-    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ worker之间的信息处理前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。 一个woker处理一个请求，那高并发是怎么做的呢？ 高并发处理原理nginx采用异步非阻塞方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？ 阻塞 事件没有准备好，那就只能等了，等事件准备好了，才可以继续。 此时，阻塞调用会进入内核等待。 非阻塞 事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。 虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说： 1. 当事件没准备好时，放到epoll里； 2. 事件准备好了，就去读写； 3. 如果返回EAGAIN时，再次放到epoll里； 4. 当所有事件都没准备好时，才在epoll里等待。 这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。 对于web服务器，事件通常有三种类型：网络事件、信号和定时器： 网络事件 通过异步非阻塞能解决问题 信号 nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。 定时器 由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。 connectionconnection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。 所以，nginx不仅可以做webServer,还能做sendMail。 request在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。 Nginx作为web服务器时使用的配置]]></content>
+    <title><![CDATA[nginx笔记1]]></title>
+    <url>%2F2016%2F05%2F11%2Fnginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[Nginx通常作为两种应用，既： Web Server Web Reverse Proxy 做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了MIME（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。 互联网上访问一个资源是根据URL标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。 http事务由两部分组成： request 格式： &lt;body&gt; response 格式： &lt;HEADERS&gt; &lt;body&gt; method包括： GET HEADE POST PUT DELETE TRACE OPTIONS status: 1xx: 信息类 2xx: 成功类 3xx: 重定向 301 302 304 4xx: 客户端错误 404 401 5xx: 502 504 HEADE: 通用首部 请求首部 If-Modified-Since、IF-None-Match 响应首部 实体首部 扩展首部]]></content>
       <categories>
         <category>Service</category>
       </categories>
