@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为&amp;#123;&amp;#125;```,其他的代码都放在这个闭包里12345```shellpipeline &amp;#123;    // 流水线代码区域&amp;#125;  agent 指定整个流水线或者一">
+<meta name="description" content="jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为pipeline {},其他的代码都放在这个闭包里   123pipeline &amp;#123;    // 流水线代码区域&amp;#125;  agent 指定整个流水线或者一个特定阶段在哪运行，在">
 <meta name="keywords" content="jenkins">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jenkinsfile声明式流水线配置说明">
 <meta property="og:url" content="http://yoursite.com/2019/05/15/jenkinsfile声明式流水线配置说明/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为&amp;#123;&amp;#125;```,其他的代码都放在这个闭包里12345```shellpipeline &amp;#123;    // 流水线代码区域&amp;#125;  agent 指定整个流水线或者一">
+<meta property="og:description" content="jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为pipeline {},其他的代码都放在这个闭包里   123pipeline &amp;#123;    // 流水线代码区域&amp;#125;  agent 指定整个流水线或者一个特定阶段在哪运行，在">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/jenkinsfile_1.png">
-<meta property="og:updated_time" content="2019-07-05T06:50:43.769Z">
+<meta property="og:updated_time" content="2019-07-05T06:52:57.749Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkinsfile声明式流水线配置说明">
-<meta name="twitter:description" content="jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为&amp;#123;&amp;#125;```,其他的代码都放在这个闭包里12345```shellpipeline &amp;#123;    // 流水线代码区域&amp;#125;  agent 指定整个流水线或者一">
+<meta name="twitter:description" content="jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为pipeline {},其他的代码都放在这个闭包里   123pipeline &amp;#123;    // 流水线代码区域&amp;#125;  agent 指定整个流水线或者一个特定阶段在哪运行，在">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/jenkinsfile_1.png">
 
 
@@ -416,10 +416,14 @@
         <h2 id="jenkinsfile声明式流水线配置说明"><a href="#jenkinsfile声明式流水线配置说明" class="headerlink" title="jenkinsfile声明式流水线配置说明"></a>jenkinsfile声明式流水线配置说明</h2><h4 id="声明式流水线结构说明"><a href="#声明式流水线结构说明" class="headerlink" title="声明式流水线结构说明"></a>声明式流水线结构说明</h4><p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/jenkinsfile_1.png" alt=""></p>
 <h4 id="主要模块介绍"><a href="#主要模块介绍" class="headerlink" title="主要模块介绍"></a>主要模块介绍</h4><ol>
 <li><p>pipeline</p>
-<p>pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为<font color="red"><figure class="highlight plain"><figcaption><span>&#123;&#125;```</span></figcaption></figure></font>,其他的代码都放在这个闭包里<table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```shell</span><br><span class="line">pipeline &#123;</span><br><span class="line">    // 流水线代码区域</span><br><span class="line">&#125;</span><br></pre></td></tr></table></p>
+<p>pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为<font color="red">pipeline {}</font>,其他的代码都放在这个闭包里</p>
 </li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    // 流水线代码区域</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
 <li><p>agent</p>
-<p>指定整个流水线或者一个特定阶段在哪运行，在<font color="red"><figure class="highlight plain"><figcaption><span>color</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```she</span><br><span class="line">agent any</span><br><span class="line">    可运行在任何一个定义好的代理节点上</span><br><span class="line">agent none</span><br><span class="line">    需要为单个阶段指定代理节点</span><br><span class="line">agent &#123; label &quot;&lt;label&gt;&quot;&#125;</span><br><span class="line">    流水线可以运行任意一个具有&lt;lable&gt;标签的代理节点上</span><br></pre></td></tr></table></figure></font></p>
+<p>指定整个流水线或者一个特定阶段在哪运行，在<font color="red">pipeline</font>代码块中，必须要有一个<font color="red">agent</font>指令用来指定<strong>默认的</strong>执行节点。然而在单个阶段的开始也可以可选地使用一个<font color="red">agent</font>指令，用来指定该阶段应该在哪执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">agent any</span><br><span class="line">    可运行在任何一个定义好的代理节点上</span><br><span class="line">agent none</span><br><span class="line">    需要为单个阶段指定代理节点</span><br><span class="line">agent &#123; label &quot;&lt;label&gt;&quot;&#125;</span><br><span class="line">    流水线可以运行任意一个具有&lt;lable&gt;标签的代理节点上</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>environment</p>
 <p><strong>可选指令</strong>，设置环境变量</p>
