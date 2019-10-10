@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="zabbix," />
 
 
 
@@ -79,13 +79,22 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="sundshinerj">
-<meta property="og:url" content="http://yoursite.com/categories/Linux/index.html">
+<meta name="description" content="##  背景国庆期间出现项目访问异常，zabbix也没报警。通过线上日志排查，初步判断是由于内存溢出导致，在项目接口方面由于没做监控，导致不能及时发现和响应问题。急需监控处理 解决方案考虑到后续域名动态更新及维护效率，把所有域名放置gitlab中，每次监控程序自动刷新配置，有问题则直接报警，代码如下： 123456789101112131415161718192021222324252627282">
+<meta name="keywords" content="zabbix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zabbix监控项目接口">
+<meta property="og:url" content="http://yoursite.com/2019/10/10/zabbix监控项目接口/index.html">
 <meta property="og:site_name" content="sundshinerj">
+<meta property="og:description" content="##  背景国庆期间出现项目访问异常，zabbix也没报警。通过线上日志排查，初步判断是由于内存溢出导致，在项目接口方面由于没做监控，导致不能及时发现和响应问题。急需监控处理 解决方案考虑到后续域名动态更新及维护效率，把所有域名放置gitlab中，每次监控程序自动刷新配置，有问题则直接报警，代码如下： 123456789101112131415161718192021222324252627282">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix15.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix16.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix17.jpg">
+<meta property="og:updated_time" content="2019-10-10T08:02:05.739Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="sundshinerj">
+<meta name="twitter:title" content="zabbix监控项目接口">
+<meta name="twitter:description" content="##  背景国庆期间出现项目访问异常，zabbix也没报警。通过线上日志排查，初步判断是由于内存溢出导致，在项目接口方面由于没做监控，导致不能及时发现和响应问题。急需监控处理 解决方案考虑到后续域名动态更新及维护效率，把所有域名放置gitlab中，每次监控程序自动刷新配置，有问题则直接报警，代码如下： 123456789101112131415161718192021222324252627282">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix15.png">
 
 
 
@@ -115,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/Linux/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/10/10/zabbix监控项目接口/"/>
 
 
 
 
 
-  <title>分类: Linux | sundshinerj</title>
+  <title>zabbix监控项目接口 | sundshinerj</title>
   
 
 
@@ -150,7 +159,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -292,55 +301,193 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>Linux<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/10/zabbix监控项目接口/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="段瑞君">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/apple-touch-icon-next.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sundshinerj">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2015/02/27/Linux发行版本介绍/" itemprop="url">
-              
-                <span itemprop="name">Linux基础</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">zabbix监控项目接口</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-02-27T13:40:49+08:00"
-              content="2015-02-27" >
-          02-27
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-10T14:27:49+08:00">
+                2019-10-10
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Server/" itemprop="url" rel="index">
+                    <span itemprop="name">Server</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/10/10/zabbix监控项目接口/" class="leancloud_visitors" data-flag-title="zabbix监控项目接口">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>## </p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>国庆期间出现项目访问异常，zabbix也没报警。通过线上日志排查，初步判断是由于内存溢出导致，在项目接口方面由于没做监控，导致不能及时发现和响应问题。急需监控处理</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>考虑到后续域名动态更新及维护效率，把所有域名放置gitlab中，每次监控程序自动刷新配置，有问题则直接报警，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">[root@support zabbix]# cat checkDomainApi.py </span><br><span class="line"># -*- coding: UTF-8 -*-</span><br><span class="line"># @File    :  checkDomainApi.py</span><br><span class="line"># @Time    :  2019/10/10</span><br><span class="line"># @Author  :  Duan.rj</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">说明；</span><br><span class="line">    git中获取最新接口文件(domainApiList)，判断文件内所有接口是否异常(正常为True，其他都为异常) \</span><br><span class="line">    如有异常则发送异常api</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">import urllib2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">domainFileDir = &apos;/opt/Script&apos;</span><br><span class="line">domainFile = domainFileDir + &apos;/domainApiList&apos;</span><br><span class="line"></span><br><span class="line">domainErrorList = []</span><br><span class="line"></span><br><span class="line"># 获取最新文件</span><br><span class="line">with open(domainFile) as f:</span><br><span class="line">    domainUrls = f.readlines()</span><br><span class="line">     # readlines读取时会带 &quot;\n&quot;换行符，需要二次过滤</span><br><span class="line">    domainUrlsList = &apos;&apos;.join(domainUrls).strip(&apos;\n&apos;).splitlines()</span><br><span class="line"></span><br><span class="line">    for domainUrl in domainUrlsList:</span><br><span class="line">        try:</span><br><span class="line">            getValue = urllib2.urlopen(&apos;http://&apos; + domainUrl + &apos;/monit/heartbeat&apos;)</span><br><span class="line">            if getValue.read() != &apos;true&apos;:</span><br><span class="line">                domainErrorList.append(domainUrl)</span><br><span class="line">        except Exception:</span><br><span class="line">            domainErrorList.append(domainUrl)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if domainErrorList != []:</span><br><span class="line">    for domainUrl in domainErrorList:</span><br><span class="line">        print(&apos;GET &quot;&apos; + domainUrl + &apos;&quot; API Error!&apos;)</span><br><span class="line">else:</span><br><span class="line">    print(0)</span><br></pre></td></tr></table></figure>
+<p>要想避免脚本或者监控的域名文件(这里是domainApiList)每次不能实时更新，推荐使用<strong>crontab</strong>定时更新：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@support zabbix]# crontab -l</span><br><span class="line"># check domain script and domain file</span><br><span class="line">00 */1 * * * cd /opt/Script/ops/zabbix;git pull 2&gt;&amp;1 &gt;&gt; /var/log/messages</span><br></pre></td></tr></table></figure>
+<p>这样，本地有任何改动，当push到git server后，服务端就会定期更新。</p>
+<h3 id="zabbix配置"><a href="#zabbix配置" class="headerlink" title="zabbix配置"></a>zabbix配置</h3><p>新建模板，并定义监控项和触发器，由于异常返回为字符串，注意在监控项中信息类型要配置正确</p>
+<p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix15.png" alt=""></p>
+<p>触发器配置</p>
+<p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix16.png" alt=""></p>
+<p>当域名有问题时，收到报警如下：</p>
+<p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/zabbix17.jpg" alt=""></p>
+<p>完。</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/zabbix/" rel="tag"># zabbix</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/27/docker学习笔记/" rel="next" title="docker学习笔记">
+                <i class="fa fa-chevron-left"></i> docker学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -348,6 +495,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -368,8 +519,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -433,6 +593,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zabbix配置"><span class="nav-number">3.</span> <span class="nav-text">zabbix配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -560,6 +736,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
