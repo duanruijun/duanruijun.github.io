@@ -294,7 +294,7 @@
   <entry>
     <title><![CDATA[Linux非root用户文件描述符限制]]></title>
     <url>%2F2015%2F02%2F27%2FLinux%E9%9D%9Eroot%E7%94%A8%E6%88%B7%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%E9%99%90%E5%88%B6%2F</url>
-    <content type="text"><![CDATA[描述在一次生产环境下切换非root用户，导致如下错误等待： 123456[root@xyzl_Tomcat_1 diagnosis-exam-service]# su - java-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable 通常上述问题发现是由于非root用户默认打开文件描述符为1024： 12345678cat /etc/security/limits.d/90-nproc.conf# Default limit for number of user&apos;s processes to prevent# accidental fork bombs.# See rhbz #432903 for reasoning.* soft nproc 1024root soft nproc unlimited 解决只要把非root用户值改为合适本身环境即可]]></content>
+    <content type="text"><![CDATA[描述在一次生产环境下切换非root用户，导致如下错误等待： 123456[root@xy_Tomcat_1 exam-service]# su - java-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable 通常上述问题发现是由于非root用户默认打开文件描述符为1024： 12345678cat /etc/security/limits.d/90-nproc.conf# Default limit for number of user&apos;s processes to prevent# accidental fork bombs.# See rhbz #432903 for reasoning.* soft nproc 1024root soft nproc unlimited 解决只要把非root用户值改为合适本身环境即可]]></content>
       <categories>
         <category>Linux</category>
       </categories>
