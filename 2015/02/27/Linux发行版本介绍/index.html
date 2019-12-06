@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Linux基础," />
+  <meta name="keywords" content="Linux," />
 
 
 
@@ -79,15 +79,18 @@
 
 
 
-<meta name="keywords" content="Linux基础">
+<meta name="description" content="描述在一次生产环境下切换非root用户，导致如下错误等待： 123456[root@xyzl_Tomcat_1 diagnosis-exam-service]# su - java-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash:">
+<meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux基础">
+<meta property="og:title" content="Linux非root用户文件描述符限制">
 <meta property="og:url" content="http://yoursite.com/2015/02/27/Linux发行版本介绍/index.html">
 <meta property="og:site_name" content="sundshinerj">
+<meta property="og:description" content="描述在一次生产环境下切换非root用户，导致如下错误等待： 123456[root@xyzl_Tomcat_1 diagnosis-exam-service]# su - java-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash:">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-01T02:26:29.895Z">
+<meta property="og:updated_time" content="2019-12-06T06:43:56.033Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux基础">
+<meta name="twitter:title" content="Linux非root用户文件描述符限制">
+<meta name="twitter:description" content="描述在一次生产环境下切换非root用户，导致如下错误等待： 123456[root@xyzl_Tomcat_1 diagnosis-exam-service]# su - java-bash: fork: retry: Resource temporarily unavailable-bash: fork: retry: Resource temporarily unavailable-bash:">
 
 
 
@@ -123,7 +126,7 @@
 
 
 
-  <title>Linux基础 | sundshinerj</title>
+  <title>Linux非root用户文件描述符限制 | sundshinerj</title>
   
 
 
@@ -325,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Linux基础</h1>
+          <h1 class="post-title" itemprop="name headline">Linux非root用户文件描述符限制</h1>
         
 
         <div class="post-meta">
@@ -377,7 +380,7 @@
 
           
           
-             <span id="/2015/02/27/Linux发行版本介绍/" class="leancloud_visitors" data-flag-title="Linux基础">
+             <span id="/2015/02/27/Linux发行版本介绍/" class="leancloud_visitors" data-flag-title="Linux非root用户文件描述符限制">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -408,7 +411,12 @@
       
 
       
-        
+        <h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>在一次生产环境下切换非root用户，导致如下错误等待：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@xyzl_Tomcat_1 diagnosis-exam-service]# su - java</span><br><span class="line">-bash: fork: retry: Resource temporarily unavailable</span><br><span class="line">-bash: fork: retry: Resource temporarily unavailable</span><br><span class="line">-bash: fork: retry: Resource temporarily unavailable</span><br><span class="line">-bash: fork: retry: Resource temporarily unavailable</span><br><span class="line">-bash: fork: retry: Resource temporarily unavailable</span><br></pre></td></tr></table></figure>
+<p>通常上述问题发现是由于非root用户默认打开文件描述符为1024：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/security/limits.d/90-nproc.conf</span><br><span class="line"></span><br><span class="line"># Default limit for number of user&apos;s processes to prevent</span><br><span class="line"># accidental fork bombs.</span><br><span class="line"># See rhbz #432903 for reasoning.</span><br><span class="line"></span><br><span class="line">*          soft    nproc     1024</span><br><span class="line">root       soft    nproc     unlimited</span><br></pre></td></tr></table></figure>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>只要把非root用户值改为合适本身环境即可</p>
+
       
     </div>
     
@@ -425,7 +433,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux基础/" rel="tag"># Linux基础</a>
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
         </div>
       
@@ -498,8 +506,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -529,7 +546,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -540,7 +557,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -563,6 +580,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决"><span class="nav-number">2.</span> <span class="nav-text">解决</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
