@@ -50,6 +50,17 @@
     <content type="text"><![CDATA[函数带参数 #-*- coding:utf-8 -*- def outer(fun): def wrapper(arg): print_r('验证') fun(arg) print_r('你好') @outer def Func1(arg): print_r('func1', arg) return 'return' a = Func1('sundshinerj') print_r(a) 结果 验证 func1 sundshinerj nihao return]]></content>
   </entry>
   <entry>
+    <title></title>
+    <url>%2F2018%2F03%2F13%2Fcentos7.5%E5%86%85%E5%AE%B9%E5%B4%A9%E6%BA%83%2F</url>
+    <content type="text"><![CDATA[问题描述公司一台dell服务器(dell 2950)在正常运行后突然出现系统内容崩溃，开机启动加载centos7.5后出现如下图： ， 思考出现此类问题后，第一时间马上整理宕机后的问题： 业务影响范围？ 什么原因导致的？ 如何修复系统？ 带着问题去解决 业务影响范围 根据第一时间的了解和公司业务信息查阅，此服务器只影响公司人员正常使用文档库，系统宕机在周五晚上，公司人员在休息中使用较少，所以影响范围不大，但是里面数据集成了公司日常的工作内容，需要加急处理。 什么原因导致的 服务器在此前迁移时有一次意外停机，通过人工启动后一直运行正常，但是最近有出现SSH服务连接异常(ICMP测试没问题)，对外提供的服务也正常运行，通过宿主机连接查看系统日志无异常行为，所以修复优先级排后，后来发现问题原因基本是因此次意外宕机造成的。 如何修复系统 在修复前准备工作中，考虑了几个修复方案：光盘修复工具、raid修复系统、系统盘挂载至其他服务器上修复并copy数据、U盘可读写方式进入系统挂载并copy数据，如果修复比较困难，应立即做好数据迁移准备：准备新环境（由于文档库的附件资料存在服务器中，内容信息存在数据库中(数据和附件不在同一台服务器上)，所以重点考虑附件的恢复）。 光盘镜像修复工具 通过光盘镜像挂载选择系统急救模式进入系统后发现init丢失，lib库及命令也同样丢失，通过自行尝试修复及网上资料查阅也无济于事。可见问题已经难以解决，所以，应当采取第二个措施，数据的copy及新环境的准备(光盘镜像中挂载U盘需要安装驱动，安装失败，放弃)。 raid修复系统 此服务器做的是raid1，在raid配置中尝试修复，没有成功，放弃。 挂载至其他服务器上 系统盘挂载其他服务器上，不识别，放弃。 U盘启动COPY数据 通过U盘启动并进入系统急救模式，参照提示切换至系统(chroot /mnt/images)，查看源数据无损坏，并挂载U盘(成功)，进行数据的copy并迁移至新环境中，成功。 总结前前后后折腾了一天时间，好歹问题出在放假途中，对员工使用影响很少，有大量的时间去查阅问题资料，造成这种问题的主要原因有几个： 系统单点没做好冗余； 数据的存储没做好备份或者进行分布式存储策略； 当问题已经开始有不好的预兆时应及时处理。]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>centos7.5 内容崩溃</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[jenkins maven项目实战1]]></title>
     <url>%2F2018%2F03%2F07%2Fjenkins_maven%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%981%2F</url>
     <content type="text"><![CDATA[环境 gitlab: http://192.168.62.206 jenkins: http://192.168.62.210:8080 depserver: 192.168.63.116 实例说明 gitlab工程地址：git@192.168.62.206:Mall/eureka.git jenkins构建完成后本地存放位置：/target depserver工程目录：/home/jiagouzu/tingyun/target/ 流程 jenkins通过gitlab pull工程代码 jenkins通过本地maven工具构建、打包工程代码 jenkins把完成的.jar推送到服务器相应目录下 注意事项 jenkins pull代码时，gitlab要确保有jenkins的Deploy key key信息 gitlab的项目“Mall/eureka”启用deploy key(settings–&gt; Repository–&gt;Deploy Keys)： jenkins配置说明jenkins配置depServer节点 添加depserver服务器节点（系统管理–&gt;系统设置–&gt;SSH Servers） 新建一个Server,完成后选择高级配置相关信息： 其他保持默认，最后选择Test Configuration可测试下 配置拉取gitlab地址私钥信息这里就不多讲了，具体步骤可见jenkins基本使用 创建项目 新建一个项目，类型为自由风格的（maven类型有很多限制），这里我的名称为“商城” 配置“商城”，在General标签里配置相关信息，注意点开“高级”选择“使用自定义的工作空间” 源码管理 构建触发器 手动还是自动构建，这里也可以看之前的文章jenkins基本使用 构建环境 构建（mvn命令执行构建） 这里注意mvn命令的位置，jenkins默认安装选择在 /home/apache-maven-3.5.2/bin/mvn 可通过（系统管理–&gt;全局工具配置）进行相应的更改，但要给予jenkins执行的权限，这里我把命令ln到/usr/local/bin目录下，chmod +x mvn 如果没有设置会报类似错误： [/target] $ /bin/sh -xe /tmp/jenkins6497126245319590786.sh + mvn clean package /tmp/jenkins6497126245319590786.sh: line 2: mvn: command not found Build step 'Execute shell' marked build as failure SSH: Current build result is [FAILURE], not going to run. 构建后操作（完成构建后的部署工作） 选择“Send build artifacts over SSH”,注意要安装 over ssh插件 注意： 这里的Remote directory指的就是前面配置depserver的工程目录地址“/home/jiagouzu/tingyun” 点击完成后就可以测试了，默认maven构建的配置文件直接找的官方地址，在构建日志当中会出现如下信息 https://repo.maven.apache.org/maven2/org/hibernate/hibernate-validator/5.3.6.Final/hibernate-validator-5.3.6.Final.jar (727 kB at 2.4 kB/s) Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-actuator/1.5.9.RELEASE/spring-boot-starter-actuator-1.5.9.RELEASE.jar 这里需要注意： 第一次构建时，maven需要下载部署工程所需要的jar包； 改善办法之一是同开发要一份maven构建工具的settings.xml 配置文件替换你的maven工具里的settings.xml（一般开发会有自己的内部仓库），在这里是我的jenkins服务器中的“/home/apache-maven-3.5.2/conf/settings.xml”，注意修改里面的“/MavenRepository”这是指你存放maven工具所需jar包的目录，别忘了给jenkins能执行的权限。 最后测试输出类似信息证明配置成功： [INFO] BUILD SUCCESS [INFO] ------------------------------------------------------------------------ [INFO] Total time: 4.246 s [INFO] Finished at: 2018-03-07T14:54:53+08:00 [INFO] Final Memory: 36M/203M [INFO] ------------------------------------------------------------------------ SSH: Failed to get hostname [192v168v62v210: 192v168v62v210: 未知的名称或服务] SSH: Connecting with configuration [192.168.63.116] ... SSH: EXEC: STDOUT/STDERR from command [/bin/bash /home/mall_start.sh start] ... SSH: EXEC: completed after 200 ms SSH: Disconnecting configuration [192.168.63.116] ... SSH: Transferred 1 file(s) Finished: SUCCESS]]></content>
@@ -72,17 +83,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[shell文件对比]]></title>
-    <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
-    <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
-      <categories>
-        <category>编程</category>
-      </categories>
-      <tags>
-        <tag>shell随笔</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[ping包检测]]></title>
     <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
     <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
@@ -94,14 +94,14 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[http请求方法介绍]]></title>
-    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
-    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
+    <title><![CDATA[shell文件对比]]></title>
+    <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
+    <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
       <categories>
-        <category>Server</category>
+        <category>编程</category>
       </categories>
       <tags>
-        <tag>http</tag>
+        <tag>shell随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -113,6 +113,17 @@
       </categories>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[http请求方法介绍]]></title>
+    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
+    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -182,20 +193,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix报警]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
-    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+    <title><![CDATA[zabbix_agent主动模式]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
       <categories>
         <category>Server</category>
       </categories>
@@ -215,9 +215,31 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix_agent主动模式]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix报警]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
+    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
+      <categories>
+        <category>Server</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix问题汇总]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
       <categories>
         <category>Server</category>
       </categories>
@@ -237,17 +259,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix问题汇总]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
-    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
-      <categories>
-        <category>Server</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[字段和方法]]></title>
     <url>%2F2016%2F10%2F23%2F%E5%AD%97%E6%AE%B5%E5%92%8C%E6%96%B9%E6%B3%95%2F</url>
     <content type="text"><![CDATA[首先，要知道Python类中两个概念：字段和方法“字段”和“方法”都有“动态”和“静态”之分，即： 字段 静态字段 动态字段 方法 静态方法 动态方法 以下事例标明了：“静态字段”，“动态字段”以及“动态方法”是什么样子的，因为显而易见，就不用语言进行过多描述： #coding:utf-8 class Car: # 下面是静态字段 memo = u'车辆具有出厂合格证' def __init__(self, brand, model, speed, price, engine): # 下面是动态字段 self.Brand = brand self.Model = model self.Speed = speed self.Price = price self.__EngineType = engine # 下面是动态方法 def Turnleft(self): print self.Brand + u'开始向右转向。' 上述事例中，并没有展现“静态方法”，那么“静态方法”长什么样子？如何生成？其实“静态方法”只需要执行两步操作，就可以转换成“静态方法” 在方法前加上 @staticmethod 把“动态方法”括号中的“self”去掉 如： @staticmethod def Forward(): print u'开始向前进' 那么关于这四种类型，有什么特点？以下进行总结： 四种类型，均可以被“对象”进行调用，但不建议使用“对象”调用“静态方法”和“静态字段”，而建议使用“类”对其进行调用 “动态方法”和“动态字段”只能由“对象”进行调用，而无法使用“类”进行调用]]></content>
@@ -259,9 +270,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[nginx笔记1]]></title>
-    <url>%2F2016%2F05%2F11%2Fnginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B%2F</url>
-    <content type="text"><![CDATA[Nginx通常作为两种应用，既： Web Server Web Reverse Proxy 做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了MIME（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。 互联网上访问一个资源是根据URL标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。 http事务由两部分组成： request 格式： &lt;body&gt; response 格式： &lt;HEADERS&gt; &lt;body&gt; method包括： GET HEADE POST PUT DELETE TRACE OPTIONS status: 1xx: 信息类 2xx: 成功类 3xx: 重定向 301 302 304 4xx: 客户端错误 404 401 5xx: 502 504 HEADE: 通用首部 请求首部 If-Modified-Since、IF-None-Match 响应首部 实体首部 扩展首部]]></content>
+    <title><![CDATA[nginx笔记]]></title>
+    <url>%2F2016%2F05%2F11%2Fnginx%2F</url>
+    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ worker之间的信息处理前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。 一个woker处理一个请求，那高并发是怎么做的呢？ 高并发处理原理nginx采用异步非阻塞方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？ 阻塞 事件没有准备好，那就只能等了，等事件准备好了，才可以继续。 此时，阻塞调用会进入内核等待。 非阻塞 事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。 虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说： 1. 当事件没准备好时，放到epoll里； 2. 事件准备好了，就去读写； 3. 如果返回EAGAIN时，再次放到epoll里； 4. 当所有事件都没准备好时，才在epoll里等待。 这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。 对于web服务器，事件通常有三种类型：网络事件、信号和定时器： 网络事件 通过异步非阻塞能解决问题 信号 nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。 定时器 由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。 connectionconnection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。 所以，nginx不仅可以做webServer,还能做sendMail。 request在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。 Nginx作为web服务器时使用的配置]]></content>
       <categories>
         <category>Service</category>
       </categories>
@@ -270,9 +281,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[nginx笔记]]></title>
-    <url>%2F2016%2F05%2F11%2Fnginx%2F</url>
-    <content type="text"><![CDATA[初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含： 接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。 worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在一个worker进程中处理，一个worker进程，不可能处理其它进程的请求。worker进程的个数是可以设置的，一般我们会设置与机器cpu核数一致，这里面的原因与nginx的进程模型以及事件处理模型是分不开的。nginx的进程模型，可以由下图来表示： 图中可以看到master为主进程，我们只需要控制master就可以了，比如： kill -HUP pid,从容地重启nginx，他们会首先创建一个新的worker，并向老的worker发送关闭的信号，这样新老交替，就能完成平滑重启了。 当所有worker都处于listen时，当一个请求过来时，所有worker都有可能处理这个请求，nginx怎么处理呢？ worker之间的信息处理前面提到，每个worker是平等的，首先，在master进程里，先建立好需要的listen的socket（listenfd）之后，然后再fork出多个worker进程，此时worker的listenfd在连接到来时是只读的。为保证只有一个进程处理该连接，所有worker进程在注册listenfd读事件前抢accept_mutex（互斥锁），在抢到accept_mutex后就注册listenfd读事件，在该读事件里调用accept接受该连接，一切完成后就读取、解析、处理请求并返回给客户端了，可以看到，一个请求只有一个worker来处理，并只在一个worker中处理。 一个woker处理一个请求，那高并发是怎么做的呢？ 高并发处理原理nginx采用异步非阻塞方式来处理请求，那异步非阻塞是什么意思呢？先看下完整的请求过程：请求到来 –&gt; 建立连接 –&gt; 接受数据 –&gt; 发送数据，具体到系统底层就是读写事件。那阻塞与非阻塞是什么意思呢？ 阻塞 事件没有准备好，那就只能等了，等事件准备好了，才可以继续。 此时，阻塞调用会进入内核等待。 非阻塞 事件没有准备好，马上返回EAGAIN，让你先去干别的，过会再来看是否OK，等准备好了再继续。 虽然不阻塞了，但你时不时地过来检查事件状态，带来的开销也是很大的。所以，才会用到异步处理，具体到系统调用就是像select/poll/epoll/kqueue这样的系统调用。它们提供了一种机制，让你可以同时监控多个事件，调用他们是阻塞的，但可以设置超时时间，在超时时间之内，如果有事件准备好了，就返回。这种机制正好解决了我们上面的两个问题。拿epoll来说： 1. 当事件没准备好时，放到epoll里； 2. 事件准备好了，就去读写； 3. 如果返回EAGAIN时，再次放到epoll里； 4. 当所有事件都没准备好时，才在epoll里等待。 这样，就能接受持续不断的请求了–&gt;高并发。当然，这里的并发请求，是指未处理完的请求，线程只有一个，所以同时能处理的请求当然只有一个了，只是在请求间进行不断地切换而已，切换也是因为异步事件未准备好，而主动让出的。这里的切换是没有任何代价，你可以理解为循环处理多个准备好的事件，事实上就是这样的。与多线程相比，这种事件处理方式是有很大的优势的，不需要创建线程，每个请求占用的内存也很少，没有上下文切换，事件处理非常的轻量级。并发数再多也不会导致无谓的资源浪费（上下文切换）。更多的并发数，只是会占用更多的内存而已。 对于web服务器，事件通常有三种类型：网络事件、信号和定时器： 网络事件 通过异步非阻塞能解决问题 信号 nginx正在等待事件（epoll_wait）时，如果程序收到信号，在信号处理函数处理完后，epoll_wait会返回错误，然后程序可再次进入epoll_wait调用。 定时器 由于epoll_wait等函数在调用的时候可以设置一个超时时间，nginx借用这个超时时间来实现定时器。 connectionconnection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。 所以，nginx不仅可以做webServer,还能做sendMail。 request在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。 Nginx作为web服务器时使用的配置]]></content>
+    <title><![CDATA[nginx笔记1]]></title>
+    <url>%2F2016%2F05%2F11%2Fnginx_http%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E5%8F%8AIO%E6%A8%A1%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[Nginx通常作为两种应用，既： Web Server Web Reverse Proxy 做为web服务器最核心的是http协议（全称：HyperText Transfer Procotol）–超文本传输协议，主要用于传输超文本（超文本又称html(HyperText Mark Language)语言开发的文本或者html语言标记的文本）。而HTTP协议默认工作在80端口上。在http1.0之前只支持超文本传输，但是从1.0以后由于引入了MIME（Multipurpost Internet Mail Extension）机制（接受非文本，但能转换城文本格式进行传输，而到客户端时又能还原成原有协议的编码方案）。 互联网上访问一个资源是根据URL标记定义的，其基本语法是：scheme(协议)://server[:port]/path/to/source。 http事务由两部分组成： request 格式： &lt;body&gt; response 格式： &lt;HEADERS&gt; &lt;body&gt; method包括： GET HEADE POST PUT DELETE TRACE OPTIONS status: 1xx: 信息类 2xx: 成功类 3xx: 重定向 301 302 304 4xx: 客户端错误 404 401 5xx: 502 504 HEADE: 通用首部 请求首部 If-Modified-Since、IF-None-Match 响应首部 实体首部 扩展首部]]></content>
       <categories>
         <category>Service</category>
       </categories>
