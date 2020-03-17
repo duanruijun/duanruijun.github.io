@@ -82,15 +82,15 @@
 <meta name="description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta name="keywords" content="nginx">
 <meta property="og:type" content="article">
-<meta property="og:title" content="nginx笔记">
+<meta property="og:title" content="工作原理整理">
 <meta property="og:url" content="http://yoursite.com/2016/05/11/nginx/index.html">
 <meta property="og:site_name" content="sundshinerj">
 <meta property="og:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png">
-<meta property="og:updated_time" content="2018-05-10T06:35:04.000Z">
+<meta property="og:updated_time" content="2020-03-17T11:25:20.764Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="nginx笔记">
+<meta name="twitter:title" content="工作原理整理">
 <meta name="twitter:description" content="初探nginx在启动后，会以daemon的形式在后台运行，后台进程包括一个master和多个worker进程，而master主要管理worker，包含：  接收来自外界的信号； 向各worker进程发送信号； 监控worker进程的运行状态（如果worker挂掉，会自动重新创建新的worker）。  worker之间是对等关系，他们同等竞争来自客户端的请求，各进程互相之间是独立的。一个请求只可能在">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/nginx_1.png">
 
@@ -128,7 +128,7 @@
 
 
 
-  <title>nginx笔记 | sundshinerj</title>
+  <title>工作原理整理 | sundshinerj</title>
   
 
 
@@ -330,7 +330,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">nginx笔记</h1>
+          <h1 class="post-title" itemprop="name headline">工作原理整理</h1>
         
 
         <div class="post-meta">
@@ -365,8 +365,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Service/" itemprop="url" rel="index">
-                    <span itemprop="name">Service</span>
+                  <a href="/categories/nginx/" itemprop="url" rel="index">
+                    <span itemprop="name">nginx</span>
                   </a>
                 </span>
 
@@ -382,7 +382,7 @@
 
           
           
-             <span id="/2016/05/11/nginx/" class="leancloud_visitors" data-flag-title="nginx笔记">
+             <span id="/2016/05/11/nginx/" class="leancloud_visitors" data-flag-title="工作原理整理">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -455,7 +455,7 @@
 <h2 id="connection"><a href="#connection" class="headerlink" title="connection"></a>connection</h2><p>connection是对TCP的封装，包括连接的socket，读/写事件。利用connection来处理与连接相关的事情，比如，建立连接，发送与接收数据等。而且nginx中的http请求的处理就是建立在connection之上。</p>
 <p>所以，nginx不仅可以做webServer,还能做sendMail。</p>
 <h2 id="request"><a href="#request" class="headerlink" title="request"></a>request</h2><p>在nginx中则是http请求，结构体为：ngx_http_request_t。ngx_http_request_t是对一个http请求的封装。一个http请求包含：请求行、请求头、请求体、响应行、响应头、响应体。</p>
-<p>Nginx作为web服务器时使用的配置</p>
+<p>未完待续。。。</p>
 
       
     </div>
@@ -486,8 +486,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/11/nginx_http协议基础及IO模型/" rel="next" title="nginx笔记1">
-                <i class="fa fa-chevron-left"></i> nginx笔记1
+              <a href="/2015/02/27/Linux非root用户文件描述符限制/" rel="next" title="Linux非root用户文件描述符限制">
+                <i class="fa fa-chevron-left"></i> Linux非root用户文件描述符限制
               </a>
             
           </div>
@@ -496,8 +496,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/10/23/字段和方法/" rel="prev" title="字段和方法">
-                字段和方法 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/05/11/nginx_http协议基础及IO模型/" rel="prev" title="nginx http协议基础及IO模型">
+                nginx http协议基础及IO模型 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -579,7 +579,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -590,7 +590,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -601,7 +601,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
