@@ -1792,7 +1792,7 @@ pip install Django
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/23/zabbix_agent主动模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/23/zabbix_monito/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -1811,7 +1811,7 @@ pip install Django
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/02/23/zabbix_agent主动模式/" itemprop="url">zabbix_agent主动模式</a></h1>
+                <a class="post-title-link" href="/2017/02/23/zabbix_monito/" itemprop="url">监控网络设备</a></h1>
         
 
         <div class="post-meta">
@@ -1863,7 +1863,7 @@ pip install Django
 
           
           
-             <span id="/2017/02/23/zabbix_agent主动模式/" class="leancloud_visitors" data-flag-title="zabbix_agent主动模式">
+             <span id="/2017/02/23/zabbix_monito/" class="leancloud_visitors" data-flag-title="监控网络设备">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1896,17 +1896,17 @@ pip install Django
       
         
           
-          概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如:
+          一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp
+二、检测与路由器的连通性测试之前工作
 
-当监控端到一个量级的时候，web操作界面很卡，容易出现502；
-图层断裂；
-开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。
+路由上要开启snmp功能
+本地snmp服务器的snmp的密码和路由上的密码一致
 
-所以主要往2个优化方面考虑
+1vim /et
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/02/23/zabbix_agent主动模式/#more" rel="contents">
+            <a class="btn" href="/2017/02/23/zabbix_monito/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
