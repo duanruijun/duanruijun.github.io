@@ -61,9 +61,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[docker基本使用]]></title>
-    <url>%2F2019%2F02%2F27%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%2F</url>
-    <content type="text"><![CDATA[docker 基本安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl] 安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2 添加源信息 1yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 更新并安装docker-ce 12yum makecache fastyum -y install docker-ce 配置镜像加速(docker镜像加速：可以选择docker cn,但很慢，通常可以选择国内的其他厂商加速，比如：阿里云)，注意: 阿里云的镜像加速需要个人注册并登陆阿里云，在个人开发者中选择镜像加速，之后会生产个人加速镜像源路径。 1234567docker镜像配置文件位置: /etc/docker/daemon.json # 默认没有docker目录，需要创建和编辑daemon.json1. mkdir /etc/docker2. [root@192 yum.repos.d]# cat /etc/docker/daemon.json&#123; "registry-mirrors": ["https://vwvv5i9f.mirror.aliyuncs.com"]&#125; 启动docker服务，以对镜像的加载使用：systemctl start docker.service 通过命令docker info就能查看当前docker的信息： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849[root@192 yum.repos.d]# docker infoClient: Debug Mode: falseServer: Containers: 0 Running: 0 Paused: 0 Stopped: 0 Images: 0 Server Version: 19.03.8 Storage Driver: overlay2 Backing Filesystem: &lt;unknown&gt; Supports d_type: true Native Overlay Diff: true Logging Driver: json-file Cgroup Driver: cgroupfs Plugins: Volume: local Network: bridge host ipvlan macvlan null overlay Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog Swarm: inactive Runtimes: runc Default Runtime: runc Init Binary: docker-init containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429 runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd init version: fec3683 Security Options: seccomp Profile: default Kernel Version: 3.10.0-1062.el7.x86_64 Operating System: CentOS Linux 7 (Core) OSType: linux Architecture: x86_64 CPUs: 1 Total Memory: 4.659GiB Name: 192.168.100.31 ID: NVAM:QZ2E:VKJY:HRO5:5CHF:L557:E224:AKD5:6XEZ:BWZC:66GT:6NKD Docker Root Dir: /var/lib/docker Debug Mode: false Registry: https://index.docker.io/v1/ Labels: Experimental: false Insecure Registries: 127.0.0.0/8 Registry Mirrors: https://vwvv5i9f.mirror.aliyuncs.com/ # 这里就是配置的镜像加速源 Live Restore Enabled: false docker基本使用 下载一个nginx镜像，命令：docker image pull或者docker pull 123456789[root@192 yum.repos.d]# docker image pull nginx:1.14-alpine1.14-alpine: Pulling from library/nginxbdf0201b3a05: Pull complete 3d0a573c81ed: Pull complete 8129faeb2eb6: Pull complete 3dc99f571daf: Pull complete Digest: sha256:485b610fefec7ff6c463ced9623314a04ed67e3945b9c08d7e53a47f6d108dc7Status: Downloaded newer image for nginx:1.14-alpinedocker.io/library/nginx:1.14-alpine 注意： 版本中带有alpine字样的是基本最小单元的版本，比如：一个完整的nginx镜像资源为50M左右大小，而alping则仅为10M左右，alpine版本一般用于测试使用，在生产环境中不建议使用。 通过 docker image ls 命令就能查看本地镜像情况： 123[root@192 yum.repos.d]# docker image lsREPOSITORY TAG IMAGE ID CREATED SIZEnginx 1.14-alpine 8a2fb25a19f5 12 months ago 16MB]]></content>
+    <title><![CDATA[docker基本使用（一）]]></title>
+    <url>%2F2019%2F02%2F27%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
+    <content type="text"><![CDATA[docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl] 安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2 添加源信息 1yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 更新并安装docker-ce 12yum makecache fastyum -y install docker-ce 配置镜像加速(docker镜像加速：可以选择docker cn,但很慢，通常可以选择国内的其他厂商加速，比如：阿里云)，注意: 阿里云的镜像加速需要个人注册并登陆阿里云，在个人开发者中选择镜像加速，之后会生产个人加速镜像源路径。 1234567docker镜像配置文件位置: /etc/docker/daemon.json # 默认没有docker目录，需要创建和编辑daemon.json1. mkdir /etc/docker2. [root@192 yum.repos.d]# cat /etc/docker/daemon.json&#123; "registry-mirrors": ["https://vwvv5i9f.mirror.aliyuncs.com"]&#125; 启动docker服务，以对镜像的加载使用：systemctl start docker.service 通过命令docker info就能查看当前docker的信息： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849[root@192 yum.repos.d]# docker infoClient: Debug Mode: falseServer: Containers: 0 Running: 0 Paused: 0 Stopped: 0 Images: 0 Server Version: 19.03.8 Storage Driver: overlay2 Backing Filesystem: &lt;unknown&gt; Supports d_type: true Native Overlay Diff: true Logging Driver: json-file Cgroup Driver: cgroupfs Plugins: Volume: local Network: bridge host ipvlan macvlan null overlay Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog Swarm: inactive Runtimes: runc Default Runtime: runc Init Binary: docker-init containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429 runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd init version: fec3683 Security Options: seccomp Profile: default Kernel Version: 3.10.0-1062.el7.x86_64 Operating System: CentOS Linux 7 (Core) OSType: linux Architecture: x86_64 CPUs: 1 Total Memory: 4.659GiB Name: 192.168.100.31 ID: NVAM:QZ2E:VKJY:HRO5:5CHF:L557:E224:AKD5:6XEZ:BWZC:66GT:6NKD Docker Root Dir: /var/lib/docker Debug Mode: false Registry: https://index.docker.io/v1/ Labels: Experimental: false Insecure Registries: 127.0.0.0/8 Registry Mirrors: https://vwvv5i9f.mirror.aliyuncs.com/ # 这里就是配置的镜像加速源 Live Restore Enabled: false docker基本使用 下载一个nginx镜像，命令：docker image pull或者docker pull 123456789[root@192 yum.repos.d]# docker image pull nginx:1.14-alpine1.14-alpine: Pulling from library/nginxbdf0201b3a05: Pull complete 3d0a573c81ed: Pull complete 8129faeb2eb6: Pull complete 3dc99f571daf: Pull complete Digest: sha256:485b610fefec7ff6c463ced9623314a04ed67e3945b9c08d7e53a47f6d108dc7Status: Downloaded newer image for nginx:1.14-alpinedocker.io/library/nginx:1.14-alpine 注意： 版本中带有alpine字样的是基本最小单元的版本，比如：一个完整的nginx镜像资源为50M左右大小，而alping则仅为10M左右，alpine版本一般用于测试使用，在生产环境中不建议使用。 通过 docker image ls 命令就能查看本地镜像情况： 123[root@192 yum.repos.d]# docker image lsREPOSITORY TAG IMAGE ID CREATED SIZEnginx 1.14-alpine 8a2fb25a19f5 12 months ago 16MB]]></content>
       <categories>
         <category>docker</category>
       </categories>
@@ -242,18 +242,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>监控网络设备</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[zabbix_agent主动模式]]></title>
     <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
     <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
@@ -263,18 +251,6 @@
       <tags>
         <tag>zabbix</tag>
         <tag>主动模式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix报警]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
-    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>zabbix 报警配置</tag>
       </tags>
   </entry>
   <entry>
@@ -290,15 +266,27 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix代理(proxy)]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
-    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
+    <title><![CDATA[zabbix报警]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
+    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
       <categories>
         <category>zabbix</category>
       </categories>
       <tags>
         <tag>zabbix</tag>
-        <tag>zabbix-proxy</tag>
+        <tag>zabbix 报警配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控网络设备</tag>
       </tags>
   </entry>
   <entry>
@@ -311,6 +299,18 @@
       <tags>
         <tag>zabbix</tag>
         <tag>监控问题汇总</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix代理(proxy)]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
+    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>zabbix-proxy</tag>
       </tags>
   </entry>
   <entry>

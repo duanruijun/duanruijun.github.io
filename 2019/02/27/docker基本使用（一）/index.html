@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="docker 基本安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lv">
+<meta name="description" content="docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2">
 <meta name="keywords" content="docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker基本使用">
-<meta property="og:url" content="http://yoursite.com/2019/02/27/docker基本使用/index.html">
+<meta property="og:title" content="docker基本使用（一）">
+<meta property="og:url" content="http://yoursite.com/2019/02/27/docker基本使用（一）/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="docker 基本安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lv">
+<meta property="og:description" content="docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-06T08:51:22.005Z">
+<meta property="og:updated_time" content="2020-04-06T10:30:50.984Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="docker基本使用">
-<meta name="twitter:description" content="docker 基本安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lv">
+<meta name="twitter:title" content="docker基本使用（一）">
+<meta name="twitter:description" content="docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/02/27/docker基本使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/02/27/docker基本使用（一）/"/>
 
 
 
 
 
-  <title>docker基本使用 | sundshinerj</title>
+  <title>docker基本使用（一） | sundshinerj</title>
   
 
 
@@ -311,7 +311,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/docker基本使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/docker基本使用（一）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="段瑞君">
@@ -328,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">docker基本使用</h1>
+          <h1 class="post-title" itemprop="name headline">docker基本使用（一）</h1>
         
 
         <div class="post-meta">
@@ -380,7 +380,7 @@
 
           
           
-             <span id="/2019/02/27/docker基本使用/" class="leancloud_visitors" data-flag-title="docker基本使用">
+             <span id="/2019/02/27/docker基本使用（一）/" class="leancloud_visitors" data-flag-title="docker基本使用（一）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -411,7 +411,7 @@
       
 
       
-        <h4 id="docker-基本安装"><a href="#docker-基本安装" class="headerlink" title="docker 基本安装"></a>docker 基本安装</h4><ol>
+        <h4 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h4><ol>
 <li><p>安装镜像</p>
 <p>通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[<a href="https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]" target="_blank" rel="noopener">https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]</a></p>
 </li>
@@ -623,7 +623,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-基本安装"><span class="nav-number">1.</span> <span class="nav-text">docker 基本安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker基本使用"><span class="nav-number">2.</span> <span class="nav-text">docker基本使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker安装"><span class="nav-number">1.</span> <span class="nav-text">docker安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker基本使用"><span class="nav-number">2.</span> <span class="nav-text">docker基本使用</span></a></li></ol></div>
             
 
           </div>
