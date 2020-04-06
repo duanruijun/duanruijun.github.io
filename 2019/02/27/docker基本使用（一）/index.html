@@ -79,19 +79,20 @@
 
 
 
-<meta name="description" content="docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2">
+<meta name="description" content="docker基本使用docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-">
 <meta name="keywords" content="docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker基本使用（一）">
 <meta property="og:url" content="http://yoursite.com/2019/02/27/docker基本使用（一）/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2">
+<meta property="og:description" content="docker基本使用docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/202004062207.png">
-<meta property="og:updated_time" content="2020-04-06T14:11:28.322Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/202004062233.png">
+<meta property="og:updated_time" content="2020-04-06T14:39:32.813Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker基本使用（一）">
-<meta name="twitter:description" content="docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2">
+<meta name="twitter:description" content="docker基本使用docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]  安装必备工具 1yum install -y yum-utils device-mapper-persistent-">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/duanruijun/img/master/imgs/202004062207.png">
 
 
@@ -413,7 +414,7 @@
       
 
       
-        <h4 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h4><ol>
+        <h3 id="docker基本使用"><a href="#docker基本使用" class="headerlink" title="docker基本使用"></a>docker基本使用</h3><h4 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h4><ol>
 <li><p>安装镜像</p>
 <p>通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[<a href="https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]" target="_blank" rel="noopener">https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl]</a></p>
 </li>
@@ -437,7 +438,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">[root@192 yum.repos.d]# docker info</span><br><span class="line">Client:</span><br><span class="line"> Debug Mode: false</span><br><span class="line"></span><br><span class="line">Server:</span><br><span class="line"> Containers: 0</span><br><span class="line">  Running: 0</span><br><span class="line">  Paused: 0</span><br><span class="line">  Stopped: 0</span><br><span class="line"> Images: 0</span><br><span class="line"> Server Version: 19.03.8</span><br><span class="line"> Storage Driver: overlay2</span><br><span class="line">  Backing Filesystem: &lt;unknown&gt;</span><br><span class="line">  Supports d_type: true</span><br><span class="line">  Native Overlay Diff: true</span><br><span class="line"> Logging Driver: json-file</span><br><span class="line"> Cgroup Driver: cgroupfs</span><br><span class="line"> Plugins:</span><br><span class="line">  Volume: local</span><br><span class="line">  Network: bridge host ipvlan macvlan null overlay</span><br><span class="line">  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog</span><br><span class="line"> Swarm: inactive</span><br><span class="line"> Runtimes: runc</span><br><span class="line"> Default Runtime: runc</span><br><span class="line"> Init Binary: docker-init</span><br><span class="line"> containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429</span><br><span class="line"> runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd</span><br><span class="line"> init version: fec3683</span><br><span class="line"> Security Options:</span><br><span class="line">  seccomp</span><br><span class="line">   Profile: default</span><br><span class="line"> Kernel Version: 3.10.0-1062.el7.x86_64</span><br><span class="line"> Operating System: CentOS Linux 7 (Core)</span><br><span class="line"> OSType: linux</span><br><span class="line"> Architecture: x86_64</span><br><span class="line"> CPUs: 1</span><br><span class="line"> Total Memory: 4.659GiB</span><br><span class="line"> Name: 192.168.100.31</span><br><span class="line"> ID: NVAM:QZ2E:VKJY:HRO5:5CHF:L557:E224:AKD5:6XEZ:BWZC:66GT:6NKD</span><br><span class="line"> Docker Root Dir: /var/lib/docker</span><br><span class="line"> Debug Mode: false</span><br><span class="line"> Registry: https://index.docker.io/v1/</span><br><span class="line"> Labels:</span><br><span class="line"> Experimental: false</span><br><span class="line"> Insecure Registries:</span><br><span class="line">  127.0.0.0/8</span><br><span class="line"> Registry Mirrors:</span><br><span class="line">  https://vwvv5i9f.mirror.aliyuncs.com/    # 这里就是配置的镜像加速源</span><br><span class="line"> Live Restore Enabled: false</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<h4 id="docker基本使用"><a href="#docker基本使用" class="headerlink" title="docker基本使用"></a>docker基本使用</h4><p><strong>docker pull</strong>下载镜像</p>
+<h4 id="docker基本使用-1"><a href="#docker基本使用-1" class="headerlink" title="docker基本使用"></a>docker基本使用</h4><p><strong>docker pull</strong>下载镜像</p>
 <p>下载一个nginx镜像，命令：<strong>docker image pull</strong>或者<strong>docker pull</strong></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@192 yum.repos.d]# docker image pull nginx:1.14-alpine</span><br><span class="line">1.14-alpine: Pulling from library/nginx</span><br><span class="line">bdf0201b3a05: Pull complete </span><br><span class="line">3d0a573c81ed: Pull complete </span><br><span class="line">8129faeb2eb6: Pull complete </span><br><span class="line">3dc99f571daf: Pull complete </span><br><span class="line">Digest: sha256:485b610fefec7ff6c463ced9623314a04ed67e3945b9c08d7e53a47f6d108dc7</span><br><span class="line">Status: Downloaded newer image for nginx:1.14-alpine</span><br><span class="line">docker.io/library/nginx:1.14-alpine</span><br></pre></td></tr></table></figure>
 <p>注意： 版本中带有<strong>alpine</strong>字样的是基本最小单元的版本，比如：一个完整的nginx镜像资源为50M左右大小，而alping则仅为10M左右，<strong>alpine</strong>版本一般用于测试使用，在生产环境中不建议使用。</p>
@@ -447,6 +448,14 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@192 yum.repos.d]# docker image ls --no-trunc</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID                                                                  CREATED             SIZE</span><br><span class="line">nginx               1.14-alpine         sha256:8a2fb25a19f5dc1528b7a3fabe8b3145ff57fe10e4f1edac6c718a3cf4aa4b73   12 months ago       16MB</span><br></pre></td></tr></table></figure>
 <p>常用命令可参考如下关系图：</p>
 <p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/202004062207.png" alt=""></p>
+<p>基本原理图大致如下：</p>
+<p><img src="https://raw.githubusercontent.com/duanruijun/img/master/imgs/202004062233.png" alt=""></p>
+<p>说明：</p>
+<ol>
+<li>Docker client通过https/https协议调用docker服务端；</li>
+<li>docker daemon为服务端主程序，docker daemon运行着container中如果本地没有相关镜像就从远端registries拉取；</li>
+<li>registries（仓库）上存储着基本的应用，并以tag作为标记。</li>
+</ol>
 
       
     </div>
@@ -570,7 +579,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -625,7 +634,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker安装"><span class="nav-number">1.</span> <span class="nav-text">docker安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker基本使用"><span class="nav-number">2.</span> <span class="nav-text">docker基本使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker基本使用"><span class="nav-number">1.</span> <span class="nav-text">docker基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker安装"><span class="nav-number">1.1.</span> <span class="nav-text">docker安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker基本使用-1"><span class="nav-number">1.2.</span> <span class="nav-text">docker基本使用</span></a></li></ol></li></ol></div>
             
 
           </div>
