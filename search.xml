@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[docker基本使用（二）]]></title>
-    <url>%2F2020%2F04%2F06%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%88%E4%BA%8C%EF%BC%89%2F</url>
-    <content type="text"><![CDATA[docker镜像管理基础]]></content>
+    <title><![CDATA[docker基本使用（三）-- Dockerfile]]></title>
+    <url>%2F2020%2F04%2F19%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%89%EF%BC%89--%20Dockerfile%2F</url>
+    <content type="text"><![CDATA[Dockerfile制作docker镜像分为两种类型：从已有的docker image中导出新的镜像，还有就是通过编写Dockerfile文件制作镜像，一般推荐后者，简单、快速、易维护。 注意事项 在制作Dockerfile时，必须要在特有的一个工作目录(一个空目录)中，比如: /opt/docker(以下简称顶级目录)； 这个目录中有一个Dockerfile文件，文件首字母必须大写； 如果我们在制作过程中需要很多打包好的文件，你必须把这些文件放在此目录中，比如：/opt/docker/nginx-libs.tar.gz、/opt/docker/zip/unzip.tar.gz，说白就是以当前目录作为顶级目录； 制作镜像中如有不需要的文件或目录，可在顶级目录下创建一个.dockeringore，把不需要的文件写在这里； 常用命令FROM 指定当前做的镜像是基于哪个已有镜像为基础，也是最重要的一个且是Dockerfile文件中的第一个非注释行，用于为镜像文件构建过程中指定的基础镜像，后续命令运行基于此基准镜像提供的运行环境。 1234FROM &lt;repository&gt;[:&lt;tag&gt;]或FROM &lt;repository&gt;@&lt;digest&gt; - &lt;repository&gt;: 指定作为base image的名称； - &lt;tag&gt;: base image标签，为可选项，忽略时默认为latest; 示例 1FROM busybox:latest LABLE 之前docker版本使用MAINTANIER（用于让Dockerfile制作者提供更详细的本人信息），现在已被LABLE标签替换，在这里指定Dockerfile的元数据 1LABLE &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt;... 示例 1LABLE maintainer="duanruijun &lt;duanruijun.github.io&gt;" COPY 用于从Docker主机复制文件至新创建的镜像文件 123456789101112COPY &lt;src&gt;...&lt;dec&gt; 或COPY [&lt;src&gt;,..&lt;dec&gt;] - &lt;src&gt;: 要复制的源文件或目录，支持使用通配符; - &lt;dec&gt;: 目标路径，即正在创建的image的文件系统路径；建议&lt;dec&gt;使用绝对路径，否则，COPY指定则以WORKDIR为起始路径; 注意：在路径中有空白字符时，通常使用第二种格式文件复制准则： - &lt;src&gt;必须是build上下文中的路径，不能是其父目录中的文件 - 如果&lt;src&gt;是目录，则其内部文件或子目录会被递归复制，但&lt;src&gt;自身目录不会被复制 - 如果指定了多个&lt;src&gt;，或者&lt;src&gt;中使用了通配符，则&lt;dec&gt;必须是一个目录，且必须以/结尾 - 如果&lt;dec&gt;事先不存在，它将会被自动创建，这包括其父目录路径 示例 1COPY index.html /data/web/html/ 制作一个简单镜像通过以上三个命令就可以简单的制作一个docker镜像了： 12345[root@192 docker]# cat /opt/docker/Dockerfile # Description: test imageFROM busybox:latestLABEL maintainer="duanruijun &lt;duanruijun.github.io&gt;"COPY index.html /data/web/html/ 由于这里是有了COPY命令，我们需要在/opt/docker目录下新建一个index.html的测试文件，创建一个简单的内容： 12[root@192 docker]# cat /opt/docker/index.html &lt;h1&gt;Busybox http server.&lt;/h1&gt; 运行命令docker build完成一个镜像的制作 123456789101112131415161718192021[root@192 tmp1]# docker build ./ -t tinyhttp:v0.1-1Sending build context to Docker daemon 3.072kBError response from daemon: Dockerfile parse error line 3: unknown instruction: LABLE[root@192 tmp1]# vim index.html^C[root@192 tmp1]# vim Dockerfile [root@192 tmp1]# docker build ./ -t tinyhttp:v0.1-1Sending build context to Docker daemon 3.072kBStep 1/3 : FROM busybox:latestlatest: Pulling from library/busyboxe2334dd9fee4: Pull complete Digest: sha256:a8cf7ff6367c2afa2a90acd081b484cbded349a7076e7bdf37a05279f276bc12Status: Downloaded newer image for busybox:latest ---&gt; be5888e67be6Step 2/3 : LABEL maintainer="duanruijun &lt;drj8588@126.com&gt;" ---&gt; Running in 6099746c50a0Removing intermediate container 6099746c50a0 ---&gt; 246515611329Step 3/3 : COPY index.html /data/web/html/ ---&gt; 0d605439655cSuccessfully built 0d605439655cSuccessfully tagged tinyhttp:v0.1-1 命令参数说明： build: 构建命令 ./: 生成路径，这里是当前路径 -t: 参数，给生成的镜像打个tag 通过docker image查看镜像 123[root@192 docker]# docker image lsREPOSITORY TAG IMAGE ID CREATED SIZEtinyhttp v0.1-1 0d605439655c 7 minutes ago 1.22MB 最后运行一个容器指定这个镜像查看是否有index.html这个文件 123[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-1 cat /data/web/html/index.html&lt;h1&gt;Busybox http server.&lt;/h1&gt; 说明文件已经打包到镜像里了 ADD 类似于COPY指令，ADD支持使用TAR文件或URL路径 12345678ADD &lt;src&gt;...&lt;dec&gt; 或ADD ["&lt;src&gt;",.."&lt;dec&gt;"]操作准则 - 同COPY命令 - 如果&lt;src&gt;为URL且不为/结尾，则&lt;src&gt;指定的文件将被下载并直接被创建为&lt;dec&gt;；如果&lt;dec&gt;以/结尾，则文件名URL指定的文件将被直接下载并保存为&lt;dec&gt;/&lt;filename&gt; - 如果&lt;src&gt;是一个本地操作系统上的一个压缩格式的tar文件，它将被展开为一个目录，其行为类似于“tar -x”命令；然而通过URL获取的tar文件将不会自动展开 - 如果&lt;src&gt;有多个，或其间接或直接使用了通配符，则&lt;dec&gt;必须是一个以/结尾的目录路径；如果&lt;dec&gt;不以/结尾，则其被视作为一个普通文件，&lt;src&gt;的内容将被直接写入到&lt;dec&gt; 示例 1ADD http://nginx.org/download/nginx-1.15.2.tar.gz /usr/local/src/ WORKDIR 用于为Dockerfile中所有的RUN、CMD、ENTRYPOINT、COPY和ADD指定设定工作目录 123WORKDIR &lt;dirpath&gt; - 在Dockerfile中，WORKDIR指定可出现多次，其路径也可以为相对路径，不过，其是相对此前一个WORKDIR指令指定的路径 - 另外，WORKDIR也可以调用ENV指定定义的变量 示例 12WORKDIR /usr/local/ADD http://nginx.org/download/nginx-1.15.2.tar.gz ./src/ VOLUME 用于在一个image中创建一个挂载点目录，以挂载Docker host上的卷或其他容器上的卷 1234VOLUME &lt;mountpoint&gt; 或VOLUME ["&lt;mountpoint&gt;"]如果挂载点目录路径下此前文件已存在，docker run命令会在卷挂载完成后将此前的所有文件复制到新挂载的卷中 示例 1VOLUME /data/mysql/ 通过docker build命令构建镜像后查看是否挂载成功: 1234[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-3 mount.../dev/sda5 on /data/mysql type xfs (rw,relatime,attr2,inode64,noquota)... 也可以通过docker inspect命令查看是否挂载： 123456789101112131415[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-3 sleep 60..."Mounts": [ &#123; "Type": "volume", "Name": "708aa2b16d3183d1f68dc8244d8a76f8d91e52cc4934946be544f84e01034b07", "Source": "/var/lib/docker/volumes/708aa2b16d3183d1f68dc8244d8a76f8d91e52cc4934946be544f84e01034b07/_data", "Destination": "/data/mysql", "Driver": "local", "Mode": "", "RW": true, "Propagation": "" &#125; ],... EXPOSE 用于为容器打开指定的监听端口以实现与外部通信 12345EXPOSE &lt;port&gt;[/&lt;protolcol&gt;] [&lt;port&gt;[/&lt;protolcol&gt;]...] &lt;protolcol&gt;: 用于指定传输层协议，可为tcp和udp二者之一，默认使用tcp协议 EXPOSE指令可一次指定多个端口： EXPOSE 11211/tcp 11211/tdp 示例 1EXPOSE 80/tcp 通过docker build构建后测试 1docker run --name tinyweb1 --rm tinyhttp:v0.1-4 /bin/httpd -f -h /data/web/html -f: httpd服务运行在前台 -h: 指定httpd的web目录 通过docker inspect tinyweb1获取到容器tinyweb1对外IP地址，就可以访问测试了: 1234567891011[root@192 docker]# docker inspect tinyweb1... "Networks": &#123; ... "Gateway": "172.17.0.1", "IPAddress": "172.17.0.2", "IPPrefixLen": 16,...[root@192 ~]# curl 172.17.0.2&lt;h1&gt;Busybox http server.&lt;/h1&gt; 此时，只是通过curl命令能够正常访问，但是通过docker port tinyweb1查看暴露的端口为空： 12[root@192 docker]# docker port tinyweb1[root@192 docker]# 这里需要在运行容器时添加-P(大写)就可以查看了: 1234[root@192 docker]# docker run --name tinyweb1 --rm -P tinyhttp:v0.1-4 /bin/httpd -f -h /data/web/html[root@192 docker]# docker port tinyweb180/tcp -&gt; 0.0.0.0:5000 这样在局域网中访问docker host的5000端口就可以访问容器中的http服务信息了 ENV 用于为镜像定义所需要的环境变量，并可被Dockerfile文件中位于其后的其他指令（如ENV、ADD、COPY等）所调用 调用格式为\$variable_name或\${variable_name} 12345ENV &lt;key&gt; &lt;value&gt; 或ENV &lt;key&gt;=&lt;value&gt;... - 第一种格式中，&lt;key&gt;之后的所有内容均会被视作为&lt;value&gt;中的组成部分，因此，一次只能设置一个变量 - 第二种格式中，可以设置多个变量，每个变量为“&lt;key&gt;=&lt;value&gt;”的键值对，如果&lt;value&gt;中报班空格，可以以(\)反斜线进行转义，也可通过&lt;value&gt;加引号进行标识，另外，反斜线也可用于续行 - 定义多个变量时，建议使用第二种方式，以便在同一层中完成所有功能 示例 1234ENV DOC_ROOT=/data/web/html/ \ WEB_SERVER_PACKAGE="nginx-1.15.2"COPY index.html $&#123;DOC_ROOT-/data/web/html/&#125; # $&#123;variable_name:-...&#125; 默认值 通过docker build…完成后进行run操作查看传到容器中的变量信息: 123456[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-5 printenvPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/binHOSTNAME=5c9821659155DOC_ROOT=/data/web/html/WEB_SERVER_PACKAGE=nginx-1.15.2HOME=/root 也可以在run的时候通过-e选项给容器中传参达到另一种效果: 1234567[root@192 docker]# docker run --name tinyweb1 --rm -e WEB_SERVER_PACKAGE="nginx-1.15.1" tinyhttp:v0.1-5 printenvPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/binHOSTNAME=d6ec808401dcWEB_SERVER_PACKAGE=nginx-1.15.1DOC_ROOT=/data/web/html/HOME=/root RUN 用于指定docker build过程中运行的程序，其可以是任何命令 123456RUN &lt;command&gt; 或RUN ["&lt;executable&gt;","&lt;param1&gt;","&lt;param2&gt;"]第一种格式中，&lt;command&gt;通常是一个shell命令，且以"/bin/sh -c"来运行它，这意味着此进程的Pid不为1，不能接受Unix信号，因此，当使用docker stop &lt;container&gt;命令停止容器时，此进程接收不到SIGTERM信号；第二种语法格式中的参数是一个JSON格式的数组，其中&lt;executable&gt;为要运行的命令，后面的&lt;paramN&gt;是传递给命令的选项或参数；然而，此种格式指定的命令不会以"/bin/sh -c"来发起，因此常见的shell操作如替换以及通配符(*?)替换将不会进行；不过，如果要运行的命令依赖于此shell的话，可以将其替换为类似下面的格式：RUN ["/bin/bash", "-c", "&lt;executable&gt;", "&lt;param1&gt;"] 示例 12RUN cd /usr/local/src &amp;&amp; \ tar -x nginx.1.15.2.tar.gz CMD 类似于RUN指令，CMD也可用于运行任何命令或应用程序，不过，二者运行的时间点不同 RUN指令运行于镜像文件的构建过程中，而CMD运行于基于Dockerfile构建出的新镜像文件启动的一个容器时 CMD指令的首要目的在于为启动的容器指定默认要运行的程序，且其运行结束后，容器也将终止；不过，CMD指定的命令其可以被docker run命令行选项所覆盖 在Dockerfile中可以存在多个CMD指令，但仅最后一个生效 123456CMD &lt;command&gt; 或CMD ["&lt;executable&gt;", "&lt;param1&gt;","&lt;param2&gt;"] 或CMD ["&lt;param1&gt;","&lt;param2&gt;"]前两种语法格式意义同RUN第三种则用于为ENTRYPOINT指令提供默认参数 示例 1CMD /bin/httpd -f -h ... ENTRYPOINT 类似于CMD指令的功能，用于为容器指定默认的运行程序，从而使得容器像一个单独的可执行程序 与CMD不同的是，由ENTRYPOINT启动的程序不会被docker run命令行指定的参数所覆盖，而且，这些命令行参数会被当成参数传递给ENTRYPOINT指定的程序 不过，docker run命令指定的–entrypoint选项的参数可覆盖ENTRYPOINT指令指定的程序 12345ENTRYPOINT &lt;command&gt;ENTRYPOINT ["&lt;executable&gt;", "&lt;param1&gt;","&lt;param2&gt;"]docker run命令传入的命令参数会覆盖CMD指令的内容并且附加到ENTRYPOINT命令最后作为其参数使用Dockerfile中也可以指定多个ENTRYPOINT,但是只有最后一个指令生效 示例 1ENTRYPOINT /bin/httpd -f -h ... USER 用于指定运行image时的或运行Dockerfile中的任何RUN、CMD或ENTRYPOINT指令指定的程序时的用户名或UID 默认情况下，container运行身份为root 123USER &lt;UID&gt;|&lt;UserName&gt;需要主要的是，&lt;UID&gt;可以为任意数字，但实践中必须为/etc/passwd中某用户的有效UID，否则，docker run将运行失败 示例 1USER nginx HEALCHECK 检查CMD command指令健康状态 示例 1HEALTHCHECK --start-period=3s CMD wget -O - -q http://0.0.0.0/ SHELL 运行程序默认的shell程序，比如：Linux的[“/bin/sh”, “-c”]，Windows的[“cmd”, “/s”] ARG 在docker build中传递参数 1ARG auth="sunshine" 示例 1docker build --build-arg auth="duanruijun" -t IMAGE_NAME ./ ONBUILD 用于在Dockerfile中定义一个触发器 Dockerfile用于build镜像文件，此镜像文件亦可作为base image被另一个Dockerfile用作FROM指令的参数，并以之构建新的镜像文件 在后面的这个Dockerfile中的FROM指令在build过程中被执行时，将会“触发”创建其base image的Dockerfile文件中的ONBUILD指令定义的触发器 12345ONBUILD &lt;INSTRUCTION&gt;尽管任何指令都可注册成为触发器指令，但ONBUILD不能自我嵌套，且不会触发FROM指令使用包含ONBUILD的Dockerfile构建的镜像应该使用特殊标签，例如：ruby:2.0-onbuild在ONBUILD指令中使用ADD或COPY时应该格外小心，因为新构建过程的上下文在缺少指定的源文件时会失败 示例 1ONBUILD ADD http://nginx.org/download/nginx.1.15.2.tar.gz /usr/local/src/ 好的，以上就是Dockerfile中用到的所有常用指令。]]></content>
       <categories>
         <category>docker</category>
       </categories>
@@ -12,8 +12,19 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[docker基本使用（一）]]></title>
-    <url>%2F2020%2F04%2F06%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
+    <title><![CDATA[docker基本使用（二）-- 镜像管理基础]]></title>
+    <url>%2F2020%2F04%2F06%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%88%E4%BA%8C%EF%BC%89%2F</url>
+    <content type="text"><![CDATA[docker镜像管理基础docker镜像说明 docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器 特点 采用分层构建机制，最底层为bootfs，其之为rootfs Bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源； Rootfs: 为与bootfs之上，表现为docker容器的根文件系统； 传统模式中，系统启动之时，内核挂载rootfs时会首先将其挂载为“只读模式”]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[docker基本使用（一）-- 基础环境安装]]></title>
+    <url>%2F2020%2F04%2F06%2F--%20%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85%2F</url>
     <content type="text"><![CDATA[docker基本使用docker安装 安装镜像 通常安装docker-ce，镜像源可以从国内清华或者阿里云下载[https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.3e221b11BVVoBl] 安装必备工具 1yum install -y yum-utils device-mapper-persistent-data lvm2 添加源信息 1yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 更新并安装docker-ce 12yum makecache fastyum -y install docker-ce 配置镜像加速(docker镜像加速：可以选择docker cn,但很慢，通常可以选择国内的其他厂商加速，比如：阿里云)，注意: 阿里云的镜像加速需要个人注册并登陆阿里云，在个人开发者中选择镜像加速，之后会生产个人加速镜像源路径。 1234567docker镜像配置文件位置: /etc/docker/daemon.json # 默认没有docker目录，需要创建和编辑daemon.json1. mkdir /etc/docker2. [root@192 yum.repos.d]# cat /etc/docker/daemon.json&#123; "registry-mirrors": ["https://vwvv5i9f.mirror.aliyuncs.com"]&#125; 启动docker服务，以对镜像的加载使用：systemctl start docker.service 通过命令docker info就能查看当前docker的信息： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849[root@192 yum.repos.d]# docker infoClient: Debug Mode: falseServer: Containers: 0 Running: 0 Paused: 0 Stopped: 0 Images: 0 Server Version: 19.03.8 Storage Driver: overlay2 Backing Filesystem: &lt;unknown&gt; Supports d_type: true Native Overlay Diff: true Logging Driver: json-file Cgroup Driver: cgroupfs Plugins: Volume: local Network: bridge host ipvlan macvlan null overlay Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog Swarm: inactive Runtimes: runc Default Runtime: runc Init Binary: docker-init containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429 runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd init version: fec3683 Security Options: seccomp Profile: default Kernel Version: 3.10.0-1062.el7.x86_64 Operating System: CentOS Linux 7 (Core) OSType: linux Architecture: x86_64 CPUs: 1 Total Memory: 4.659GiB Name: 192.168.100.31 ID: NVAM:QZ2E:VKJY:HRO5:5CHF:L557:E224:AKD5:6XEZ:BWZC:66GT:6NKD Docker Root Dir: /var/lib/docker Debug Mode: false Registry: https://index.docker.io/v1/ Labels: Experimental: false Insecure Registries: 127.0.0.0/8 Registry Mirrors: https://vwvv5i9f.mirror.aliyuncs.com/ # 这里就是配置的镜像加速源 Live Restore Enabled: false docker基本使用docker pull下载镜像 下载一个nginx镜像，命令：docker image pull或者docker pull 123456789[root@192 yum.repos.d]# docker image pull nginx:1.14-alpine1.14-alpine: Pulling from library/nginxbdf0201b3a05: Pull complete 3d0a573c81ed: Pull complete 8129faeb2eb6: Pull complete 3dc99f571daf: Pull complete Digest: sha256:485b610fefec7ff6c463ced9623314a04ed67e3945b9c08d7e53a47f6d108dc7Status: Downloaded newer image for nginx:1.14-alpinedocker.io/library/nginx:1.14-alpine 注意： 版本中带有alpine字样的是基本最小单元的版本，比如：一个完整的nginx镜像资源为50M左右大小，而alping则仅为10M左右，alpine版本一般用于测试使用，在生产环境中不建议使用。 通过 docker image ls 命令就能查看本地镜像情况： 123[root@192 yum.repos.d]# docker image lsREPOSITORY TAG IMAGE ID CREATED SIZEnginx 1.14-alpine 8a2fb25a19f5 12 months ago 16MB 显示完整信息 : –no-trunc 123[root@192 yum.repos.d]# docker image ls --no-truncREPOSITORY TAG IMAGE ID CREATED SIZEnginx 1.14-alpine sha256:8a2fb25a19f5dc1528b7a3fabe8b3145ff57fe10e4f1edac6c718a3cf4aa4b73 12 months ago 16MB 常用命令可参考如下关系图： 基本原理图大致如下： 说明： Docker client通过https/https协议调用docker服务端； docker daemon为服务端主程序，docker daemon运行着container中如果本地没有相关镜像就从远端registries拉取； registries（仓库）上存储着基本的应用，并以tag作为标记。]]></content>
       <categories>
         <category>docker</category>
@@ -69,6 +80,17 @@
         <tag>pipline</tag>
         <tag>流水线配置</tag>
         <tag>jenkinsfile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[redis数据持久化]]></title>
+    <url>%2F2019%2F03%2F05%2Fredis%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%2F</url>
+    <content type="text"><![CDATA[持久化概念介绍通常数据持久化简单可理解为存储在内存当中的数据二次存储至本地磁盘中，达到内存丢失的情况下数据依然有留存。而Redis则提供了两种持久化方案：RDB（Redis DataBase） 和 AOF（Append Only File）。 RDB方式RDB方式是一种快照式的持久化方法，将某一时刻的数据持久化到磁盘中。 redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。正是这种特性，让我们可以随时来进行备份，因为快照文件总是完整可用的。 对于RDB方式，redis会单独创建（fork）一个子进程来进行持久化，而主进程是不会进行任何IO操作的，这样就确保了redis极高的性能。 如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。 AOF方式AOF方式是将执行过的写指令记录下来，在数据恢复时按照丛前到后的顺序再将指令执行一遍。 AOF命令以redis协议追加保存每次写的操作到文件末尾.Redis还能对AOF文件进行后台重写,使得AOF文件的体积不至于过大.默认的AOF持久化策略是每秒钟fsync一次（fsync是指把缓存中的写指令记录到磁盘中），因为在这种情况下，redis仍然可以保持很好的处理性能，即使redis故障，也只会丢失最近1秒钟的数据。 如果在追加日志时，恰好遇到磁盘空间满、inode满或断电等情况导致日志写入不完整，也没有关系，redis提供了redis-check-aof工具，可以用来进行日志修复。 因为采用了追加方式，如果不做任何处理的话，AOF文件会变得越来越大，为此，redis提供了AOF文件重写（rewrite）机制，即当AOF文件的大小超过所设定的阈值时，redis就会启动AOF文件的内容压缩，只保留可以恢复数据的最小指令集。举个例子或许更形象，假如我们调用了100次INCR指令，在AOF文件中就要存储100条指令，但这明显是很低效的，完全可以把这100条指令合并成一条SET指令，这就是重写机制的原理。 在进行AOF重写时，仍然是采用先写临时文件，全部完成后再替换的流程，所以断电、磁盘满等问题都不会影响AOF文件的可用性。 两种持久化方式对比 RDB AOF 备份 全量备份，一次保存整个数据库 增量备份，一次保存一个修改数据库的命令 保存间隔 较长 默认1秒 还原速度 快 一般 阻塞 save会阻塞，但bgsave或者自动不会阻塞 无论是平时还是AOF重写，都不会阻塞 场景 适合数据备份，默认开启 适合保存数据，和一般sql持久化方式一样，默认关闭 启动优先级 底 高 体积 小 大 恢复速度 快 慢 安全性 易丢数据 根据策略决定 轻重 重 轻 配置方式RDB配置方式默认情况下，是快照rdb的持久化方式，将内存中的数据以快照的方式写入二进制文件中，默认的文件名是dump.rdbredis.conf 默认配置： 123save 900 1 # 900秒之内，如果超过1个key被修改，则发起快照保存；save 300 10 # 300秒内，如果超过10个key被修改，则发起快照保存；save 60 10000 # 1分钟之内，如果1万个key被修改，则发起快照保存; 这种方式不能完全保证数据持久化，因为是定时保存，所以当redis服务down掉，就会丢失一部分数据，而且数据量大，写操作多的情况下，会引起大量的磁盘IO操作，会影响性能。 所以，如果这两种方式同时开启，如果对数据进行恢复，不应该用rdb持久化方式对数据库进行恢复。 AOF配置方式使用aof做持久化，每一个写命令都通过write函数追加到appendonly.aof中。 配置方式：启动aof持久化的方式： 123456vim redis.conf...dir ./appendonly yes # 默认是no，开启后，会在dir对应的目录中生成一个appendonly.aof... 使用AOF做持久化，每一个命令以 Redis 协议的格式来保存，新命令会被追加到文件的末尾。 Redis 还可以在后台对 AOF 文件进行重写，使得 AOF文件的体积不会超出保存数据集状态所需的实际大小。实际上，AOF持久化并不会立即将命令写入到硬盘文件中，而是写入到硬盘缓存，在接下来的策略中，配置多久来从硬盘缓存写入到硬盘文件。所以在一定程度一定条件下，还是会有数据丢失，不过你可以大大减少数据损失 123# appendfsync alwaysappendfsync everysec# appendfsync no 配置说明： always: 每次操作都会立即写入aof文件中 everysec: 每秒持久化一次(默认配置) no: 不主动进行同步操作，默认30s一次 可以看出，always效率最低。建议使用everysec，数据安全性高。Redis允许我们同时使用两种模式 数据持久化测试RDB 模式在redis.conf配置文件中修改配置（默认配置不方便测试，可将频率设置大一点），在redis.conf添加一条进行测试： 12345save 900 1save 300 10save 60 10000save 5 1 # 测试使用 保存后，重启Redis服务，客户端连接测试（-a 连接Redis服务的密码，这里是redis；-p 端口号，默认可不设置）： 1# redis-cli -a redis -p 6381 12345678127.0.0.1:6381&gt; set name sdfOK127.0.0.1:6381&gt; set age 12OK127.0.0.1:6381&gt; set n 123OK127.0.0.1:6381&gt; set m 23OK 这时，发现dump.rdb文件的修改日期变了，并且redis服务端增加了保存日志： 123456789101112131415161718[root@localhost ~]# tail -f redis-service.log 1429:M 09 Apr 13:15:11.891 * 1 changes in 5 seconds. Saving...1429:M 09 Apr 13:15:11.892 * Background saving started by pid 16041604:C 09 Apr 13:15:11.897 * DB saved on disk1604:C 09 Apr 13:15:11.898 * RDB: 6 MB of memory used by copy-on-write1429:M 09 Apr 13:15:11.993 * Background saving terminated with success1429:M 09 Apr 13:15:17.477 * 1 changes in 5 seconds. Saving...1429:M 09 Apr 13:15:17.478 * Background saving started by pid 16051605:C 09 Apr 13:15:17.481 * DB saved on disk1605:C 09 Apr 13:15:17.482 * RDB: 6 MB of memory used by copy-on-write1429:M 09 Apr 13:15:17.579 * Background saving terminated with success1429:M 09 Apr 13:15:40.821 * 1 changes in 5 seconds. Saving...1429:M 09 Apr 13:15:40.823 * Background saving started by pid 16301630:C 09 Apr 13:15:40.829 * DB saved on disk1630:C 09 Apr 13:15:40.830 * RDB: 6 MB of memory used by copy-on-write1429:M 09 Apr 13:15:40.923 * Background saving terminated with success 接下来，重启redis服务端和客户端，看数据是否真的持久化了： 1234567891011121314127.0.0.1:6381&gt; keys *1) "age"2) "n"3) "m"4) "ns"5) "name"127.0.0.1:6381&gt; get name"sdf"127.0.0.1:6381&gt; get age"12"127.0.0.1:6381&gt; get n"123"127.0.0.1:6381&gt; get m"23" 有数据，说明RDB快照持久化成功。 AOF 模式redis.conf默认配置： 1appendonly no 需要把配置文件的appendonly修改为yes，开启持久化。开启后，重启redis服务，会在配置文件”dir “（强烈建议：dir 要指定具体目录，如果使用默认的./目录的话，会根据你执行启动Redis服务的路径生成数据文件，这样即便做了持久化，在不同的路径下启动Redis服务会生成不同的路径，这样数据就很乱套了）开头的指定数据存放目录下生成一个appendonly.aof的文件，就是前文提到的内容。连接Redis服务进行操作验证，这里借着前文的数据进行验证，最后执行flushall清空数据 1234567891011121314127.0.0.1:6381&gt; keys *1) "age"2) "n"3) "m"4) "ns"5) "name"127.0.0.1:6381&gt; get m"23"127.0.0.1:6381&gt; get ns"112"127.0.0.1:6381&gt; flushallOK127.0.0.1:6381&gt; keys *(empty list or set) 打开appendonly.aof,可以看到： 12345678910111213141516171819202122set$3age$212*3$3set$1n$3123*3$3set$1m$223*1$8flushall 把最后的flushall删除掉，重启Redis服务，连接再次查看： 12345678910127.0.0.1:6381&gt; keys *1) "ns"2) "m"3) "name"4) "n"5) "age"127.0.0.1:6381&gt; get ns"112"127.0.0.1:6381&gt; get m"23" 有数据了，说明AOF持久化也成功了，至此，两种模式都已验证数据的持久化。]]></content>
+      <categories>
+        <category>redis</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
       </tags>
   </entry>
   <entry>
@@ -134,18 +156,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[ping包检测]]></title>
-    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
-    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>ping包检测</tag>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[shell文件对比]]></title>
     <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
     <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
@@ -158,15 +168,15 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[http请求方法介绍]]></title>
-    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
-    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
+    <title><![CDATA[ping包检测]]></title>
+    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
+    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
       <categories>
-        <category>http协议</category>
+        <category>python</category>
       </categories>
       <tags>
-        <tag>http请求方法简介</tag>
-        <tag>http协议</tag>
+        <tag>ping包检测</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -179,6 +189,18 @@
       <tags>
         <tag>linux</tag>
         <tag>linux记录用户操作</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[http请求方法介绍]]></title>
+    <url>%2F2017%2F08%2F23%2Fhttp_%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D%2F</url>
+    <content type="text"><![CDATA[HTTP方法（通常也被称为“动作”）告诉服务器一个页面请求要 做 什么。以下是常见 的方法 GET浏览器告诉服务器只要 得到 页面上的信息并发送这些信息。这可能是最常见的 方法。 HEAD浏览器告诉服务器想要得到信息，但是只要得到 信息头 就行了，页面内容不要。 一个应用应该像接受到一个 GET 请求一样运行，但是不传递实际的内容。在 Flask 中，你根本不必理会这个，下层的 Werkzeug 库会为你处理好。 POST浏览器告诉服务器想要向 URL 发表 一些新的信息，服务器必须确保数据被保存好 且只保存了一次。 HTML 表单实际上就是使用这个访求向服务器传送数据的。 PUT与 POST 方法类似，不同的是服务器可能触发多次储存过程而把旧的值覆盖掉。你 可能会问这样做有什么用？这样做是有原因的。假设在传输过程中连接丢失的情况 下，一个处于浏览器和服务器之间的系统可以在不中断的情况下安全地接收第二次 请求。在这种情况下，使用 POST 方法就无法做到了，因为它只被触发一次。 DELETE删除给定位置的信息。 OPTIONS为客户端提供一个查询 URL 支持哪些方法的捷径。从 Flask 0.6 开始，自动为你 实现了这个方法。有趣的是在 HTML4 和 XHTML1 中，表单只能使用 GET 和 POST 方法。但是 JavaScript 和未来的 HTML 标准中可以使用其他的方法。此外， HTTP 近来已经变得相当 流行，浏览器不再只是唯一使用 HTTP 的客户端。比如许多版本控制系统也使用 HTTP 。]]></content>
+      <categories>
+        <category>http协议</category>
+      </categories>
+      <tags>
+        <tag>http请求方法简介</tag>
+        <tag>http协议</tag>
       </tags>
   </entry>
   <entry>
@@ -265,6 +287,42 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[zabbix_agent主动模式]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>主动模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控网络设备</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
+    <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
+      <categories>
+        <category>ansible</category>
+      </categories>
+      <tags>
+        <tag>ansible</tag>
+        <tag>ansible问题汇总</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[zabbix报警]]></title>
     <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
     <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
@@ -286,42 +344,6 @@
       <tags>
         <tag>zabbix</tag>
         <tag>监控问题汇总</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>监控网络设备</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix_agent主动模式]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>主动模式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
-    <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
-    <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
-      <categories>
-        <category>ansible</category>
-      </categories>
-      <tags>
-        <tag>ansible</tag>
-        <tag>ansible问题汇总</tag>
       </tags>
   </entry>
   <entry>

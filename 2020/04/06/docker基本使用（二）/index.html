@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="docker镜像管理基础">
+<meta name="description" content="docker镜像管理基础docker镜像说明 docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器  特点 采用分层构建机制，最底层为bootfs，其之为rootfs Bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源； Rootfs: 为与bootfs之上，表现为docker容器的根文件系统">
 <meta name="keywords" content="docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker基本使用（二）">
+<meta property="og:title" content="docker基本使用（二）-- 镜像管理基础">
 <meta property="og:url" content="http://yoursite.com/2020/04/06/docker基本使用（二）/index.html">
 <meta property="og:site_name" content="sundshinerj">
-<meta property="og:description" content="docker镜像管理基础">
+<meta property="og:description" content="docker镜像管理基础docker镜像说明 docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器  特点 采用分层构建机制，最底层为bootfs，其之为rootfs Bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源； Rootfs: 为与bootfs之上，表现为docker容器的根文件系统">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-06T14:21:18.379Z">
+<meta property="og:updated_time" content="2020-04-19T04:04:41.725Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="docker基本使用（二）">
-<meta name="twitter:description" content="docker镜像管理基础">
+<meta name="twitter:title" content="docker基本使用（二）-- 镜像管理基础">
+<meta name="twitter:description" content="docker镜像管理基础docker镜像说明 docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器  特点 采用分层构建机制，最底层为bootfs，其之为rootfs Bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源； Rootfs: 为与bootfs之上，表现为docker容器的根文件系统">
 
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <title>docker基本使用（二） | sundshinerj</title>
+  <title>docker基本使用（二）-- 镜像管理基础 | sundshinerj</title>
   
 
 
@@ -328,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">docker基本使用（二）</h1>
+          <h1 class="post-title" itemprop="name headline">docker基本使用（二）-- 镜像管理基础</h1>
         
 
         <div class="post-meta">
@@ -380,7 +380,7 @@
 
           
           
-             <span id="/2020/04/06/docker基本使用（二）/" class="leancloud_visitors" data-flag-title="docker基本使用（二）">
+             <span id="/2020/04/06/docker基本使用（二）/" class="leancloud_visitors" data-flag-title="docker基本使用（二）-- 镜像管理基础">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -411,7 +411,19 @@
       
 
       
-        <h3 id="docker镜像管理基础"><a href="#docker镜像管理基础" class="headerlink" title="docker镜像管理基础"></a>docker镜像管理基础</h3>
+        <h3 id="docker镜像管理基础"><a href="#docker镜像管理基础" class="headerlink" title="docker镜像管理基础"></a>docker镜像管理基础</h3><h4 id="docker镜像说明"><a href="#docker镜像说明" class="headerlink" title="docker镜像说明"></a>docker镜像说明</h4><blockquote>
+<p>docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器</p>
+</blockquote>
+<h5 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h5><ol>
+<li><p>采用分层构建机制，最底层为bootfs，其之为rootfs</p>
+<p>Bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源；</p>
+<p>Rootfs: 为与bootfs之上，表现为docker容器的根文件系统；</p>
+<ul>
+<li>传统模式中，系统启动之时，内核挂载rootfs时会首先将其挂载为“只读模式”</li>
+</ul>
+</li>
+</ol>
+
       
     </div>
     
@@ -441,8 +453,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/06/docker基本使用（一）/" rel="next" title="docker基本使用（一）">
-                <i class="fa fa-chevron-left"></i> docker基本使用（一）
+              <a href="/2020/04/06/-- 基础环境安装/" rel="next" title="docker基本使用（一）-- 基础环境安装">
+                <i class="fa fa-chevron-left"></i> docker基本使用（一）-- 基础环境安装
               </a>
             
           </div>
@@ -450,6 +462,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/19/docker基本使用（三）-- Dockerfile/" rel="prev" title="docker基本使用（三）-- Dockerfile">
+                docker基本使用（三）-- Dockerfile <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -530,7 +546,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -541,7 +557,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -552,7 +568,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">47</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -585,7 +601,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker镜像管理基础"><span class="nav-number">1.</span> <span class="nav-text">docker镜像管理基础</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker镜像管理基础"><span class="nav-number">1.</span> <span class="nav-text">docker镜像管理基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker镜像说明"><span class="nav-number">1.1.</span> <span class="nav-text">docker镜像说明</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#特点"><span class="nav-number">1.1.1.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

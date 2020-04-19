@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="docker," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Dockerfile制作docker镜像分为两种类型：从已有的docker image中导出新的镜像，还有就是通过编写Dockerfile文件制作镜像，一般推荐后者，简单、快速、易维护。 注意事项 在制作Dockerfile时，必须要在特有的一个工作目录(一个空目录)中，比如: /opt/docker(以下简称顶级目录)； 这个目录中有一个Dockerfile文件，文件首字母必须大写； 如果我们在">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker基本使用（三）-- Dockerfile">
+<meta property="og:url" content="http://yoursite.com/2020/04/19/docker基本使用（三）-- Dockerfile/index.html">
+<meta property="og:site_name" content="sundshinerj">
+<meta property="og:description" content="Dockerfile制作docker镜像分为两种类型：从已有的docker image中导出新的镜像，还有就是通过编写Dockerfile文件制作镜像，一般推荐后者，简单、快速、易维护。 注意事项 在制作Dockerfile时，必须要在特有的一个工作目录(一个空目录)中，比如: /opt/docker(以下简称顶级目录)； 这个目录中有一个Dockerfile文件，文件首字母必须大写； 如果我们在">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-04-19T13:31:24.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker基本使用（三）-- Dockerfile">
+<meta name="twitter:description" content="Dockerfile制作docker镜像分为两种类型：从已有的docker image中导出新的镜像，还有就是通过编写Dockerfile文件制作镜像，一般推荐后者，简单、快速、易维护。 注意事项 在制作Dockerfile时，必须要在特有的一个工作目录(一个空目录)中，比如: /opt/docker(以下简称顶级目录)； 这个目录中有一个Dockerfile文件，文件首字母必须大写； 如果我们在">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '4023de75f6a979b1564638aa3bbb96ea',
+      indexName: 'test',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到与 【${query}】 相关的内容","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/19/docker基本使用（三）-- Dockerfile/"/>
+
+
+
+
+
+  <title>docker基本使用（三）-- Dockerfile | sundshinerj</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?faf65787440b8bab9921474008c70647";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">sundshinerj</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/19/docker基本使用（三）-- Dockerfile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="段瑞君">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/apple-touch-icon-next.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sundshinerj">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">docker基本使用（三）-- Dockerfile</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-19T22:20:49+08:00">
+                2020-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/04/19/docker基本使用（三）-- Dockerfile/" class="leancloud_visitors" data-flag-title="docker基本使用（三）-- Dockerfile">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>制作docker镜像分为两种类型：从已有的docker image中导出新的镜像，还有就是通过编写<strong>Dockerfile</strong>文件制作镜像，一般推荐后者，简单、快速、易维护。</p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ol>
+<li>在制作<strong>Dockerfile</strong>时，必须要在特有的一个工作目录(一个空目录)中，比如: /opt/docker(以下简称顶级目录)；</li>
+<li>这个目录中有一个<strong>Dockerfile</strong>文件，文件首字母必须大写；</li>
+<li>如果我们在制作过程中需要很多打包好的文件，你必须把这些文件放在此目录中，比如：/opt/docker/nginx-libs.tar.gz、/opt/docker/zip/unzip.tar.gz，说白就是以当前目录作为顶级目录；</li>
+<li>制作镜像中如有不需要的文件或目录，可在顶级目录下创建一个<strong>.dockeringore</strong>，把不需要的文件写在这里；</li>
+</ol>
+<h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><h5 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h5><blockquote>
+<p>指定当前做的镜像是基于哪个已有镜像为基础，也是最重要的一个且是Dockerfile文件中的第一个非注释行，用于为镜像文件构建过程中指定的基础镜像，后续命令运行基于此基准镜像提供的运行环境。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FROM &lt;repository&gt;[:&lt;tag&gt;]或</span><br><span class="line">FROM &lt;repository&gt;@&lt;digest&gt;</span><br><span class="line"> - &lt;repository&gt;: 指定作为base image的名称；</span><br><span class="line">     - &lt;tag&gt;: base image标签，为可选项，忽略时默认为latest;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM busybox:latest</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="LABLE"><a href="#LABLE" class="headerlink" title="LABLE"></a>LABLE</h5><blockquote>
+<p>之前docker版本使用MAINTANIER（用于让Dockerfile制作者提供更详细的本人信息），现在已被LABLE标签替换，在这里指定Dockerfile的元数据</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LABLE &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt;...</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LABLE maintainer="duanruijun &lt;duanruijun.github.io&gt;"</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h5><blockquote>
+<p>用于从Docker主机复制文件至新创建的镜像文件</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">COPY &lt;src&gt;...&lt;dec&gt; 或</span><br><span class="line">COPY [&lt;src&gt;,..&lt;dec&gt;]</span><br><span class="line">  - &lt;src&gt;: 要复制的源文件或目录，支持使用通配符;</span><br><span class="line">  - &lt;dec&gt;: 目标路径，即正在创建的image的文件系统路径；建议&lt;dec&gt;使用绝对路径，否则，COPY指定则以WORKDIR为起始路径;</span><br><span class="line">  </span><br><span class="line">注意：在路径中有空白字符时，通常使用第二种格式</span><br><span class="line"></span><br><span class="line">文件复制准则：</span><br><span class="line">  - &lt;src&gt;必须是build上下文中的路径，不能是其父目录中的文件</span><br><span class="line">  - 如果&lt;src&gt;是目录，则其内部文件或子目录会被递归复制，但&lt;src&gt;自身目录不会被复制</span><br><span class="line">  - 如果指定了多个&lt;src&gt;，或者&lt;src&gt;中使用了通配符，则&lt;dec&gt;必须是一个目录，且必须以/结尾</span><br><span class="line">  - 如果&lt;dec&gt;事先不存在，它将会被自动创建，这包括其父目录路径</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COPY index.html /data/web/html/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="制作一个简单镜像"><a href="#制作一个简单镜像" class="headerlink" title="制作一个简单镜像"></a>制作一个简单镜像</h5><p>通过以上三个命令就可以简单的制作一个docker镜像了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# cat /opt/docker/Dockerfile </span><br><span class="line"><span class="meta">#</span> Description: test image</span><br><span class="line">FROM busybox:latest</span><br><span class="line">LABEL maintainer="duanruijun &lt;duanruijun.github.io&gt;"</span><br><span class="line">COPY index.html /data/web/html/</span><br></pre></td></tr></table></figure>
+<p>由于这里是有了COPY命令，我们需要在/opt/docker目录下新建一个index.html的测试文件，创建一个简单的内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# cat /opt/docker/index.html </span><br><span class="line">&lt;h1&gt;Busybox http server.&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<p>运行命令<strong>docker build</strong>完成一个镜像的制作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@192 tmp1]# docker build ./ -t tinyhttp:v0.1-1</span><br><span class="line">Sending build context to Docker daemon  3.072kB</span><br><span class="line">Error response from daemon: Dockerfile parse error line 3: unknown instruction: LABLE</span><br><span class="line">[root@192 tmp1]# vim index.html^C</span><br><span class="line">[root@192 tmp1]# vim Dockerfile </span><br><span class="line">[root@192 tmp1]# docker build ./ -t tinyhttp:v0.1-1</span><br><span class="line">Sending build context to Docker daemon  3.072kB</span><br><span class="line">Step 1/3 : FROM busybox:latest</span><br><span class="line">latest: Pulling from library/busybox</span><br><span class="line">e2334dd9fee4: Pull complete </span><br><span class="line">Digest: sha256:a8cf7ff6367c2afa2a90acd081b484cbded349a7076e7bdf37a05279f276bc12</span><br><span class="line">Status: Downloaded newer image for busybox:latest</span><br><span class="line"><span class="meta"> ---&gt;</span> be5888e67be6</span><br><span class="line">Step 2/3 : LABEL maintainer="duanruijun &lt;drj8588@126.com&gt;"</span><br><span class="line"><span class="meta"> ---&gt;</span> Running in 6099746c50a0</span><br><span class="line">Removing intermediate container 6099746c50a0</span><br><span class="line"><span class="meta"> ---&gt;</span> 246515611329</span><br><span class="line">Step 3/3 : COPY index.html /data/web/html/</span><br><span class="line"><span class="meta"> ---&gt;</span> 0d605439655c</span><br><span class="line">Successfully built 0d605439655c</span><br><span class="line">Successfully tagged tinyhttp:v0.1-1</span><br></pre></td></tr></table></figure>
+<p>命令参数说明：</p>
+<ul>
+<li>build: 构建命令</li>
+<li>./: 生成路径，这里是当前路径</li>
+<li>-t: 参数，给生成的镜像打个tag</li>
+</ul>
+<p>通过<strong>docker image</strong>查看镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker image ls</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">tinyhttp            v0.1-1              0d605439655c        7 minutes ago       1.22MB</span><br></pre></td></tr></table></figure>
+<p>最后运行一个容器指定这个镜像查看是否有index.html这个文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-1 cat /data/web/html/index.html</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;Busybox http server.&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<p>说明文件已经打包到镜像里了</p>
+<h5 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h5><blockquote>
+<p>类似于COPY指令，ADD支持使用TAR文件或URL路径</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ADD &lt;src&gt;...&lt;dec&gt; 或</span><br><span class="line">ADD ["&lt;src&gt;",.."&lt;dec&gt;"]</span><br><span class="line"></span><br><span class="line">操作准则</span><br><span class="line">    - 同COPY命令</span><br><span class="line">    - 如果&lt;src&gt;为URL且不为/结尾，则&lt;src&gt;指定的文件将被下载并直接被创建为&lt;dec&gt;；如果&lt;dec&gt;以/结尾，则文件名URL指定的文件将被直接下载并保存为&lt;dec&gt;/&lt;filename&gt;</span><br><span class="line">    - 如果&lt;src&gt;是一个本地操作系统上的一个压缩格式的tar文件，它将被展开为一个目录，其行为类似于“tar -x”命令；然而通过URL获取的tar文件将不会自动展开</span><br><span class="line">    - 如果&lt;src&gt;有多个，或其间接或直接使用了通配符，则&lt;dec&gt;必须是一个以/结尾的目录路径；如果&lt;dec&gt;不以/结尾，则其被视作为一个普通文件，&lt;src&gt;的内容将被直接写入到&lt;dec&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADD http://nginx.org/download/nginx-1.15.2.tar.gz /usr/local/src/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h5><blockquote>
+<p>用于为Dockerfile中所有的RUN、CMD、ENTRYPOINT、COPY和ADD指定设定工作目录</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WORKDIR &lt;dirpath&gt;</span><br><span class="line">  - 在Dockerfile中，WORKDIR指定可出现多次，其路径也可以为相对路径，不过，其是相对此前一个WORKDIR指令指定的路径</span><br><span class="line">  - 另外，WORKDIR也可以调用ENV指定定义的变量</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WORKDIR /usr/local/</span><br><span class="line">ADD http://nginx.org/download/nginx-1.15.2.tar.gz ./src/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h5><blockquote>
+<p>用于在一个image中创建一个挂载点目录，以挂载Docker host上的卷或其他容器上的卷</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VOLUME &lt;mountpoint&gt; 或</span><br><span class="line">VOLUME ["&lt;mountpoint&gt;"]</span><br><span class="line"></span><br><span class="line">如果挂载点目录路径下此前文件已存在，docker run命令会在卷挂载完成后将此前的所有文件复制到新挂载的卷中</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VOLUME /data/mysql/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过<strong>docker build</strong>命令构建镜像后查看是否挂载成功:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-3 mount</span><br><span class="line">...</span><br><span class="line">/dev/sda5 on /data/mysql type xfs (rw,relatime,attr2,inode64,noquota)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>也可以通过<strong>docker inspect</strong>命令查看是否挂载：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-3 sleep 60</span><br><span class="line">...</span><br><span class="line">"Mounts": [</span><br><span class="line">            &#123;</span><br><span class="line">                "Type": "volume",</span><br><span class="line">                "Name": "708aa2b16d3183d1f68dc8244d8a76f8d91e52cc4934946be544f84e01034b07",</span><br><span class="line">                "Source": "/var/lib/docker/volumes/708aa2b16d3183d1f68dc8244d8a76f8d91e52cc4934946be544f84e01034b07/_data",</span><br><span class="line">                "Destination": "/data/mysql",</span><br><span class="line">                "Driver": "local",</span><br><span class="line">                "Mode": "",</span><br><span class="line">                "RW": true,</span><br><span class="line">                "Propagation": ""</span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h5 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h5><blockquote>
+<p>用于为容器打开指定的监听端口以实现与外部通信</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EXPOSE &lt;port&gt;[/&lt;protolcol&gt;] [&lt;port&gt;[/&lt;protolcol&gt;]...]</span><br><span class="line">    &lt;protolcol&gt;: 用于指定传输层协议，可为tcp和udp二者之一，默认使用tcp协议</span><br><span class="line">    </span><br><span class="line">EXPOSE指令可一次指定多个端口：</span><br><span class="line">    EXPOSE 11211/tcp 11211/tdp</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPOSE 80/tcp</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过<strong>docker build</strong>构建后测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name tinyweb1 --rm tinyhttp:v0.1-4 /bin/httpd -f -h /data/web/html</span><br></pre></td></tr></table></figure>
+<p>-f: httpd服务运行在前台</p>
+<p>-h: 指定httpd的web目录</p>
+<p>通过<strong>docker inspect tinyweb1</strong>获取到容器tinyweb1对外IP地址，就可以访问测试了:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker inspect tinyweb1</span><br><span class="line">...</span><br><span class="line"> "Networks": &#123;</span><br><span class="line">               ...</span><br><span class="line">                    "Gateway": "172.17.0.1",</span><br><span class="line">                    "IPAddress": "172.17.0.2",</span><br><span class="line">                    "IPPrefixLen": 16,</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@192 ~]# curl 172.17.0.2</span><br><span class="line">&lt;h1&gt;Busybox http server.&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<p>此时，只是通过curl命令能够正常访问，但是通过<strong>docker port tinyweb1</strong>查看暴露的端口为空：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker port tinyweb1</span><br><span class="line">[root@192 docker]#</span><br></pre></td></tr></table></figure>
+<p>这里需要在运行容器时添加<strong>-P</strong>(大写)就可以查看了:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker run --name tinyweb1 --rm -P tinyhttp:v0.1-4 /bin/httpd -f -h /data/web/html</span><br><span class="line"></span><br><span class="line">[root@192 docker]# docker port tinyweb1</span><br><span class="line">80/tcp -&gt; 0.0.0.0:5000</span><br></pre></td></tr></table></figure>
+<p>这样在局域网中访问docker host的5000端口就可以访问容器中的http服务信息了</p>
+<h5 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h5><blockquote>
+<p>用于为镜像定义所需要的环境变量，并可被Dockerfile文件中位于其后的其他指令（如ENV、ADD、COPY等）所调用</p>
+</blockquote>
+<p>调用格式为\$variable_name或\${variable_name}</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ENV &lt;key&gt; &lt;value&gt; 或</span><br><span class="line">ENV &lt;key&gt;=&lt;value&gt;...</span><br><span class="line">    - 第一种格式中，&lt;key&gt;之后的所有内容均会被视作为&lt;value&gt;中的组成部分，因此，一次只能设置一个变量</span><br><span class="line">    - 第二种格式中，可以设置多个变量，每个变量为“&lt;key&gt;=&lt;value&gt;”的键值对，如果&lt;value&gt;中报班空格，可以以(\)反斜线进行转义，也可通过&lt;value&gt;加引号进行标识，另外，反斜线也可用于续行</span><br><span class="line">    - 定义多个变量时，建议使用第二种方式，以便在同一层中完成所有功能</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ENV DOC_ROOT=/data/web/html/ \</span><br><span class="line">    WEB_SERVER_PACKAGE="nginx-1.15.2"</span><br><span class="line"></span><br><span class="line">COPY index.html $&#123;DOC_ROOT-/data/web/html/&#125;  # $&#123;variable_name:-...&#125; 默认值</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过<strong>docker build…</strong>完成后进行run操作查看传到容器中的变量信息:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-5 printenv</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">HOSTNAME=5c9821659155</span><br><span class="line">DOC_ROOT=/data/web/html/</span><br><span class="line">WEB_SERVER_PACKAGE=nginx-1.15.2</span><br><span class="line">HOME=/root</span><br></pre></td></tr></table></figure>
+<p>也可以在run的时候通过<strong>-e</strong>选项给容器中传参达到另一种效果:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@192 docker]# docker run --name tinyweb1 --rm -e WEB_SERVER_PACKAGE="nginx-1.15.1" tinyhttp:v0.1-5 printenv</span><br><span class="line"></span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">HOSTNAME=d6ec808401dc</span><br><span class="line">WEB_SERVER_PACKAGE=nginx-1.15.1</span><br><span class="line">DOC_ROOT=/data/web/html/</span><br><span class="line">HOME=/root</span><br></pre></td></tr></table></figure>
+<h5 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h5><blockquote>
+<p>用于指定docker build过程中运行的程序，其可以是任何命令</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RUN &lt;command&gt; 或</span><br><span class="line">RUN ["&lt;executable&gt;","&lt;param1&gt;","&lt;param2&gt;"]</span><br><span class="line"></span><br><span class="line">第一种格式中，&lt;command&gt;通常是一个shell命令，且以"/bin/sh -c"来运行它，这意味着此进程的Pid不为1，不能接受Unix信号，因此，当使用docker stop &lt;container&gt;命令停止容器时，此进程接收不到SIGTERM信号；</span><br><span class="line">第二种语法格式中的参数是一个JSON格式的数组，其中&lt;executable&gt;为要运行的命令，后面的&lt;paramN&gt;是传递给命令的选项或参数；然而，此种格式指定的命令不会以"/bin/sh -c"来发起，因此常见的shell操作如替换以及通配符(*?)替换将不会进行；不过，如果要运行的命令依赖于此shell的话，可以将其替换为类似下面的格式：</span><br><span class="line">RUN ["/bin/bash", "-c", "&lt;executable&gt;", "&lt;param1&gt;"]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN cd /usr/local/src &amp;&amp; \</span><br><span class="line">    tar -x nginx.1.15.2.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h5><blockquote>
+<p>类似于RUN指令，CMD也可用于运行任何命令或应用程序，不过，二者运行的时间点不同</p>
+<p>RUN指令运行于镜像文件的构建过程中，而CMD运行于基于Dockerfile构建出的新镜像文件启动的一个容器时</p>
+<p>CMD指令的首要目的在于为启动的容器指定默认要运行的程序，且其运行结束后，容器也将终止；不过，CMD指定的命令其可以被docker run命令行选项所覆盖</p>
+<p>在Dockerfile中可以存在多个CMD指令，但仅最后一个生效</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CMD &lt;command&gt; 或</span><br><span class="line">CMD ["&lt;executable&gt;", "&lt;param1&gt;","&lt;param2&gt;"] 或</span><br><span class="line">CMD ["&lt;param1&gt;","&lt;param2&gt;"]</span><br><span class="line"></span><br><span class="line">前两种语法格式意义同RUN</span><br><span class="line">第三种则用于为ENTRYPOINT指令提供默认参数</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CMD /bin/httpd -f -h ...</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h5><blockquote>
+<p>类似于CMD指令的功能，用于为容器指定默认的运行程序，从而使得容器像一个单独的可执行程序</p>
+<p>与CMD不同的是，由ENTRYPOINT启动的程序不会被docker run命令行指定的参数所覆盖，而且，这些命令行参数会被当成参数传递给ENTRYPOINT指定的程序</p>
+<p>不过，docker run命令指定的–entrypoint选项的参数可覆盖ENTRYPOINT指令指定的程序</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT &lt;command&gt;</span><br><span class="line">ENTRYPOINT ["&lt;executable&gt;", "&lt;param1&gt;","&lt;param2&gt;"]</span><br><span class="line"></span><br><span class="line">docker run命令传入的命令参数会覆盖CMD指令的内容并且附加到ENTRYPOINT命令最后作为其参数使用</span><br><span class="line">Dockerfile中也可以指定多个ENTRYPOINT,但是只有最后一个指令生效</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT /bin/httpd -f -h ...</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="USER"><a href="#USER" class="headerlink" title="USER"></a>USER</h5><blockquote>
+<p>用于指定运行image时的或运行Dockerfile中的任何RUN、CMD或ENTRYPOINT指令指定的程序时的用户名或UID</p>
+<p>默认情况下，container运行身份为root</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">USER &lt;UID&gt;|&lt;UserName&gt;</span><br><span class="line"></span><br><span class="line">需要主要的是，&lt;UID&gt;可以为任意数字，但实践中必须为/etc/passwd中某用户的有效UID，否则，docker run将运行失败</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">USER nginx</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="HEALCHECK"><a href="#HEALCHECK" class="headerlink" title="HEALCHECK"></a>HEALCHECK</h5><blockquote>
+<p>检查CMD command指令健康状态</p>
+</blockquote>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HEALTHCHECK --start-period=3s CMD wget -O - -q http://0.0.0.0/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="SHELL"><a href="#SHELL" class="headerlink" title="SHELL"></a>SHELL</h5><blockquote>
+<p>运行程序默认的shell程序，比如：Linux的[“/bin/sh”, “-c”]，Windows的[“cmd”, “/s”]</p>
+</blockquote>
+<h5 id="ARG"><a href="#ARG" class="headerlink" title="ARG"></a>ARG</h5><blockquote>
+<p>在docker build中传递参数</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ARG auth="sunshine"</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build --build-arg auth="duanruijun" -t IMAGE_NAME ./</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="ONBUILD"><a href="#ONBUILD" class="headerlink" title="ONBUILD"></a>ONBUILD</h5><blockquote>
+<p>用于在Dockerfile中定义一个触发器</p>
+<p>Dockerfile用于build镜像文件，此镜像文件亦可作为base image被另一个Dockerfile用作FROM指令的参数，并以之构建新的镜像文件</p>
+<p>在后面的这个Dockerfile中的FROM指令在build过程中被执行时，将会“触发”创建其base image的Dockerfile文件中的ONBUILD指令定义的触发器</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ONBUILD &lt;INSTRUCTION&gt;</span><br><span class="line"></span><br><span class="line">尽管任何指令都可注册成为触发器指令，但ONBUILD不能自我嵌套，且不会触发FROM指令</span><br><span class="line">使用包含ONBUILD的Dockerfile构建的镜像应该使用特殊标签，例如：ruby:2.0-onbuild</span><br><span class="line">在ONBUILD指令中使用ADD或COPY时应该格外小心，因为新构建过程的上下文在缺少指定的源文件时会失败</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ONBUILD ADD http://nginx.org/download/nginx.1.15.2.tar.gz /usr/local/src/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>好的，以上就是Dockerfile中用到的所有常用指令。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/06/docker基本使用（二）/" rel="next" title="docker基本使用（二）-- 镜像管理基础">
+                <i class="fa fa-chevron-left"></i> docker基本使用（二）-- 镜像管理基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/apple-touch-icon-next.png"
+                alt="段瑞君" />
+            
+              <p class="site-author-name" itemprop="name">段瑞君</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意事项"><span class="nav-number">1.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常用命令"><span class="nav-number">1.2.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#FROM"><span class="nav-number">1.2.1.</span> <span class="nav-text">FROM</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LABLE"><span class="nav-number">1.2.2.</span> <span class="nav-text">LABLE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#COPY"><span class="nav-number">1.2.3.</span> <span class="nav-text">COPY</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#制作一个简单镜像"><span class="nav-number">1.2.4.</span> <span class="nav-text">制作一个简单镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ADD"><span class="nav-number">1.2.5.</span> <span class="nav-text">ADD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WORKDIR"><span class="nav-number">1.2.6.</span> <span class="nav-text">WORKDIR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VOLUME"><span class="nav-number">1.2.7.</span> <span class="nav-text">VOLUME</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EXPOSE"><span class="nav-number">1.2.8.</span> <span class="nav-text">EXPOSE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ENV"><span class="nav-number">1.2.9.</span> <span class="nav-text">ENV</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RUN"><span class="nav-number">1.2.10.</span> <span class="nav-text">RUN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CMD"><span class="nav-number">1.2.11.</span> <span class="nav-text">CMD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ENTRYPOINT"><span class="nav-number">1.2.12.</span> <span class="nav-text">ENTRYPOINT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#USER"><span class="nav-number">1.2.13.</span> <span class="nav-text">USER</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HEALCHECK"><span class="nav-number">1.2.14.</span> <span class="nav-text">HEALCHECK</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SHELL"><span class="nav-number">1.2.15.</span> <span class="nav-text">SHELL</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ARG"><span class="nav-number">1.2.16.</span> <span class="nav-text">ARG</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ONBUILD"><span class="nav-number">1.2.17.</span> <span class="nav-text">ONBUILD</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">段瑞君</span>
+
+  
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("leancloud_visitors", "OwtV8OgvclK8mABAadRrqT8M");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
