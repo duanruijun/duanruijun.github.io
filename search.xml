@@ -69,6 +69,18 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[常用函数]]></title>
+    <url>%2F2019%2F07%2F28%2Fpython%20paramiko%2F</url>
+    <content type="text"><![CDATA[介绍paramiko是一个基于SSH用于连接远程服务器并执行相关操作（SSHClient和SFTPClinet,即一个是远程连接，一个是上传下载服务），使用该模块可以对远程服务器进行命令或文件操作，值得一说的是，fabric和ansible内部的远程管理就是使用的paramiko来现实。可参考:https://www.cnblogs.com/lzc978/p/10978688.html 安装123# 由于 paramiko 模块内部依赖pycrypto，所以先下载安装pycryptopip3 install pycryptopip3 install paramiko 在安装过程中有可能报错: 12345678ERROR:root:code for hash md5 was not found....... File "/usr/local/lib/python2.7/site-packages/pip/_vendor/urllib3/util/__init__.py", line 7, in &lt;module&gt; from .ssl_ import ( File "/usr/local/lib/python2.7/site-packages/pip/_vendor/urllib3/util/ssl_.py", line 8, in &lt;module&gt; from hashlib import md5, sha1, sha256ImportError: cannot import name md5 需要安装openssl 12# Mac需要brew unlink openssl和安装python@2，参考：https://stackoverflow.com/questions/59123154/importerror-cannot-import-name-md5brew unlink openssl &amp;&amp; brew reinstall python@2]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>paramiko模块</tag>
+        <tag>python ssh</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[jenkinsfile声明式流水线配置说明]]></title>
     <url>%2F2019%2F05%2F15%2Fjenkinsfile%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E%2F</url>
     <content type="text"><![CDATA[jenkinsfile声明式流水线配置说明声明式流水线结构说明 主要模块介绍 pipeline pipeline模块是Jenkins声明式流水线中必须的，它是最外面的部分，同时也是一个流水线项目的标志，其语法为pipeline {},其他的代码都放在这个闭包里 123pipeline &#123; // 流水线代码区域&#125; agent 指定整个流水线或者一个特定阶段在哪运行，在pipeline代码块中，必须要有一个agent指令用来指定默认的执行节点。然而在单个阶段的开始也可以可选地使用一个agent指令，用来指定该阶段应该在哪执行 123456agent any 可运行在任何一个定义好的代理节点上agent none 需要为单个阶段指定代理节点agent &#123; label &quot;&lt;label&gt;&quot;&#125; 流水线可以运行任意一个具有&lt;lable&gt;标签的代理节点上 environment 可选指令，设置环境变量 123456pipeline &#123; agent any environment &#123; TIMEZONE = 'Shanghai' &#125;&#125; 上述代码为定义一个TIMEZONE的变量，稍后会在后续例子中介绍调用。 options 可选参数，指定在jenkins配置选项中的一些配置值，例如输出带时间戳，构建历史保留次数等等 1234options &#123; // 操作台输出日志(需要安装timestamps插件) timestamps() &#125; timestamps需要额外安装Timestamper插件才能使用。 后续待更新。。。]]></content>
@@ -76,10 +88,10 @@
         <category>jenkins</category>
       </categories>
       <tags>
-        <tag>jenkins</tag>
         <tag>pipline</tag>
         <tag>流水线配置</tag>
         <tag>jenkinsfile</tag>
+        <tag>jenkins</tag>
       </tags>
   </entry>
   <entry>
@@ -139,8 +151,8 @@
         <category>jenkins</category>
       </categories>
       <tags>
-        <tag>maven构建</tag>
         <tag>jenkins</tag>
+        <tag>maven构建</tag>
       </tags>
   </entry>
   <entry>
@@ -156,18 +168,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[shell文件对比]]></title>
-    <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
-    <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
-      <categories>
-        <category>shell</category>
-      </categories>
-      <tags>
-        <tag>shell文件对比</tag>
-        <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[ping包检测]]></title>
     <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
     <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
@@ -180,15 +180,15 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[记录linux用户操作]]></title>
-    <url>%2F2017%2F08%2F23%2Flinux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%2F</url>
-    <content type="text"><![CDATA[记录用户操作追加在 /etc/profilePS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/null]]></content>
+    <title><![CDATA[shell文件对比]]></title>
+    <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
+    <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
       <categories>
-        <category>linux</category>
+        <category>shell</category>
       </categories>
       <tags>
-        <tag>linux</tag>
-        <tag>linux记录用户操作</tag>
+        <tag>shell文件对比</tag>
+        <tag>shell</tag>
       </tags>
   </entry>
   <entry>
@@ -201,6 +201,18 @@
       <tags>
         <tag>http请求方法简介</tag>
         <tag>http协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[记录linux用户操作]]></title>
+    <url>%2F2017%2F08%2F23%2Flinux%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%2F</url>
+    <content type="text"><![CDATA[记录用户操作追加在 /etc/profilePS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/nullPS1=”whoami@hostname:”‘[$PWD]’historyUSER_IP=who -u am i 2&gt;/dev/null| awk &#39;{print $NF}&#39;|sed -e &#39;s/[()]//g&#39;if [ “$USER_IP” = “” ]thenUSER_IP=hostnamefiif [ ! -d /tmp/dbasky ]thenmkdir /tmp/dbaskychmod 777 /tmp/dbaskyfiif [ ! -d /tmp/dbasky/${LOGNAME} ]thenmkdir /tmp/dbasky/${LOGNAME}chmod 300 /tmp/dbasky/${LOGNAME}fiexport HISTSIZE=4096DT=date &quot;+%Y-%m-%d_%H:%M:%S&quot;export HISTFILE=”/tmp/dbasky/${LOGNAME}/${USER_IP} dbasky.$DT”chmod 600 /tmp/dbasky/${LOGNAME}/dbasky 2&gt;/dev/null]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>linux记录用户操作</tag>
       </tags>
   </entry>
   <entry>
@@ -275,6 +287,42 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[zabbix报警]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
+    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>zabbix 报警配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
+    <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
+      <categories>
+        <category>ansible</category>
+      </categories>
+      <tags>
+        <tag>ansible</tag>
+        <tag>ansible问题汇总</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix问题汇总]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控问题汇总</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[zabbix代理(proxy)]]></title>
     <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
     <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
@@ -308,42 +356,6 @@
       <tags>
         <tag>zabbix</tag>
         <tag>监控网络设备</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
-    <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
-    <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
-      <categories>
-        <category>ansible</category>
-      </categories>
-      <tags>
-        <tag>ansible</tag>
-        <tag>ansible问题汇总</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix报警]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix%E6%8A%A5%E8%AD%A6%2F</url>
-    <content type="text"><![CDATA[概述当zabbix server预定义或自定义的触发器生效后，就要通过告警邮件、短信、微信等接口通知相关人员，并且zabbix server还设置了报警升级，可根据自身情况进行设置。 ##配置 一、 zabbix-server脚本指定位置1vim zabbix_server.conf AlertScriptsPath=/etc/zabbix/alertscripts 二、 报警类型（这里主要讲邮件和短信，后期会补上微信） 邮件 邮件报警需要提供三个参数（收件人、主题、内容）,邮件需要安装sendemail可见安装sendemail 1cat /etc/zabbix/alertscripts/sendEmail.sh #!/bin/bash to=$1 subject=$2 body=$3 /usr/local/bin/sendEmail -f ex@uu.com -t "$to" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu ex@uu.com -xp xxxx -m "$body" ############ /usr/local/bin/sendEmail 命令主程序 -f from@163.com 发件人邮箱 -t to@163.com 收件人邮箱 -s smtp.163.com 发件人邮箱的smtp服务器 -u "我是邮件主题" 邮件的标题 -o message-content-type=html 邮件内容的格式,html表示它是html格式 -o message-charset=utf8 邮件内容编码 -xu from@163.com 发件人邮箱的用户名 -xp 123456 发件人邮箱密码 -m "我是邮件内容" 邮件的具体内容 -l /var/log/sendMyEmail.log 非必输项，邮件发送日志记录到日志文件 web配置 管理 &gt;&gt; 报警媒介类型 &gt;&gt; 创建媒体类型 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.SUBJECT} {ALERT.MESSAGE} 管理 &gt;&gt; 用户 &gt;&gt; 报警媒介 配置 &gt;&gt; 动作 &gt;&gt; 触发器类型下新建动作 名称：Zabbix-Server告警邮件 默认接收人：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS} 默认信息： 告警主机:&nbsp;{HOSTNAME1} 告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME} 告警等级:&nbsp;{TRIGGER.SEVERITY} 告警信息:&nbsp;{TRIGGER.NAME} 告警项目:&nbsp;{TRIGGER.KEY1} 问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE} 当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1} 事件ID:&nbsp;{EVENT.ID} 恢复主题：主机： {HOSTNAME1} 状态：{TRIGGER.STATUS}！！ 恢复信息：同上 - 条件 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%9D%A1%E4%BB%B6.png) - 操作 ![](https://raw.githubusercontent.com/sundshinerj/img/master/zabbix_%E6%8A%A5%E8%AD%A6_%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6_%E5%8A%A8%E4%BD%9C%E6%93%8D%E4%BD%9C.png) 步骤：可以指定报警升级 至此，邮件报警配置完成！ 短信 短信就是调用短息商提供的短信接口，参数里需要填写两个（收件人、内容） 名称： 自定义 类型： 脚本 脚本参数： {ALERT.SENDTO} {ALERT.MESSAGE} 代码 1cat sendSms.py #! /usr/bin/python #encoding:utf-8 import requests import json import urllib import hashlib import os import sys import subprocess import datetime reload(sys) #设置字符集，否则再输出重定向时出编码错误 sys.setdefaultencoding('utf-8') #请求主题参数 def phonelist(plist): phonelist=plist.split(",") return phonelist def requestinterface(strp): url="http://test.com?sname=接口用户名&spwd=接口密码" #定义一个字典，值为请求的参数 param={} param['sdst']=strp param['smsg']=sys.argv[2] str3=url+'sdst='+param['sdst']+'&smsg='+urllib.quote(param['smsg']+'【标题】') r = requests.get(str3,verify=False) if __name__ == '__main__': #now=datetime.datetime.now().strftime('%Y-%m-%d-%H') #os.system("touch sendsms.`date +\'%F-%H\'`") #print fname #f = open('sendsms.'+str(now),'a') #f.write(sys.argv[1]+' -- '+sys.argv[2]+' '+str(now)+'\n') plist=phonelist(sys.argv[1]) for i,value in enumerate(plist): sms=requestinterface(value) 至此，短信报警配置完成。]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>zabbix 报警配置</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix问题汇总]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
-    <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>监控问题汇总</tag>
       </tags>
   </entry>
   <entry>
