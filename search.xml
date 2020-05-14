@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[elk-kibana视图-maps]]></title>
+    <url>%2F2020%2F05%2F13%2Felk-kibana%E8%A7%86%E5%9B%BE-maps%2F</url>
+    <content type="text"><![CDATA[maps介绍最有效的还得看官网介绍，这里简单说明下： 创建具有多个图层和索引的地图。 将GeoJSON文件上传到Elasticsearch中。 可把地图嵌入到仪表板中。 绘制单个文档或使用聚合来绘制任何数据集，无论大小如何。 创建Choropleth贴图。 使用数据驱动的样式从属性值中符号化要素。 通过搜索集中显示要显示的数据。 工作原理maps插件是利用GeoIP获取地图上的详细信息并展示，所以，我们需要在elasticsearch中存储IP对应的geoip.location字段geo_point的类型。然后在kibana的maps上可以配置图层展示了。 准备工作####ELKF版本介绍 Name Version filebeat 7.2.0 ibana 7.6.2 elasticsearch 7.6.2 logstash 7.6.2 数据传输流程 服务日志我这里测试用的是NGINX日志作为示例： 12345nginx &#123; ... log_format ... $remote_addr ... # nginx获取客户端IP的采集函数$remote_addr ...&#125; 请求日志信息： 123xx.xx.com 202.12.22.151 - [14/May/2020:14:03:14 +0800] "POST /getArea?requestId=123 HTTP/1.1" 200# 这里 202.12.22.151就是我们获取到的客户端IP地址 GeoIP数据库下载可以通过上面GeoIP链接下载或则自行百度下载数据包，我这里存放至/opt/App/GeoIP目录下 logstash配置通过filebeat工具传输至logstash，再由logstash进行过滤存储至elasticsearch，logstash过滤信息： 12345678910111213141516171819202122232425262728293031323334353637input &#123; beats &#123; port =&gt; FILEBEAT_PORT &#125;&#125;filter &#123; grok &#123; match =&gt; [ "message", '...%&#123;IPV4:user_ip&#125;...' # 匹配NGINX的IP规则 ] &#125; geoip &#123; source =&gt; "user_ip" # grok中定义的获取客户端IP变量user_ip target =&gt; "geoip" # 标记为geoip模块 database =&gt; "/opt/App/GeoIP/GeoLite2-City.mmdb" # GeoIP数据 add_field =&gt; [ "[geoip][coordinates]", "%&#123;[geoip][longitude]&#125;" ] add_field =&gt; [ "[geoip][coordinates]", "%&#123;[geoip][latitude]&#125;" ] &#125; mutate &#123; convert =&gt; [ "[geoip][coordinates]", "float"] convert =&gt; [ "responsetime", "float"] &#125; date &#123; match =&gt; [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ] &#125;&#125;output &#123; elasticsearch &#123; hosts =&gt; ["http://ELASTICSEARCH_IP:ELASTICSEARCH_PORT"] index =&gt; "logstash-nginx-%&#123;[@metadata][beat]&#125;-%&#123;[@metadata][version]&#125;-%&#123;+YYYY.MM.dd&#125;" &#125; # 索引文件必须以logstash开头&#125; maps展示由于kibana自带默认地图加载起来非常耗时，这里用的是高德地图，在kibana的配置文件末尾引入高德地图插件即可： 1echo "map.tilemap.url: 'http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&amp;size=1&amp;scale=1&amp;style=7&amp;x=&#123;x&#125;&amp;y=&#123;y&#125;&amp;z=&#123;z&#125;'" &gt;&gt; kibana.yml 完成后重启kibana服务 添加索引请求下NGINX页面，并在kibana的配置管理中添加上述配置的索引 地图配置依次选择maps菜单-&gt;创建地图-&gt;添加图层-&gt;文档-&gt;索引模式列表中选择你添加的索引即可： 最后效果]]></content>
+      <categories>
+        <category>elk</category>
+      </categories>
+      <tags>
+        <tag>elk maps</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[docker基本使用（三）-- Dockerfile]]></title>
     <url>%2F2020%2F04%2F19%2Fdocker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%89%EF%BC%89--%20Dockerfile%2F</url>
     <content type="text"><![CDATA[Dockerfile制作docker镜像分为两种类型：从已有的docker image中导出新的镜像，还有就是通过编写Dockerfile文件制作镜像，一般推荐后者，简单、快速、易维护。 注意事项 在制作Dockerfile时，必须要在特有的一个工作目录(一个空目录)中，比如: /opt/docker(以下简称顶级目录)； 这个目录中有一个Dockerfile文件，文件首字母必须大写； 如果我们在制作过程中需要很多打包好的文件，你必须把这些文件放在此目录中，比如：/opt/docker/nginx-libs.tar.gz、/opt/docker/zip/unzip.tar.gz，说白就是以当前目录作为顶级目录； 制作镜像中如有不需要的文件或目录，可在顶级目录下创建一个.dockeringore，把不需要的文件写在这里； 常用命令FROM 指定当前做的镜像是基于哪个已有镜像为基础，也是最重要的一个且是Dockerfile文件中的第一个非注释行，用于为镜像文件构建过程中指定的基础镜像，后续命令运行基于此基准镜像提供的运行环境。 1234FROM &lt;repository&gt;[:&lt;tag&gt;]或FROM &lt;repository&gt;@&lt;digest&gt; - &lt;repository&gt;: 指定作为base image的名称； - &lt;tag&gt;: base image标签，为可选项，忽略时默认为latest; 示例 1FROM busybox:latest LABLE 之前docker版本使用MAINTANIER（用于让Dockerfile制作者提供更详细的本人信息），现在已被LABLE标签替换，在这里指定Dockerfile的元数据 1LABLE &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt;... 示例 1LABLE maintainer="duanruijun &lt;duanruijun.github.io&gt;" COPY 用于从Docker主机复制文件至新创建的镜像文件 123456789101112COPY &lt;src&gt;...&lt;dec&gt; 或COPY [&lt;src&gt;,..&lt;dec&gt;] - &lt;src&gt;: 要复制的源文件或目录，支持使用通配符; - &lt;dec&gt;: 目标路径，即正在创建的image的文件系统路径；建议&lt;dec&gt;使用绝对路径，否则，COPY指定则以WORKDIR为起始路径; 注意：在路径中有空白字符时，通常使用第二种格式文件复制准则： - &lt;src&gt;必须是build上下文中的路径，不能是其父目录中的文件 - 如果&lt;src&gt;是目录，则其内部文件或子目录会被递归复制，但&lt;src&gt;自身目录不会被复制 - 如果指定了多个&lt;src&gt;，或者&lt;src&gt;中使用了通配符，则&lt;dec&gt;必须是一个目录，且必须以/结尾 - 如果&lt;dec&gt;事先不存在，它将会被自动创建，这包括其父目录路径 示例 1COPY index.html /data/web/html/ 制作一个简单镜像通过以上三个命令就可以简单的制作一个docker镜像了： 12345[root@192 docker]# cat /opt/docker/Dockerfile # Description: test imageFROM busybox:latestLABEL maintainer="duanruijun &lt;duanruijun.github.io&gt;"COPY index.html /data/web/html/ 由于这里是有了COPY命令，我们需要在/opt/docker目录下新建一个index.html的测试文件，创建一个简单的内容： 12[root@192 docker]# cat /opt/docker/index.html &lt;h1&gt;Busybox http server.&lt;/h1&gt; 运行命令docker build完成一个镜像的制作 123456789101112131415161718192021[root@192 tmp1]# docker build ./ -t tinyhttp:v0.1-1Sending build context to Docker daemon 3.072kBError response from daemon: Dockerfile parse error line 3: unknown instruction: LABLE[root@192 tmp1]# vim index.html^C[root@192 tmp1]# vim Dockerfile [root@192 tmp1]# docker build ./ -t tinyhttp:v0.1-1Sending build context to Docker daemon 3.072kBStep 1/3 : FROM busybox:latestlatest: Pulling from library/busyboxe2334dd9fee4: Pull complete Digest: sha256:a8cf7ff6367c2afa2a90acd081b484cbded349a7076e7bdf37a05279f276bc12Status: Downloaded newer image for busybox:latest ---&gt; be5888e67be6Step 2/3 : LABEL maintainer="duanruijun &lt;drj8588@126.com&gt;" ---&gt; Running in 6099746c50a0Removing intermediate container 6099746c50a0 ---&gt; 246515611329Step 3/3 : COPY index.html /data/web/html/ ---&gt; 0d605439655cSuccessfully built 0d605439655cSuccessfully tagged tinyhttp:v0.1-1 命令参数说明： build: 构建命令 ./: 生成路径，这里是当前路径 -t: 参数，给生成的镜像打个tag 通过docker image查看镜像 123[root@192 docker]# docker image lsREPOSITORY TAG IMAGE ID CREATED SIZEtinyhttp v0.1-1 0d605439655c 7 minutes ago 1.22MB 最后运行一个容器指定这个镜像查看是否有index.html这个文件 123[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-1 cat /data/web/html/index.html&lt;h1&gt;Busybox http server.&lt;/h1&gt; 说明文件已经打包到镜像里了 ADD 类似于COPY指令，ADD支持使用TAR文件或URL路径 12345678ADD &lt;src&gt;...&lt;dec&gt; 或ADD ["&lt;src&gt;",.."&lt;dec&gt;"]操作准则 - 同COPY命令 - 如果&lt;src&gt;为URL且不为/结尾，则&lt;src&gt;指定的文件将被下载并直接被创建为&lt;dec&gt;；如果&lt;dec&gt;以/结尾，则文件名URL指定的文件将被直接下载并保存为&lt;dec&gt;/&lt;filename&gt; - 如果&lt;src&gt;是一个本地操作系统上的一个压缩格式的tar文件，它将被展开为一个目录，其行为类似于“tar -x”命令；然而通过URL获取的tar文件将不会自动展开 - 如果&lt;src&gt;有多个，或其间接或直接使用了通配符，则&lt;dec&gt;必须是一个以/结尾的目录路径；如果&lt;dec&gt;不以/结尾，则其被视作为一个普通文件，&lt;src&gt;的内容将被直接写入到&lt;dec&gt; 示例 1ADD http://nginx.org/download/nginx-1.15.2.tar.gz /usr/local/src/ WORKDIR 用于为Dockerfile中所有的RUN、CMD、ENTRYPOINT、COPY和ADD指定设定工作目录 123WORKDIR &lt;dirpath&gt; - 在Dockerfile中，WORKDIR指定可出现多次，其路径也可以为相对路径，不过，其是相对此前一个WORKDIR指令指定的路径 - 另外，WORKDIR也可以调用ENV指定定义的变量 示例 12WORKDIR /usr/local/ADD http://nginx.org/download/nginx-1.15.2.tar.gz ./src/ VOLUME 用于在一个image中创建一个挂载点目录，以挂载Docker host上的卷或其他容器上的卷 1234VOLUME &lt;mountpoint&gt; 或VOLUME ["&lt;mountpoint&gt;"]如果挂载点目录路径下此前文件已存在，docker run命令会在卷挂载完成后将此前的所有文件复制到新挂载的卷中 示例 1VOLUME /data/mysql/ 通过docker build命令构建镜像后查看是否挂载成功: 1234[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-3 mount.../dev/sda5 on /data/mysql type xfs (rw,relatime,attr2,inode64,noquota)... 也可以通过docker inspect命令查看是否挂载： 123456789101112131415[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-3 sleep 60..."Mounts": [ &#123; "Type": "volume", "Name": "708aa2b16d3183d1f68dc8244d8a76f8d91e52cc4934946be544f84e01034b07", "Source": "/var/lib/docker/volumes/708aa2b16d3183d1f68dc8244d8a76f8d91e52cc4934946be544f84e01034b07/_data", "Destination": "/data/mysql", "Driver": "local", "Mode": "", "RW": true, "Propagation": "" &#125; ],... EXPOSE 用于为容器打开指定的监听端口以实现与外部通信 12345EXPOSE &lt;port&gt;[/&lt;protolcol&gt;] [&lt;port&gt;[/&lt;protolcol&gt;]...] &lt;protolcol&gt;: 用于指定传输层协议，可为tcp和udp二者之一，默认使用tcp协议 EXPOSE指令可一次指定多个端口： EXPOSE 11211/tcp 11211/tdp 示例 1EXPOSE 80/tcp 通过docker build构建后测试 1docker run --name tinyweb1 --rm tinyhttp:v0.1-4 /bin/httpd -f -h /data/web/html -f: httpd服务运行在前台 -h: 指定httpd的web目录 通过docker inspect tinyweb1获取到容器tinyweb1对外IP地址，就可以访问测试了: 1234567891011[root@192 docker]# docker inspect tinyweb1... "Networks": &#123; ... "Gateway": "172.17.0.1", "IPAddress": "172.17.0.2", "IPPrefixLen": 16,...[root@192 ~]# curl 172.17.0.2&lt;h1&gt;Busybox http server.&lt;/h1&gt; 此时，只是通过curl命令能够正常访问，但是通过docker port tinyweb1查看暴露的端口为空： 12[root@192 docker]# docker port tinyweb1[root@192 docker]# 这里需要在运行容器时添加-P(大写)就可以查看了: 1234[root@192 docker]# docker run --name tinyweb1 --rm -P tinyhttp:v0.1-4 /bin/httpd -f -h /data/web/html[root@192 docker]# docker port tinyweb180/tcp -&gt; 0.0.0.0:5000 这样在局域网中访问docker host的5000端口就可以访问容器中的http服务信息了 ENV 用于为镜像定义所需要的环境变量，并可被Dockerfile文件中位于其后的其他指令（如ENV、ADD、COPY等）所调用 调用格式为\$variable_name或\${variable_name} 12345ENV &lt;key&gt; &lt;value&gt; 或ENV &lt;key&gt;=&lt;value&gt;... - 第一种格式中，&lt;key&gt;之后的所有内容均会被视作为&lt;value&gt;中的组成部分，因此，一次只能设置一个变量 - 第二种格式中，可以设置多个变量，每个变量为“&lt;key&gt;=&lt;value&gt;”的键值对，如果&lt;value&gt;中报班空格，可以以(\)反斜线进行转义，也可通过&lt;value&gt;加引号进行标识，另外，反斜线也可用于续行 - 定义多个变量时，建议使用第二种方式，以便在同一层中完成所有功能 示例 1234ENV DOC_ROOT=/data/web/html/ \ WEB_SERVER_PACKAGE="nginx-1.15.2"COPY index.html $&#123;DOC_ROOT-/data/web/html/&#125; # $&#123;variable_name:-...&#125; 默认值 通过docker build…完成后进行run操作查看传到容器中的变量信息: 123456[root@192 docker]# docker run --name tinyweb1 --rm tinyhttp:v0.1-5 printenvPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/binHOSTNAME=5c9821659155DOC_ROOT=/data/web/html/WEB_SERVER_PACKAGE=nginx-1.15.2HOME=/root 也可以在run的时候通过-e选项给容器中传参达到另一种效果: 1234567[root@192 docker]# docker run --name tinyweb1 --rm -e WEB_SERVER_PACKAGE="nginx-1.15.1" tinyhttp:v0.1-5 printenvPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/binHOSTNAME=d6ec808401dcWEB_SERVER_PACKAGE=nginx-1.15.1DOC_ROOT=/data/web/html/HOME=/root RUN 用于指定docker build过程中运行的程序，其可以是任何命令 123456RUN &lt;command&gt; 或RUN ["&lt;executable&gt;","&lt;param1&gt;","&lt;param2&gt;"]第一种格式中，&lt;command&gt;通常是一个shell命令，且以"/bin/sh -c"来运行它，这意味着此进程的Pid不为1，不能接受Unix信号，因此，当使用docker stop &lt;container&gt;命令停止容器时，此进程接收不到SIGTERM信号；第二种语法格式中的参数是一个JSON格式的数组，其中&lt;executable&gt;为要运行的命令，后面的&lt;paramN&gt;是传递给命令的选项或参数；然而，此种格式指定的命令不会以"/bin/sh -c"来发起，因此常见的shell操作如替换以及通配符(*?)替换将不会进行；不过，如果要运行的命令依赖于此shell的话，可以将其替换为类似下面的格式：RUN ["/bin/bash", "-c", "&lt;executable&gt;", "&lt;param1&gt;"] 示例 12RUN cd /usr/local/src &amp;&amp; \ tar -x nginx.1.15.2.tar.gz CMD 类似于RUN指令，CMD也可用于运行任何命令或应用程序，不过，二者运行的时间点不同 RUN指令运行于镜像文件的构建过程中，而CMD运行于基于Dockerfile构建出的新镜像文件启动的一个容器时 CMD指令的首要目的在于为启动的容器指定默认要运行的程序，且其运行结束后，容器也将终止；不过，CMD指定的命令其可以被docker run命令行选项所覆盖 在Dockerfile中可以存在多个CMD指令，但仅最后一个生效 123456CMD &lt;command&gt; 或CMD ["&lt;executable&gt;", "&lt;param1&gt;","&lt;param2&gt;"] 或CMD ["&lt;param1&gt;","&lt;param2&gt;"]前两种语法格式意义同RUN第三种则用于为ENTRYPOINT指令提供默认参数 示例 1CMD /bin/httpd -f -h ... ENTRYPOINT 类似于CMD指令的功能，用于为容器指定默认的运行程序，从而使得容器像一个单独的可执行程序 与CMD不同的是，由ENTRYPOINT启动的程序不会被docker run命令行指定的参数所覆盖，而且，这些命令行参数会被当成参数传递给ENTRYPOINT指定的程序 不过，docker run命令指定的–entrypoint选项的参数可覆盖ENTRYPOINT指令指定的程序 12345ENTRYPOINT &lt;command&gt;ENTRYPOINT ["&lt;executable&gt;", "&lt;param1&gt;","&lt;param2&gt;"]docker run命令传入的命令参数会覆盖CMD指令的内容并且附加到ENTRYPOINT命令最后作为其参数使用Dockerfile中也可以指定多个ENTRYPOINT,但是只有最后一个指令生效 示例 1ENTRYPOINT /bin/httpd -f -h ... USER 用于指定运行image时的或运行Dockerfile中的任何RUN、CMD或ENTRYPOINT指令指定的程序时的用户名或UID 默认情况下，container运行身份为root 123USER &lt;UID&gt;|&lt;UserName&gt;需要主要的是，&lt;UID&gt;可以为任意数字，但实践中必须为/etc/passwd中某用户的有效UID，否则，docker run将运行失败 示例 1USER nginx HEALCHECK 检查CMD command指令健康状态 示例 1HEALTHCHECK --start-period=3s CMD wget -O - -q http://0.0.0.0/ SHELL 运行程序默认的shell程序，比如：Linux的[“/bin/sh”, “-c”]，Windows的[“cmd”, “/s”] ARG 在docker build中传递参数 1ARG auth="sunshine" 示例 1docker build --build-arg auth="duanruijun" -t IMAGE_NAME ./ ONBUILD 用于在Dockerfile中定义一个触发器 Dockerfile用于build镜像文件，此镜像文件亦可作为base image被另一个Dockerfile用作FROM指令的参数，并以之构建新的镜像文件 在后面的这个Dockerfile中的FROM指令在build过程中被执行时，将会“触发”创建其base image的Dockerfile文件中的ONBUILD指令定义的触发器 12345ONBUILD &lt;INSTRUCTION&gt;尽管任何指令都可注册成为触发器指令，但ONBUILD不能自我嵌套，且不会触发FROM指令使用包含ONBUILD的Dockerfile构建的镜像应该使用特殊标签，例如：ruby:2.0-onbuild在ONBUILD指令中使用ADD或COPY时应该格外小心，因为新构建过程的上下文在缺少指定的源文件时会失败 示例 1ONBUILD ADD http://nginx.org/download/nginx.1.15.2.tar.gz /usr/local/src/ 好的，以上就是Dockerfile中用到的所有常用指令。]]></content>
@@ -88,10 +99,10 @@
         <category>jenkins</category>
       </categories>
       <tags>
+        <tag>jenkins</tag>
         <tag>pipline</tag>
         <tag>流水线配置</tag>
         <tag>jenkinsfile</tag>
-        <tag>jenkins</tag>
       </tags>
   </entry>
   <entry>
@@ -151,8 +162,8 @@
         <category>jenkins</category>
       </categories>
       <tags>
-        <tag>jenkins</tag>
         <tag>maven构建</tag>
+        <tag>jenkins</tag>
       </tags>
   </entry>
   <entry>
@@ -168,18 +179,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[ping包检测]]></title>
-    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
-    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>ping包检测</tag>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[shell文件对比]]></title>
     <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
     <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
@@ -189,6 +188,18 @@
       <tags>
         <tag>shell文件对比</tag>
         <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ping包检测]]></title>
+    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
+    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>ping包检测</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -299,15 +310,15 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
-    <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
-    <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
+    <title><![CDATA[zabbix_agent主动模式]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
       <categories>
-        <category>ansible</category>
+        <category>zabbix</category>
       </categories>
       <tags>
-        <tag>ansible</tag>
-        <tag>ansible问题汇总</tag>
+        <tag>zabbix</tag>
+        <tag>主动模式</tag>
       </tags>
   </entry>
   <entry>
@@ -323,27 +334,15 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[zabbix代理(proxy)]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
-    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
+    <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
+    <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
+    <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
       <categories>
-        <category>zabbix</category>
+        <category>ansible</category>
       </categories>
       <tags>
-        <tag>zabbix</tag>
-        <tag>zabbix-proxy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix_agent主动模式]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_agent%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[概述当zabbix-server监控主机过多时候，由于server端去搜集信息，zabbix会出现严重的性能问题，比如: 当监控端到一个量级的时候，web操作界面很卡，容易出现502； 图层断裂； 开启的进程太多，即使item数量减少，以后加一定量的机器也会出现问题。 所以主要往2个优化方面考虑： 添加proxy节点或者node模式做分布式监控； 调整agentd为主动模式。 由于第一个方案需要物理节点，所以尝试第二个方案。 主动模式： 主动模式一定要记得设置ServerActive=ServerIP Agent向Server建立一个TCP连接 Agent请求需要检测的数据列表 Server响应Agent，发送一个Items列表 Agent允许响应 TCP连接完成本次会话关闭 Agent开始周期性地收集数据 一、 被监控端zabbix_agentd.conf的配置调整1vim /etc/zabbix/zabbix_agentd.conf StartAgents=0 #客户端的anent的模式，0表示关闭被动模式，zabbix-agentd不监控本地端口，所以看不到zabbix_agentd进程 #Server=172.16.100.84 #如果设置纯被动模式，应该注释掉这行 ServerActive=172.16.100.84 #主动模式的serverip地址 Hostname=172.16.100.47 #客户端的hostname，不配置则使用主机名 RefreshActiveChecks=120 #被监控端到服务器获取监控项的周期，默认120S BufferSize=200 #被监控端存储监控信息的空间大小 Timeout=3 #超时时间 纯主动监控模式下的zabbix agent，只能支持zabbix agent (active)类型的监控项 二、 调整监控模版 克隆一个temple os linux模版来修改 全选 找到最下方的批量更新 类型打勾，选择主动式，然后更新 主机修改 添加完成之后，你会发现zabbix的Z灯不亮，因为服务器是基于被动模式的 这时候就有相关数据，如果硬盘或网卡监控没有数据 模板&gt;&gt;主动监控模板名称&gt;&gt;自动发现规则 选择监控项原型-进去之后一个个点击，修改成主动式监控，在模版修改只，主动就会自动应用 过会，网卡和硬盘的监控情况就出来了。]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>主动模式</tag>
+        <tag>ansible</tag>
+        <tag>ansible问题汇总</tag>
       </tags>
   </entry>
   <entry>
@@ -356,6 +355,18 @@
       <tags>
         <tag>zabbix</tag>
         <tag>监控网络设备</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix代理(proxy)]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
+    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>zabbix-proxy</tag>
       </tags>
   </entry>
   <entry>
