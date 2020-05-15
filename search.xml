@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[tengine 添加用户名密码认证]]></title>
+    <url>%2F2020%2F05%2F15%2Ftengine%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E8%AE%A4%E8%AF%81%2F</url>
+    <content type="text"><![CDATA[安装apache，因为要使用apache发行包中的htpasswd命令来创建用户的用户名密码映射文件; 创建用户名密码映射文件 使用md5加密 1234567[root@localhost ~]# htpasswd -bcm /opt/App/zipkin/users zipkin 123456Adding password for user zipkin# 参数说明-b 使用命令行输入密码-c 创建一个新文件-m 使用md5进行加密 如果只是新加用户可以不使用-c选项 查看并确认用户名密码映射文件已经生成 12[root@localhost ~]# cat /opt/App/zipkin/users zipkin:$apr1$jddFrJaf$9bu8WrejWs/xEH9/VICO 修改tengine的配置文件 加入相关规则 auth_basic如果填写的是字符串 会在访问登录页面显示出来 相当于提示信息 如果设置为off 则就会关闭用户认证访问 1234567891011server &#123; server_name xx.xx.com; listen 80; ... location / &#123; auth_basic "yes"; auth_basic_user_file /opt/App/zipkin/users; ... &#125;&#125; tengine reload后通过浏览器访问 发现需要认证 填写正确的用户名和密码后就能访问。]]></content>
+      <categories>
+        <category>nginx</category>
+      </categories>
+      <tags>
+        <tag>tengine用户认证</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[GeoIP数据更新]]></title>
     <url>%2F2020%2F05%2F14%2FGeoIP%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0%2F</url>
     <content type="text"><![CDATA[前言当我们从百度获取到的GeoIP数据包的时候，有可能下的数据包版本过低，导致kibana使用中定位不准确问题，如果能调度系统crontab自动更新数据包的话，我们就可以保证数据的准确性了。 由于centos 7系统会安装bind-utils，bind-utils 包含了许多DNS查询的工具包，其中就有一个dependency GeoIP library，导致如果直接使用rpm 的安装包来安装的话，默认的可执行程序会被安装在/usr/bin/geoipupdate, conf 地址会被安装在/etc/GeoIP.conf, 这样会和老版的geoipupdate 发生冲突，但是bind-utils 又依赖于老版的GeoIP 库，不可能卸载掉，于是此处我们使用二进制文件安装的方式进行升级。 注册maxmind账户由于maxmind更新用户规则，若想自动更新ip库需要注册maxmind账户并使用授权密钥才可以自动更新ip库。 注册账户 使用gmail邮箱即可注册成功，注册地址：https://www.maxmind.com/en/geolite2/signup 获取LicenseKey 升级程序 下载并安装最新版的IP库自动更新程序 12345[root@localhost ~]# wget https://github.com/maxmind/geoipupdate/releases/download/v4.2.2/geoipupdate_4.2.2_linux_amd64.tar.gz[root@localhost ~]# tar xf geoipupdate_4.2.2_linux_amd64.tar.gz[root@localhost ~]# cd geoipupdate_4.2.2_linux_amd64/[root@localhost ~]# mv GeoIP.conf /usr/local/etc/[root@localhost ~]# mv geoipupdate /usr/local/bin/ 编辑配置文件 1234567[root@localhost ~]# vim /usr/local/etc/GeoIP.confAccountID 你的账户IDLicenseKey 你的授权密钥# 需要下载的ip库EditionIDs GeoLite2-ASN GeoLite2-City GeoLite2-Country# 下载ip库的保存路径DatabaseDirectory /data/GeoIP 创建相关目录及更新授权 123[root@localhost ~]# mkdir -p /data/GeoIP[root@localhost ~]# /usr/local/bin/geoipupdate # 执行更新程序[root@localhost ~]# chown -R logstash.logstash /data/GeoIP # 授权目录及ip库为logstash用户权限，此步骤可省略 编写定时任务更新程序 123[root@localhost ~]# crontab -e# 此处可以根据实际情况编写更新脚本放在此处执行17 3 * * 3 /usr/local/bin/geoipupdate &gt; /tmp/geoip.log 2&gt;&amp;1 配置logstash相关配置文件 123456789101112131415[root@localhost ~]# vim /etc/logstash/conf.d/nginx.conffilter &#123;geoip &#123;source =&gt; "[realip]"target =&gt; "geoip"# 此处设置自定义ip库database =&gt; "/data/GeoIP/GeoLite2-City.mmdb"add_field =&gt; [ "[geoip][coordinates]", "%&#123;[geoip][longitude]&#125;" ]add_field =&gt; [ "[geoip][coordinates]", "%&#123;[geoip][latitude]&#125;" ]&#125;mutate &#123;convert =&gt; [ "[geoip][coordinates]", "float"]convert =&gt; [ "responsetime", "float"]&#125;&#125; 相关参考资料https://blog.leonshadow.com/763482/1983.html https://dev.maxmind.com/geoip/geoipupdate/ https://www.iamhippo.com/2019-05/803.html https://www.cnblogs.com/Orgliny/p/5755384.html https://blog.csdn.net/CrownP/article/details/101346838]]></content>
@@ -191,18 +202,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[ping包检测]]></title>
-    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
-    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>ping包检测</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[shell文件对比]]></title>
     <url>%2F2017%2F10%2F10%2Fshell%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%2F</url>
     <content type="text"><![CDATA[#!/bin/bash #----判断给定的文件是否存在---- if [ -d $1 ] && [ -d $2 ];then echo -e "俩个文件夹都存在,开始对俩个文件夹进行比对." else if [ -d $1 ];then echo "不存在文件夹:$2" exit else echo "不存在文件夹:$1" exit fi fi #----判断俩个文件中改动过的文件有哪些---- #判断俩个文件的文件和文件夹的个数 echo -e "\e[1;32m######查询每个文件总共有多少个文件和文件夹######\e[0m" fnum1=`ls -Rl $1|grep -e "^-"|wc -l` fnum2=`ls -Rl $2|grep -e "^-"|wc -l` dnum1=`ls -Rl $1|grep -e "^d"|wc -l` dnum2=`ls -Rl $2|grep -e "^d"|wc -l` echo -e "$1:下总共有\e[1;31m$dnum1\e[0m个文件夹,\e[1;31m$fnum1\e[0m个文件." echo -e "$2:下总共有\e[1;31m$dnum2\e[0m个文件夹,\e[1;31m$fnum2\e[0m个文件." #判断$2中新增或者减少的文件夹和文件有哪些 echo -e "\e[1;32m######查看$2中新增或者减少的文件或文件夹########\e[0m" only1=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep -v "WEB\-INF"` only2=`diff -rq $1 $2|grep "^Only"|awk '{print $3,$4}'|grep "WEB\-INF"` echo -e "$only1" echo -e "\e[1;31m$only2\e[0m" #判断$2中改变的文件有哪些 echo -e "\e[1;32m############查看$2中改变的文件有哪些############\e[0m" change1=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep -v "WEB\-INF"` change2=`diff -rq $1 $2|grep "^File"|awk '{print $2,"------",$4}'|grep "WEB\-INF"` echo -e "$change1" echo -e "\e[1;31m$change2\e[0m" #查看版本号是否已经更改 echo -e "\e[1;32m######---------查看是否更改版本号---------######\e[0m" cd $1 if [ -f version.html ];then version1=`cat version.html` else echo -e "\e[1;31m$1没有版本号信息.\e[0m" exit fi cd $2 if [ -f version.html ];then version2=`cat version.html` else echo -e "\e[1;31m$2没有版本号信息.\e[0m" exit fi if [ $version1 == $version2 ];then echo -e "\e[1;31m版本号未改动,$1和$2的版本号为$version1\e[0m" else echo -e "\e[1;31;1m版本号已经改动过\e[0m,$1的版本号为\e[1;31;1m$version1\e[0m,$2的版本号为\e[1;31;1m$version2\e[0m." fi]]></content>
@@ -212,6 +211,18 @@
       <tags>
         <tag>shell文件对比</tag>
         <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ping包检测]]></title>
+    <url>%2F2017%2F10%2F10%2Fpython_ping%E5%8C%85%E6%A3%80%E6%B5%8B%2F</url>
+    <content type="text"><![CDATA[ping包检测 #!/usr/bin/env python #-*- coding: utf-8 -*- import re import subprocess def check_alive(ip,count=1,timeout=1): ''' ping网络测试,通过调用ping命令,发送一个icmp包，从结果中通过正则匹配是否有100%关键字，有则表示丢包，无则表示正常 ''' cmd = 'ping -c %d -w %d %s' % (count,timeout,ip) p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True ) result = p.stdout.read() regex = re.findall('100% packet loss',result) if len(regex) == 0: print "\033[31m%s UP\033[0m" % (ip) else: print "\033[32m%s DOWN\033[0m" % (ip) if __name__ == "__main__": with file('/root/ip.txt','r') as f: for line in f.readlines(): ip = line.strip() check_alive(ip)]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>ping包检测</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -310,18 +321,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[监控网络设备]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
-    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>监控网络设备</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[zabbix问题汇总]]></title>
     <url>%2F2017%2F02%2F23%2Fzabbix%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
     <content type="text"><![CDATA[一、agent连接正常，server端报agent.ping问题由来zabbix-server迁移到server2上，zabbix架构为zabbix-agent –&gt; zabbix_proxy –&gt; zabbix_server； zabbix-server迁移进行时，zabbix_proxy没做停止，zabbix-server迁移完成后，zabbix_proxy指定的还是server1。这时，zabbix-server2收不到所有zabbix_proxy的数据，因此产生大量报警，当zabbix_proxy的Server字段改为zabbix-server2后，数据同步了，但是极有可能造成zabbix-server下的部分agent节点的触发器agent.ping还没有得到响应，而迁移后的数据也能在新的server上展示。 解决办法把有问题的agent节点关闭，等待server端重新出发一次agent.ping（相当于更新下之前的状态）,当server收到新的报警后，再把问题agent启动。这样就能覆盖掉问题agent.ping。 二、报警风暴由来当大量zabbix_agent单位时间内连接超时，故障修复后，会产生大量的报警信息（比如：邮件、短信）。这些人为已经预知的情况下，其实不想在收到通知！ 解决办法比如zabbix_server调用的邮件通知，把邮件脚本改成： 1echo `date` &gt;&gt; /tmp/sms.txt 这样的操作很明显能弯路思想改善接受大量报警信息。]]></content>
@@ -331,6 +330,18 @@
       <tags>
         <tag>zabbix</tag>
         <tag>监控问题汇总</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[zabbix代理(proxy)]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
+    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>zabbix-proxy</tag>
       </tags>
   </entry>
   <entry>
@@ -346,6 +357,18 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[监控网络设备]]></title>
+    <url>%2F2017%2F02%2F23%2Fzabbix_monito%2F</url>
+    <content type="text"><![CDATA[一、zabbix-server端安装snmp工具1yum -y install net-snmp-utils snmp-libs snmp-devel snmp 二、检测与路由器的连通性测试之前工作 路由上要开启snmp功能 本地snmp服务器的snmp的密码和路由上的密码一致 1vim /etc/snmp/snmpd.conf 测试连通性 1snmpwalk -v 2c -c 19e#! 10.18.221.4 - 2c：协议版本 - 19e#!：密码与路由一致， - 10.18.221.4：路由IP 注意selinux、iptables 如果出现上面信息说明成功 三、zabbix-server添加路由监控主机 –&gt; 创建主机 由于添加了密钥认证，须在zabbix-server中添加密钥管理–&gt;一般–&gt;选择宏，进行设置 过几分钟就能出相关监控项了！]]></content>
+      <categories>
+        <category>zabbix</category>
+      </categories>
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控网络设备</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[ansible问题汇总，不断更新中...]]></title>
     <url>%2F2017%2F02%2F23%2Fansible%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%2F</url>
     <content type="text"><![CDATA[一、通过ssh代理传输文件超时hosts配置文件 12[TestServer]172.16.0.129 ansible_ssh_port=12345 ansible_ssh_common_args=&apos;-o ProxyCommand=&quot;ssh -q -p33115 root@111.222.333.444 nc %h %p&quot;&apos; 应用synchronize模块时提示类似如下信息： 123456789[root@xyzl-test3 ansible]# ansible TestServer -i /opt/App/ansible/TestServerHosts -m synchronize -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | FAILED! =&gt; &#123; &quot;changed&quot;: false, &quot;cmd&quot;: &quot;/bin/rsync --delay-updates -F --compress --archive --rsh=/bin/ssh -S none -o Port=33115 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null --out-format=&lt;&lt;CHANGED&gt;&gt;%i %n%L /opt/JenkinsCache/TestServer/TestServer.tar.gz 172.16.0.129:/opt/JenkinsCache/TestServer/TestServer/&quot;, &quot;msg&quot;: &quot;ssh: connect to host 172.16.0.129 port 12345: Connection timed out\r\nrsync: connection unexpectedly closed (0 bytes received so far) [sender]\nrsync error: unexplained error (code 255) at io.c(226) [sender=3.1.2]\n&quot;, &quot;rc&quot;: 255&#125; 因改成copy模块： 1234567891011121314151617181920[root@xyzl-test3 ansible]# ansible TestServer -i /opt/JenkinsCache/TestServer/TestServerHosts -m copy -a &quot;src=/opt/JenkinsCache/TestServer/TestServer.tar.gz dest=/opt/JenkinsCache/TestServer/TestServer/&quot; [WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details172.16.0.129 | CHANGED =&gt; &#123; &quot;ansible_facts&quot;: &#123; &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot; &#125;, &quot;changed&quot;: true, &quot;checksum&quot;: &quot;f91ea3c7d14223d73cd5ac667112388b13f8b8f4&quot;, &quot;dest&quot;: &quot;/opt/JenkinsCache/TestServer/TestServer.tar.gz&quot;, &quot;gid&quot;: 0, &quot;group&quot;: &quot;root&quot;, &quot;md5sum&quot;: &quot;76cf7a69de2786d77327ab59f803fe1c&quot;, &quot;mode&quot;: &quot;0644&quot;, &quot;owner&quot;: &quot;root&quot;, &quot;size&quot;: 40923749, &quot;src&quot;: &quot;/root/.ansible/tmp/ansible-tmp-1570589569.14-59930443509260/source&quot;, &quot;state&quot;: &quot;file&quot;, &quot;uid&quot;: 0&#125;]]></content>
@@ -355,18 +378,6 @@
       <tags>
         <tag>ansible</tag>
         <tag>ansible问题汇总</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[zabbix代理(proxy)]]></title>
-    <url>%2F2017%2F02%2F23%2Fzabbix_proxy%2F</url>
-    <content type="text"><![CDATA[概述zabbix proxy可以代替zabbix server收集性能和可用性数据，然后把数据汇报给zabbix server，并且在一定程度上分担zabbix server的压力，具体可见官方文档。 样例 服务列表 | 名称 | IP | |——–|:——–:| | zabbix server | 10.18.12.98 | | zabbix proxy | 10.18.12.93 | | zabbix agent | 10.18.12.63 | zabbix agent配置文件 cat /etc/zabbix_agentd.conf LogFile=/log/zabbix/zabbix_agentd.log PidFile=/log/zabbix/zabbix_agentd.pid StartAgents=0 ServerActive=10.18.12.93 RefreshActiveChecks=120 BufferSend=5 BufferSize=100 Hostname=10.18.12.63 DebugLevel=3 Timeout=20 MaxLinesPerSecond=100 AllowRoot=1 Include=/etc/zabbix/zabbix_agentd.d/*.conf ServerActive: 代理节点IP zabbix proxy配置文件 cat /etc/zabbix/zabbix_proxy.conf Server=10.18.12.98 Hostname=Zabbix_proxy_18 LogFile=/log/zabbix/zabbix_proxy.log DebugLevel=3 DBName=zabbix DBUser=zabbix DBPassword=zabbix ProxyLocalBuffer=0 ProxyOfflineBuffer=1 ConfigFrequency=30 DataSenderFrequency=30 StartPollers=100 StartPollersUnreachable=1 StartTrappers=200 StartPingers=1 CacheSize=64M TrapperTimeout=30 Timeout=10 LogSlowQueries=3000 Server: zabbix server IP Hostname: 代理节点IP DB* 由于代理节点要暂存agent传来的数据，所以，要先把数据缓存在本地(proxy)数据库中，再定时和zabbix server进行数据交互； zabbix server配置文件 无 web端配置 1) 添加代理节点 管理&gt;&gt;agent代理程序&gt;&gt;创建代理 样例中配置的名称是zabbix_proxy_18 2) 在agent主机的最下方选择zabbix_proxy_18 完成配置后生效 过会在zabbix proxy服务端查看相关日志，如果里面有zabbix agent的数据展示信息，证明zabbix proxy配置成功。]]></content>
-      <categories>
-        <category>zabbix</category>
-      </categories>
-      <tags>
-        <tag>zabbix</tag>
-        <tag>zabbix-proxy</tag>
       </tags>
   </entry>
   <entry>
